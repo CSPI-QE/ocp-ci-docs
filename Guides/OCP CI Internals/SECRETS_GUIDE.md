@@ -1,4 +1,4 @@
-# (WIP) OpenShift CI Interop Scenario Secrets Guide<!-- omit from toc -->
+# OpenShift CI Interop Scenario Secrets Guide<!-- omit from toc -->
 
 ## Table of Contents<!-- omit from toc -->
 - [Overview](#overview)
