@@ -1,7 +1,6 @@
 # OpenShift CI Container Creation Guide<!-- omit from toc -->
 
 ## Table of Contents<!-- omit from toc -->
-- [Overview](#overview)
 - [Introduction](#introduction)
 - [Container Creation and Usage](#container-creation-and-usage)
   - [Creating Containerized Tests](#creating-containerized-tests)
@@ -10,9 +9,6 @@
   - [Executing Containerized Tests in OpenShift CI](#executing-containerized-tests-in-openshift-ci)
     - [Define the Container](#define-the-container)
     - [Execute in the Container](#execute-in-the-container)
-
-## Overview
-
 
 ## Introduction
 Prior to discussing the how to use containers in OpenShift CI, it is important to understand the basic structure of an Interop test in OpenShift CI. 
