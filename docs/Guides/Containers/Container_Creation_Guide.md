@@ -1,4 +1,4 @@
-# (WIP) OpenShift CI Container Creation Guide<!-- omit from toc -->
+# OpenShift CI Container Creation Guide<!-- omit from toc -->
 
 ## Table of Contents<!-- omit from toc -->
 - [Overview](#overview)
@@ -144,4 +144,39 @@ In the `images` stanza, you can define multiple images to be built by simply add
 - `dockerfile_path` - Defines the path to the Dockerfile you'd like to build. This is also relative to the root of the test repository.
 - `to` - Defines the name of the image within OpenShift CI. This will be important later as we will use this name in a test step to make sure the commands are executed in the correct container.
 
+Now that the image has been defined, it will be built and made available to test steps at the beginning of each execution.
+
 #### Execute in the Container
+
+To use the container in a step of the tests, you can specify that container in a ref's config file. For the purposes of this document, we will create a pretend ref in the step registry named `interop-mock-execute`. Below is the configuration file for this pretend ref: 
+
+<sub><sup>`ci-operator/step-registry/interop/mock/execute/interop-mock-execute-ref.yaml`</sup></sub>
+```yaml
+ref:
+  as: interop-mock-execute
+  from: mock-runner
+  commands: interop-mock-execute-commands.sh
+  resources:
+    requests:
+      cpu: '1'
+      memory: 500Mi
+  documentation: |-
+    Pretend ref...
+```
+
+In the config file above, the only line you will need to specify is the `from: mock-runner` line in the `ref` stanza. This specifies the name of the image you defined in the [Define the Container](#define-the-container) step of this guide. Specifying this container ensures that anything in the `ci-operator/step-registry/interop/mock/execute/interop-mock-execute-commands.sh` file will be executed in your new container.
+
+Here is a brief example of the shell script to execute the tests in your container:
+
+<sub><sup>`ci-operator/step-registry/interop/mock/execute/interop-mock-execute-commands.sh`</sup></sub>
+```bash
+#!/bin/bash
+
+set -o nounset
+set -o errexit
+set -o pipefail
+
+pytest /tmp/tests/test_mock_tests.py -vv --junitxml=${SHARED_DIR}/xunit_output.xml
+```
+
+The shell script above utilizes `pytest` to execute the tests that were copied into the container in the [Creating Containerized Tests](#creating-containerized-tests) section of this guide. The xUnit results will be placed in the `SHARED_DIR` where they can be reported in later steps or other containers.
