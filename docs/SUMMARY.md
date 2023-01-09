@@ -2,6 +2,7 @@
 
 This is the summary used to structure the gitbook page for this documentation.
 
+## Onboarding
 * [Onboarding Guide](Onboarding_Guide.md)
     * [Prerequisites Guide](Prerequisites_Guide.md)
     * [Kick-off Guide](Kickoff_Guide.md)
@@ -13,6 +14,8 @@ This is the summary used to structure the gitbook page for this documentation.
     * [Production Guide](Production_Guide.md)
     * [Maintenance & Expansion Guide](Maintenance_%26_Expansion_Guide.md)
     * [Celebrate & Share](Celebrate_%26_Share_Guide.md)
+
+## Tutorials
 * [Developers Guide](Developers_Guide.md)
 * [Triggering Guide](Triggering_Guide.md)
 * [Secrets Guide](Secrets_Guide.md)
