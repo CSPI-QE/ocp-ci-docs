@@ -1,6 +1,6 @@
 # Summary
 
-This is the summary used to structure the gitbook page for this documentation.
+* [Welcome](Kickoff_Guide.md)
 
 ## Onboarding
 * [Onboarding Guide](Onboarding_Guide.md)
