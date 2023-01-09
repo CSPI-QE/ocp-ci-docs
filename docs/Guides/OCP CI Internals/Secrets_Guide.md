@@ -54,7 +54,7 @@ In order to use a secret in Vault in OpenShift CI, the secret must include two k
 - `secretsync/target-name`: The [name](#openshift-ci-secret-name) of the secret in OpenShift CI
 - `secretsync/target-namespace`: The [namespace](#openshift-ci-secret-namespace) of the secret in OpenShift CI
 
-Outside of those two values, any key/value pair desired can be added to the secret for use in OpenShift CI.
+Outside of those two values, any key/value pair desired can be added to the same path for that secret making them available for use in OpenShift CI.
 
 #### OpenShift CI Secret Name
 The name of a secret in OpenShift CI must be unique. When deciding on a name for a secret, make sure to be descriptive. Using a descriptive name will help with readability in OpenShift CI configuration files as well as making it less-likely that a name is used twice.
