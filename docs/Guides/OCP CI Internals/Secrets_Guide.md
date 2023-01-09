@@ -27,7 +27,7 @@ First go to [selfservice.vault.ci.openshift.org](https://selfservice.vault.ci.op
 
 If you do not see a collection in the table for the scenario that your testing it either hasn't been created yet or you don't have access to it.
 
-Please reach out on slack at [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) to ask if the collection for the scenario you are testing has already been created. If it has go to the [next section](#get-access-to-collection)
+Please reach out on slack at [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) to ask if the collection for the scenario you are testing has already been created. If it has go to the [next section](#get-access-to-a-scenario-collection)
 
 If it hasn't you can create the collection by clicking the `New Collection` button and adding the name. Follow the naming structure of `{product short name}-qe`.
 ### Get Access to a Scenario Collection
@@ -47,7 +47,7 @@ You'll be redirected to your secrets homepage.
 `cubbyhole/` is just your users personal space for any secrets you want to store. 
 We care about `kv/` this is where you'll find secret directories that correspond to the collections that you are a member of.
 
-From here you can use the UI to view, create, edit, and delete secrets.
+From here you can use the UI or Vault CLI to view, create, edit, and delete secrets.
 
 ### Secrets in OpenShift CI
 In order to use a secret in Vault in OpenShift CI, the secret must include two key/value pairs:

@@ -15,14 +15,14 @@
   - [Plugins](#plugins)
 
 ## Introduction
-Documenting new steps in the step registry is important because it can help use work more efficiently as well as helping use avoid duplicated work in the Step Registry. Duplicated work and lack of documentation, at the time of writing this document, seems to be an issue in the Step Registry and we would like to start solving that issue. When adding a new workflow, ref, chain, _etc._ to the Step Registry, please follow the documentation guide below to write helpful documentation for the new step.
+Documenting new steps in the step registry is important because it can help use work more efficiently as well as helping users avoid duplicating work in the Step Registry. Duplicated work and lack of documentation, at the time of writing this document, seems to be an issue in the Step Registry and we would like to start solving that issue. When adding a new workflow, ref, chain, _etc._ to the Step Registry, please follow the documentation guide below to write helpful documentation for the new step.
 
 ## How to Document a Step in the Step Registry
 All steps in the Step Registry, at least written by the Interop team, should have a `README.md` file associated with it in the same folder as the config and BASH script for that step. Documentation should be written in Markdown. If you are unfamiliar with Markdown, please use [the list of resources](#markdown-resources) at the end of this documentation to familiarize yourself with it.
 
 ### Getting Started
 1. Create the `README.md` file in the same directory that holds the configuration file for your new step.
-2. Add a level-1 header to the top of the file with the name of the name of the step. 
+2. Add a level-1 header to the top of the file with the name of the step. 
    - **Note:** Please add `<!-- omit from toc -->` to the end of the header to avoid adding it to the Table of Contents.
    - **Example:** `# interop-tooling-new-step <!-- omit from toc -->` 
    
@@ -53,7 +53,7 @@ This section of your document should outline the reason this step was created an
 This section of your document should describe how your new step works. You should try to go into a reasonable amount a detail on how the step works. Here are some things you could include:
 
 - If this step is a workflow or chain, link the steps it uses in order and why each step is needed
-- If this step is a ref, outline how the BASH script used in the ref and how it works
+- If this step is a ref, outline how the BASH script is used in the ref and how it works
 - If this step utilizes any specific (important) files in the test repository, provide a link to the file in GitHub
 
 The documentation doesn't need to exhaustive, but, there should be a general description of how the step works and any outside resources it may utilize. Aim to give someone enough information so that they don't have to step through the code to figure out what your new step does and why.
@@ -62,7 +62,7 @@ The documentation doesn't need to exhaustive, but, there should be a general des
 This section can provide very useful information to anybody who may need to utilize or debug this step. Make sure to explain why the following requirements are needed and how to get them.
 
 ##### Variables<!-- omit from toc -->
-For each environment variable in the `env` list of your new step should be outlined. Use the following as a guide for how to document these variables. We will start with an example configuration file:
+Each environment variable in the `env` list of your new step should be outlined. Use the following as a guide for how to document these variables. We will start with an example configuration file:
 
 <sub><sup>`interop-tooling-new-tool-ref.yaml`</sup></sub>
 ```yaml
@@ -79,7 +79,7 @@ ref:
   documentation: |-
     Do something cool in this new tool...
 ```
-This configuration file shows that we have defined two required environment variable in the `env` stanza. These two environment variables have a brief description that is used in the [automatically generated documentation](#automatically-generated-documentation). While it may seem simple to just check the config for these requirements, it is nice to have them in the `README.md` for ease of access when somebody is reading the documentation.
+This configuration file shows that we have defined two required environment variables in the `env` stanza. These two environment variables have a brief description that is used in the [automatically generated documentation](#automatically-generated-documentation). While it may seem simple to just check the config for these requirements, it is nice to have them in the `README.md` for ease of access when somebody is reading the documentation.
 
 To document these two variables, we will uses the following format:
 
@@ -103,7 +103,7 @@ There isn't a specific format associated with this section, but it is important.
 - A resource outside of openshift (specific repository or access to a server)
 
 ##### Credentials<!-- omit from toc -->
-For each item in the `credentials` stanza of the step's configuration should be outlined. Use the following as a guide for how to document these credentials. We will start with an example configuration file:
+Each item in the `credentials` stanza of the step's configuration should be outlined. Use the following as a guide for documenting these credentials. We will start with an example configuration file:
 
 <sub><sup>`interop-tooling-new-tool-ref.yaml`</sup></sub>
 ```yaml
@@ -127,7 +127,7 @@ This configuration file shows that we have defined one credential. Please use th
   - **Mount Path**: `/tmp/secrets/credentials`
 ```
 
-In the `useage` section of this documentation, please try to be specific and give any addition information you may  think is needed to understand what that credential is why it is needed in this step.
+In the `usage` section of this documentation, please try to be specific and give any additional information you may  think is needed to understand what that credential is and why it is needed in this step.
 
 ## Automatically Generated Documentation
 OpenShift CI has implemented a great way to autogenerate documentation for a step, but it does not give as a good way to be as specific as we'd like to be in our documentation. The documentation can be found at the following link: https://steps.ci.openshift.org/
