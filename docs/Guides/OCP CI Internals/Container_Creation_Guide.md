@@ -23,12 +23,13 @@ Prior to discussing the how to use containers in OpenShift CI, it is important t
 Figure 1 above shows a simple flow chart to demonstrate that there are really two clusters provisioned when you execute an Interop job in OpenShift CI.
 1. **Prow Cluster**
    - This cluster is the cluster that actually executes the various steps (chains, workflows, refs, _etc._) of a test.
+   - This cluster isn't provisioned new each time. There is a new project/namespace in this cluster provisioned and deprovisioned for every execution of OpenShift CI.
 2. **Test Cluster**
-   - This cluster is created in AWS as part of a workflow, `ipi-aws`, run during Interop testing.
+   - This cluster is created as part of a workflow when Interop tests are run.
    - The `kubeconfig` in the Prow Cluster is configured to target this cluster. So when an `oc` (or other OpenShift interface) command is run in a step, it is run from the Prow Cluster targeting the Test cluster.
 
 > **IMPORTANT:** 
-> This guide is going to walk you through the creation of a container that runs in the _Prow Cluster_. This means that if you are trying to execute anything against your layered product, it will need to target the product that will be installed in the _Test Cluster_.
+> This guide is going to walk you through the creation of a container that runs in the _Prow Cluster_. This means that if you are trying to execute anything against your integrated product, it will need to target the product that will be installed in the _Test Cluster_.
 
 ## Container Creation and Usage
 
@@ -49,10 +50,10 @@ def testEquality():
    assert 1 == 1
 ```
 
-When creating your tests, there shouldn't be much of a change outside of keeping in mind that you will need to target a cluster from outside of said cluster. Another thing to keep in mind is that resources located behind Red Hat's firewalls will not be accessible as both the _Prow Cluster_ and the _Test Cluster_ will be running in AWS.
+When creating your tests, there shouldn't be much of a change outside of keeping in mind that you will need to target a cluster from outside of said cluster. Another thing to keep in mind is that resources located behind Red Hat's firewalls will not be accessible as both the _Prow Cluster_ and the _Test Cluster_ will be running outside of Red Hat's network..
 
 > **IMPORTANT:**
-> If your tests require any variables prior to executing the tests, please work with the Interop team know ahead of time which variables you need and (if needed) how to retrieve those variables. It is possible to get a variable (i.e. the web address of the test cluster) during a previous container's execution and that variable can be placed in a file in the `SHARED_DIR` for usage in other containers.
+> If your tests require any variables prior to executing the tests, please work with the Interop team ahead of time which variables you need and (if needed) how to retrieve those variables. It is possible to get a variable (i.e. the web address of the test cluster) during a previous container's execution and that variable can be placed in a file in the `SHARED_DIR` for usage in other containers.
 
 #### The Container
 Now that we have tests created, we can create a Dockerfile that will build an image to run the tests. Before writing the Dockerfile, it can be helpful to list any requirements to run the tests. To run the tests above, the container will need:
@@ -96,7 +97,7 @@ To define a container in OpenShift CI, two stanzas need to be added to the confi
 
 Pretend we have a test repository in the `CSPI-QE` organization named `mock_tests` and we'd like to use the `main` branch of the repository to test with. The configuration file in the `openshift/release` repository would be `ci-operator/config/cspi-qe/mock_tests/cspi-qe-mock_tests-main.yaml`. 
 
-Inside of this pretend repository there is a directory named `dockerfiles` container the Dockerfile we made above. In the root of the repository in the test file, `test_mock_tests.py`.
+Inside of this pretend repository there is a directory named `dockerfiles` containing the Dockerfile we made above. In the root of the repository in the test file, `test_mock_tests.py`.
 
 The following is an abbreviated version of the configuration file for our test repository. The most important stanza to look at for this guide are:
 - `build_root` 
@@ -138,7 +139,7 @@ In the `images` stanza, you can define multiple images to be built by simply add
   - Remember, this is defined starting at the root of the test repository
   - We have used `.` above, meaning the build context is the root of the test repository
 - `dockerfile_path` - Defines the path to the Dockerfile you'd like to build. This is also relative to the root of the test repository.
-- `to` - Defines the name of the image within OpenShift CI. This will be important later as we will use this name in a test step to make sure the commands are executed in the correct container.
+- `to` - Defines the name of the image created within OpenShift CI. This will be important later as we will use this name in a test step to make sure the commands are executed in the correct container.
 
 Now that the image has been defined, it will be built and made available to test steps at the beginning of each execution.
 
