@@ -1,4 +1,4 @@
-# Step Registry Documentation Guide<!-- omit from toc -->
+# Step Registry Documentation Policy<!-- omit from toc -->
 
 ## Table of Contents<!-- omit from toc -->
 - [Introduction](#introduction)
