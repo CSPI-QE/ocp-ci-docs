@@ -40,17 +40,22 @@ flowchart LR
 
 ```
 ## Provision
-We define provision as the initial setup of your scenarios files and the OpenShift installation
+We define provision as:
+> The initial setup of your scenarios files and the OpenShift installation
 
 See the [Provision Guide](Provision_Guide.md) for detailed information meant to help you build the foundation of your scenario.
 
 ## Orchestrate
-We define Orchestrate as anything, post OpenShift install, that is needed to install and configure your product on OpenShift so that it is ready to be tested.
+We define Orchestrate as:
+
+> Completing any setup or configuration necessary to execute tests. This setup can include things like: installing an operator, retrieving any necessary variables, additional configuration of the test cluster, deployment of any necessary resources on the test cluster, etc.
 
 See the [Orchestration Guide](Orchestration_Guide.md)) for detailed information meant to help you organize the installation of your product.
 
 ## Execute
-Execute is defined as the phase where you install your test frameworks needed for your tests and most importantly run your tests.
+Execute is defined as:
+
+> The execution of any interop tests in a scenario. This step should only consist of any setup that absolutely must occur in this step (rather than the [orchestration step](Orchestration_Guide.md)) and the execution of interop tests. The execution of these tests should result in one or more xUnit (xml) files.
 
 See the [Execution Guide](Execution_Guide.md) for detailed information meant to help you organize your test execution.
 
