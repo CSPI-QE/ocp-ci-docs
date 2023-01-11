@@ -12,7 +12,7 @@
 - [Conclusion](#conclusion)
 
 ## Introduction
-Documenting our scenarios is an important part of the CSPI onboarding and maintenance process. Ensuring we have a comprehensive document for each scenario will help future current and future team members debug and maintain each scenario. Please follow this documentation policy to write helpful documentation for each new scenario.
+Documenting our scenarios is an important part of the CSPI onboarding and maintenance process. Ensuring we have a comprehensive document for each scenario will help current and future team members debug and maintain each scenario. Please follow this documentation policy to write helpful documentation for each new scenario.
 
 ## How to Document a Scenario
 Each scenario written by CSPI within OpenShift CI should have a `README.md` file associated with it in the same folder as the scenario's configuration file. For example the MTR scenario's documentation can be found at `ci-operator/config/windup/windup_integration_test/README.md` along with the configuration YAML file. Documentation should be written in Markdown. If you are unfamiliar with Markdown, please use [this list of resources](Markdown_Resources.md) to familiarize yourself with it.
