@@ -33,7 +33,7 @@ Each scenario written by CSPI within OpenShift CI should have a `README.md` file
    - **Note:** This plugin will create the Table of Contents for you and keep it automatically updated with hyperlinks upon every save of the document. 
 
 ### Adding Documentation
-The outline of these documents should generally follow the following structure:
+The outline of these documents should generally follow this structure:
 - General Information
 - Purpose
 - Process
@@ -69,7 +69,7 @@ This section can be as short as a sentence or two:
 <sub><sup>`ci-operator/config/windup/windup_integration_test/README.md`</sup></sub>
 ```markdown
 ## Purpose
-To provision the necessary infrastructure and using that infrastructure to execute MTR interop tests. The results of theses tests should be reported to the appropriate sources following execution.
+To provision the necessary infrastructure and use that infrastructure to execute MTR interop tests on pre-release OCP builds. The results of theses tests will be reported to the appropriate sources following execution.
 ```
 
 #### Process
