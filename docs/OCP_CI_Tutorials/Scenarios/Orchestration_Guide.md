@@ -21,7 +21,7 @@ There are a couple of ways to go about creating the orchestration step of a scen
 ### Using a Chain
 This step of your scenario will likely use a chain considering this step usually requires the most work. A chain is really just a list of refs and/or chains that execute in order (see the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for more information). 
 
-Below is a basic representation of what an orchestration chain could look like. This example is an orchestration chain that executes a ref, another chain, then the last ref. This structure allows us to string reusable steps and scenario specific steps together to complete the orchestration step.
+Below is a basic representation of what an orchestration chain could look like. This example is an orchestration chain that executes a ref, another chain, then another ref. This structure allows us to string reusable steps and scenario specific steps together to complete the orchestration step.
 
 ```mermaid
 ---
