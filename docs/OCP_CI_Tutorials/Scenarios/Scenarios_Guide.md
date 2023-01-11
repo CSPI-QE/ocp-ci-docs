@@ -17,6 +17,28 @@
 ## Overview
 The following Headers are phases that MUST be done for each scenario. They are needed to provide a structure to the many OpenShift layered product scenarios that will be running on OpenShift CI.
 
+Below is a basic flow chart of how a OpenShift CI scenario may look. Each scenario should have a chain where most of the work is completed. This chain should be named something like `interop-{layered-product name}-chain`. The scenario chain should execute the orchestrate, execute, and report steps in order. The orchestrate, execute, and report steps of a scenario's chain can either be another chain or a single ref depending on your scenario's specific needs.
+
+```mermaid
+---
+title: Basic Scenario Structure
+---
+flowchart LR
+  scenario((interop-scenario-chain)) --> orchestrate_step --> execute_step --> report_step
+
+  subgraph orchestrate_step
+    orchestrate_ref1([interop-orchestrate-ref]) --> orchestrate_ref2([interop-tooling-ref]) --> orchestrate_ref3([interop-some-other-ref])
+  end
+  
+  subgraph execute_step
+    execute_ref1([interop-execute-ref])
+  end
+
+  subgraph report_step
+    report_ref1([interop-tooling-report-ref])
+  end
+
+```
 ## Provision
 We define provision as the initial setup of your scenarios files and the OpenShift installation
 
