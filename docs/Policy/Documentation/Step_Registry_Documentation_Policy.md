@@ -11,7 +11,7 @@
 - [Automatically Generated Documentation](#automatically-generated-documentation)
 
 ## Introduction
-Documenting new steps in the step registry is important because it can help use work more efficiently as well as helping users avoid duplicating work in the Step Registry. Duplicated work and lack of documentation, at the time of writing this document, seems to be an issue in the Step Registry and we would like to start solving that issue. When adding a new workflow, ref, chain, _etc._ to the Step Registry, please follow the documentation guide below to write helpful documentation for the new step.
+Documenting new steps in the step registry is important because it can help us work more efficiently as well as helping users avoid duplicating work in the Step Registry. Duplicated work and lack of documentation, at the time of writing this document, seems to be an issue in the Step Registry and we would like to start solving that issue. When adding a new workflow, ref, chain, _etc._ to the Step Registry, please follow the documentation guide below to write helpful documentation for the new step.
 
 ## How to Document a Step in the Step Registry
 All steps in the Step Registry, at least written by the CSPI team, should have a `README.md` file associated with it in the same folder as the config and BASH script for that step. Documentation should be written in Markdown. If you are unfamiliar with Markdown, please use [this list of resources](Markdown_Resources.md) to familiarize yourself with it.
