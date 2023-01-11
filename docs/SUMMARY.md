@@ -30,4 +30,5 @@
 * [Documentation](Policy/Documentation/Documentation_Policy.md)
   * [Scenario Documentation Policy](Policy/Documentation/Scenario_Documentation_Policy.md)
   * [Step Registry Documentation Policy](Policy/Documentation/Step_Registry_Documentation_Policy.md)
+  * [Markdown Resources](Policy/Documentation/Markdown_Resources.md)
 * [Maintenance](Policy/Maintenance/Scenario_Maintenance_Policy.md)
