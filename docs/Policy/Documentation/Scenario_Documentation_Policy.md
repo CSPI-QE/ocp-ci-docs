@@ -12,13 +12,13 @@
 - [Conclusion](#conclusion)
 
 ## Introduction
-Documenting our scenarios is an important part of the CSPI onboarding and maintenance process. Ensuring we have a comprehensive document for each scenario will help future current and future team members debug and maintain each scenario. Please follow this documentation policy to write helpful documentation for each new scenario.
+Documenting our scenarios is an important part of the CSPI onboarding and maintenance process. Ensuring we have a comprehensive document for each scenario will help current and future team members debug and maintain each scenario. Please follow this documentation policy to write helpful documentation for each new scenario.
 
 ## How to Document a Scenario
 Each scenario written by CSPI within OpenShift CI should have a `README.md` file associated with it in the same folder as the scenario's configuration file. For example the MTR scenario's documentation can be found at `ci-operator/config/windup/windup_integration_test/README.md` along with the configuration YAML file. Documentation should be written in Markdown. If you are unfamiliar with Markdown, please use [this list of resources](Markdown_Resources.md) to familiarize yourself with it.
 
 ### Getting Started
-1. Create the `README.md` file in the same director that holds the scenario's configuration YAML file.
+1. Create the `README.md` file in the same directory that holds the scenario's configuration YAML file.
    - **Note:** This file should be in the `ci-operator/config/{test-org}/{test-repo}/` directory within the [openshift/release](https://github.com/openshift/release) repository.
 2. Add a level-1 header to the top of the file with the name of the scenario
    - **Note:** Please add `<!-- omit from toc -->` to the end of the header to avoid adding it to the Table of Contents.
@@ -33,7 +33,7 @@ Each scenario written by CSPI within OpenShift CI should have a `README.md` file
    - **Note:** This plugin will create the Table of Contents for you and keep it automatically updated with hyperlinks upon every save of the document. 
 
 ### Adding Documentation
-The outline of these documents should generally follow the following structure:
+The outline of these documents should generally follow this structure:
 - General Information
 - Purpose
 - Process
@@ -69,7 +69,7 @@ This section can be as short as a sentence or two:
 <sub><sup>`ci-operator/config/windup/windup_integration_test/README.md`</sup></sub>
 ```markdown
 ## Purpose
-To provision the necessary infrastructure and using that infrastructure to execute MTR interop tests. The results of theses tests should be reported to the appropriate sources following execution.
+To provision the necessary infrastructure and use that infrastructure to execute MTR interop tests on pre-release OCP builds. The results of theses tests will be reported to the appropriate sources following execution.
 ```
 
 #### Process

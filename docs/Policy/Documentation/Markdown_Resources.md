@@ -13,6 +13,7 @@
 
 ## Editors
 - [Visual Studio Code](https://code.visualstudio.com/docs/languages/markdown) **Recommended**
+- [PyCharm](https://www.jetbrains.com/help/pycharm/markdown.html)
 - [Obsidian](https://obsidian.md/)
 - [Remarkable](https://remarkableapp.github.io/index.html)
 

@@ -12,11 +12,10 @@
 | Prerequisites       | C       | R          | I                  |
 | Kick-off            | R       | A          | I                  |
 | Triggering          | R       | I          |                    |
-| Scenario Foundation | R       | A          |                    |
+| Provision           | R       | A          |                    |
 | Orchestrate         | R       | A          |                    |
 | Execute             | R       | A          |                    |
-| Report              | R       | A          |                    |
+| Report              | R       | A          | C                  |
 | Document            | R       | A          |                    |
 | Production          | R       | A          | I                  |
 | Maintenance         | C       | R          | I                  |
-| Triggering          | R       | I          |                    |
