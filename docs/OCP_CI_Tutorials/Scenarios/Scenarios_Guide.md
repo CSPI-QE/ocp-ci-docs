@@ -28,7 +28,7 @@ We define Orchestrate as anything, post OpenShift install, that is needed to ins
 See the [Orchestration Guide](Orchestration_Guide.md)) for detailed information meant to help you organize the installation of your product.
 
 ## Execute
-Execute is defined as the phase where you setup the environment needed for your tests and the step you take to run them.
+Execute is defined as the phase where you install your test frameworks needed for your tests and most importantly run your tests.
 
 See the [Execution Guide](Execution_Guide.md) for detailed information meant to help you organize your test execution.
 
@@ -62,12 +62,12 @@ tests:
       BASE_DOMAIN: aws.interop.ccitredhat.com
     workflow: cucushift-installer-rehearse-aws-ipi
 ```
-A could way to verify your using what you expect to use for the value of cron you can use [Cronitor](https://crontab.guru/#0_1_*_*_1)
+A good way to verify your using what you expect to use for the value of cron you can use [Cronitor](https://crontab.guru/#0_1_*_*_1)
 
 ### Ensure Test execution output matches reporting
-In order for us to merge an MR we need to be sure the E2E testing is working. This includes reporting the test results.
+In order for us to merge a MR we need to be sure the E2E testing is working. This includes reporting the test results.
 
-It is needed that we verify the different levels of artifacts and make sure that they all align.
+It is important that we verify the different levels of artifacts and make sure that they all align.
 
 For example we might need to check the following:
 - Console output (prow job)
@@ -80,4 +80,4 @@ For example we might need to check the following:
 There cannot be any discrepancies between these different places. If there is we need to halt the push to production and fix it.
 
 ### Ensure all parties are OWNERS
-There is the concept of OWNERS files within OpenShift CI's CI operator in the release repo. They are meant to hold the names of the people responsible for the code being added. This will allow them to be added as reviewers to future code changes. All members responsible parties should be added to the OWNERS file.
+There is the [concept of OWNERS files within OpenShift CI's CI operator](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) in the release repo. They are meant to hold the names of the people responsible for the code being added. This will allow them to be reviewers on future code changes. All members of responsible parties should be added to the OWNERS file.

@@ -14,10 +14,12 @@
 ## Overview
 This Onboarding guide is meant to describe a repeatable process that can be followed to create test scenarios for OpenShift integrated products using OpenShift CI. The goal is that we can onboard & expand new scenarios that are easy to understand, maintain and debug.
 
-We must deeply understand the need for each specific scenario that we put through this process and update this process when needed. This is not meant to be followed blindly so that we can onboard scenarios faster. It is meant to teach a generic way to onboard scenarios that is proven to work. Its expected that new scenarios will present new problems and we must develop better solutions that what is proposed. We need to hear your painpoints and feedback throughout every step of this process. **Please communicate over the [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) slack channel**
+We must deeply understand the need for each specific scenario that we put through this process and update this process when needed. This is not meant to be followed blindly so that we can onboard scenarios faster. It is meant to teach a generic way to onboard scenarios that is proven to work. It's expected that new scenarios will present new problems and we must develop better solutions than what may be proposed in this document. We need to hear your painpoints and feedback throughout every step of this process. 
+> **NOTE: **
+> Please communicate over the [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) Slack channel
 
 ## Purpose
-There are many layered products that we've built on top of OpenShift. We need to make sure that all of these products are working with the latest OpenShift builds. In order to effectively test, debug, and maintain all of these product tests and show the results in a consumable report we need to have some structure in place.
+There are many layered products that we've built on top of OpenShift. We need to make sure that all of these products are working with the latest OpenShift builds. In order to effectively test, debug, and maintain all of these product tests and show the results in a consumable report, we need to have some structure in place.
 
 If this onboarding process did not exist we'd be scrambling to put together reports efficiently, find automation bugs, fix automation bugs, find testing gaps, update test scenarios frequently, ..etc.
 

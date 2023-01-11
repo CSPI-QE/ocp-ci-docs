@@ -12,7 +12,9 @@
   - [5. Submit PR](#5-submit-pr)
 
 ## Overview
-Here we will be submitting our first PR to the [openshift/release](https://github.com/openshift/release) repo.
+Here we will starting our PR submission process to the [openshift/release](https://github.com/openshift/release) repo.
+> **IMPORTANT:** 
+> We will use 1 PR for the entire scenario development process. The reasons for this are many, but primarily it is because just merging a config in the release repo is equivalent to pushing the scenario into production. We don't want incomplete scenarios running or cluttering the release repo.
 
 We will create the file structure that is common to all interop scenarios.
 The result will be a prow job that is capable of deploying an OCP cluster.
