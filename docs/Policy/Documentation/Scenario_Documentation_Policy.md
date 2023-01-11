@@ -18,7 +18,7 @@ Documenting our scenarios is an important part of the CSPI onboarding and mainte
 Each scenario written by CSPI within OpenShift CI should have a `README.md` file associated with it in the same folder as the scenario's configuration file. For example the MTR scenario's documentation can be found at `ci-operator/config/windup/windup_integration_test/README.md` along with the configuration YAML file. Documentation should be written in Markdown. If you are unfamiliar with Markdown, please use [this list of resources](Markdown_Resources.md) to familiarize yourself with it.
 
 ### Getting Started
-1. Create the `README.md` file in the same director that holds the scenario's configuration YAML file.
+1. Create the `README.md` file in the same directory that holds the scenario's configuration YAML file.
    - **Note:** This file should be in the `ci-operator/config/{test-org}/{test-repo}/` directory within the [openshift/release](https://github.com/openshift/release) repository.
 2. Add a level-1 header to the top of the file with the name of the scenario
    - **Note:** Please add `<!-- omit from toc -->` to the end of the header to avoid adding it to the Table of Contents.
