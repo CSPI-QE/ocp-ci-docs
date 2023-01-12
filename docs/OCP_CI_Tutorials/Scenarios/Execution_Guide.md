@@ -39,7 +39,7 @@ If a single ref is the best option for your scenario, use the following steps to
 7. Run `make update` in the root of the `openshift/release` repository to update OpenShift CI's metadata files.
 
 ### Using a Chain
-Below is a basic representation of what an execution chain could look like. This example is an execution chain that executes a ref, another chian, then another ref. This structure allows us to string reusable steps and scenario specific steps together to complete the execution step.
+Below is a basic representation of what an execution chain could look like. This example is an execution chain that executes a ref, another chain, then another ref. This structure allows us to string reusable steps and scenario specific steps together to complete the execution step.
 
 ```mermaid
 ---
