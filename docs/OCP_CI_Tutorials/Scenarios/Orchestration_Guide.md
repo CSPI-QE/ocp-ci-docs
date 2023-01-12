@@ -1,60 +1,81 @@
-# (WIP) OpenShift CI Interop Scenario Orchestrate Install Guide<!-- omit from toc -->
+# OpenShift CI Scenario Test Orchestration Guide<!-- omit from toc -->
 
 ## Table of Contents<!-- omit from toc -->
-- [Overview](#overview)
-- [Orchestrate Product Install to Config \& Step-Registry](#orchestrate-product-install-to-config--step-registry)
-  - [1. Run Containers against OpenShift Local](#1-run-containers-against-openshift-local)
-  - [2. Populate the chain.yaml](#2-populate-the-chainyaml)
-  - [3. Populate the commands.sh](#3-populate-the-commandssh)
-  - [4. Add Secrets to Hashicorp Vault](#4-add-secrets-to-hashicorp-vault)
-  - [5. Add Env Vars to Config](#5-add-env-vars-to-config)
-  - [6. Submit PR](#6-submit-pr)
+- [Introduction](#introduction)
+- [Scenario Orchestration](#scenario-orchestration)
+  - [Using a Chain](#using-a-chain)
+  - [Using a Ref](#using-a-ref)
 
-## Overview
-Building off the scenario foundation that we put in place in the [Scenario Foundation Guide](Scenario_Foundation_Guide.md) we will add everything that is needed for the Orchestrate phase for you scenario here.
+## Introduction
+This document aims to define and guide you through creating the "Orchestration" step of a scenario.
 
-The Orchestrate phase can be defined as anything needed to install and configure the product that is being tested on OpenShift.
-## Orchestrate Product Install to Config & Step-Registry
-To make sure you start out correctly please see the [Developers Guide](DEVELOPERS_GUIDE.md)
-### 1. Run Containers against OpenShift Local
-We want to first identify that the install containers are valid. A quick and cheap way to do this is to deploy a cluster locally using [OpenShift local](https://developers.redhat.com/products/openshift-local/overview). Once you have a cluster up make sure the containers and shell scripts provided by the product QE in the prerequisites step are working for operator install through product configuration.
+We define the Orchestration step of a scenario as:
 
-### 2. Populate the chain.yaml
+> Completing any setup or configuration necessary to execute tests. This setup can include things like: installing an operator, retrieving any necessary variables, additional configuration of the test cluster, deployment of any necessary resources on the test cluster, etc.
 
-### 3. Populate the commands.sh
+Please follow the guide below to create the orchestration step of your scenario.
 
-### 4. Add Secrets to Hashicorp Vault
-See [SECRETS_GUIDE](SECRETS_GUIDE.md)
+## Scenario Orchestration
+There are a couple of ways to go about creating the orchestration step of a scenario, depending on the amount of work that need to be done during this step. If there isn't much work to be done and it can all be done in a single container using a single BASH script, a ref can be used for this step. If there is a lot of work to be done and you need to utilize steps that aren't specific to this scenario, you'll need to use a chain (most common).
 
-### 5. Add Env Vars to Config
-The values and number of vars will differ from scenario to scenario but this will provide you the basics of the types of things needed in this section of the config. Collaboration between both parties will be critical during this step.
+### Using a Chain
+This step of your scenario will likely use a chain considering this step usually requires the most work. A chain is really just a list of refs and/or chains that execute in order (see the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for more information). 
 
-Take the follow test section in a config file as an example
+Below is a basic representation of what an orchestration chain could look like. This example is an orchestration chain that executes a ref, another chain, then another ref. This structure allows us to string reusable steps and scenario specific steps together to complete the orchestration step.
+
+```mermaid
+---
+title: Orchestration Chain Example
+---
+flowchart TD
+
+subgraph interop-orchestrate-chain
+orchestrate_ref1([interop-orchestrate-ref]) -->
+interop-tooling-chain -->
+orchestrate_ref3([interop-some-other-ref])
+
+    subgraph interop-tooling-chain
+        tooling_ref1([interop-tooling-install-something]) -->
+        tooling_ref2([some-outside-ref])
+    end
+
+end
 ```
-tests:
-- as: acm-interop-aws
-  cron: 0 1 * * 1
-  steps:
-    cluster_profile: aws-cspi-qe
-    env:
-      BASE_DOMAIN: aws.interop.ccitredhat.com
-      SUB_CHANNEL: release-2.6
-      SUB_INSTALL_NAMESPACE: open-cluster-management
-      SUB_PACKAGE: advanced-cluster-management
-      SUB_SOURCE: redhat-operators
-      SUB_TARGET_NAMESPACES: open-cluster-management
-    test:
-    - chain: interop-acm
-    workflow: cucushift-installer-rehearse-aws-ipi-spot
-```
-We see 6 variables within `env:` all of which will be used by steps in either the `chain` or `worfklow` for this test. The first `BASE_DOMAIN` is used in the [cucushift-installer-rehearse-aws-ipi-spot](https://github.com/openshift/release/blob/a96f9f04d9baa0cb32a684c620e245a34d40326a/ci-operator/step-registry/cucushift/installer/rehearse/aws/ipi/spot/cucushift-installer-rehearse-aws-ipi-spot-workflow.yaml) workflow and the other 5 are used in the [operatorhub-subscribe step](https://github.com/openshift/release/blob/master/ci-operator/step-registry/operatorhub/subscribe/operatorhub-subscribe-ref.yaml). This step is called as a part of the `interop-acm` chain.
 
-The idea behind placing environment variables here is so that we can use them in any container that is run to execute the workflows, chains, and steps that we point to in the `tests` stanza.
+Use the steps below to create your orchestration chain:
 
-You will need to:
-- Identify any need for environment variables in the products install and config.
-  - Make sure that you are not hardcoding anything that may need to change later. If so review it and see if you can make it an env var.
-- 
+1. In the [openshift/release](https://github.com/openshift/release) repository, create a folder for your scenario under `ci-operator/step-registry/interop` if one does not exist already.
+   - **Example:** `ci-operator/step-registry/interop/mtr` 
+2. In your new scenario folder, add a folder titled "orchestrate".
+   - **Example:** `ci-operator/step-registry/interop/mtr/orchestrate`
+3. Create the following files in your new "orchestrate" folder
+   - `interop-{scenario name}-orchestrate-chain.yaml`: This file is the OpenShift CI configuration file for this chain. You will be outline which steps to run and in what order here.
+   - `OWNERS`: This is a required file to outline who can approve changes to this chain. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
+   - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
+4. Populate the files you have created to create your orchestrate chain
+   - See the instructions in the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for additional help
+5. Add the new chain to the scenario's chain.
+   - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md)
+6. Add any required environment variables to the scenario's OpenShift CI configuration file
+   - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder 
+7. Run `make update` in the root of the `openshift/release` repository to update OpenShift CI's metadata files.
 
-### 6. Submit PR
-See [PR process](DEVELOPERS_GUIDE.md#pr-process)
+### Using a Ref
+If you have decided that using a ref is the best option for your scenario, follow these steps to create the orchestration ref:
+
+1. In the [openshift/release](https://github.com/openshift/release) repository, create a folder for your scenario under `ci-operator/step-registry/interop` if one does not exist already.
+   - **Example:** `ci-operator/step-registry/interop/mtr` 
+2. In your new scenario folder, add a folder titled "orchestrate".
+   - **Example:** `ci-operator/step-registry/interop/mtr/orchestrate`
+3. Create the following files in your new "orchestrate" folder
+   - `interop-{scenario name}-orchestrate-ref.yaml`: This file is the OpenShift CI configuration file for this ref
+   - `interop-{scenario name}-orchestrate-commands.sh`: This is the BASH script your new ref will execute
+   - `OWNERS`: This is a required file to outline who can approve changes to this ref. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
+   - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
+4. Populate the files you have created to create your orchestrate ref
+   - See the instructions in the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for additional help
+5. Add the new chain to the scenario's chain.
+   - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md)
+6. Add any required environment variables to the scenario's OpenShift CI configuration file
+   - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder
+7. Run `make update` in the root of the `openshift/release` repository to update OpenShift CI's metadata files.
