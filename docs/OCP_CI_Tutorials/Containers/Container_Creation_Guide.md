@@ -11,7 +11,7 @@
     - [Execute in the Container](#execute-in-the-container)
 
 ## Introduction
-Prior to discussing the how to use containers in OpenShift CI, it is important to understand the basic structure of an Interop test in OpenShift CI. 
+Prior to discussing the how to use containers in OpenShift CI, it is important to understand the basic structure of a CSPI test in OpenShift CI. 
 
 ```mermaid
     graph TD;
@@ -20,20 +20,20 @@ Prior to discussing the how to use containers in OpenShift CI, it is important t
 ```
 <sub><sup>Figure 1: _Cluster Graph_</sup></sub>
 
-Figure 1 above shows a simple flow chart to demonstrate that there are really two clusters provisioned when you execute an Interop job in OpenShift CI.
+Figure 1 above shows a simple flow chart to demonstrate that there are really two clusters provisioned when you execute a CSPI job in OpenShift CI.
 1. **Prow Cluster**
    - This cluster is the cluster that actually executes the various steps (chains, workflows, refs, _etc._) of a test.
    - This cluster isn't provisioned new each time. There is a new project/namespace in this cluster provisioned and deprovisioned for every execution of OpenShift CI.
 2. **Test Cluster**
-   - This cluster is created as part of a workflow when Interop tests are run.
+   - This cluster is created as part of a workflow when interop tests are run.
    - The `kubeconfig` in the Prow Cluster is configured to target this cluster. So when an `oc` (or other OpenShift interface) command is run in a step, it is run from the Prow Cluster targeting the Test cluster.
 
 > **IMPORTANT:** 
-> This guide is going to walk you through the creation of a container that runs in the _Prow Cluster_. This means that if you are trying to execute anything against your integrated product, it will need to target the product that will be installed in the _Test Cluster_.
+> This guide is going to walk you through the creation of a container that runs in the _Prow Cluster_. This means that if you are trying to execute anything against your layered product, it will need to target the product that will be installed in the _Test Cluster_.
 
 ## Container Creation and Usage
 
-The containers created for a specific scenario should be able to run any Interop test written for that scenario. When writing the tests for an Interop scenario, try to think about how they will be executed inside of a container as well as how you will target a separate cluster.
+The containers created for a specific scenario should be able to run any interop test written for that scenario. When writing the tests for a CSPI scenario, try to think about how they will be executed inside of a container as well as how you will target a separate cluster.
 
 ### Creating Containerized Tests
 For the following example, a very simple Python test will be utilized. This is just to help wrap your head around the idea of testing within a container.
@@ -53,7 +53,7 @@ def testEquality():
 When creating your tests, there shouldn't be much of a change outside of keeping in mind that you will need to target a cluster from outside of said cluster. Another thing to keep in mind is that resources located behind Red Hat's firewalls will not be accessible as both the _Prow Cluster_ and the _Test Cluster_ will be running outside of Red Hat's network..
 
 > **IMPORTANT:**
-> If your tests require any variables prior to executing the tests, please work with the Interop team ahead of time which variables you need and (if needed) how to retrieve those variables. It is possible to get a variable (i.e. the web address of the test cluster) during a previous container's execution and that variable can be placed in a file in the `SHARED_DIR` for usage in other containers.
+> If your tests require any variables prior to executing the tests, please work with the CSPI team ahead of time which variables you need and (if needed) how to retrieve those variables. It is possible to get a variable (i.e. the web address of the test cluster) during a previous container's execution and that variable can be placed in a file in the `SHARED_DIR` for usage in other containers.
 
 #### The Container
 Now that we have tests created, we can create a Dockerfile that will build an image to run the tests. Before writing the Dockerfile, it can be helpful to list any requirements to run the tests. To run the tests above, the container will need:
