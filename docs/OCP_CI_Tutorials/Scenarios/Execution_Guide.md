@@ -7,7 +7,7 @@
   - [Using a Chain](#using-a-chain)
 
 ## Introduction
-This document aims to define an guide you through creating the "Execution" step of a scenario.
+This document aims to define and guide you through creating the "Execution" step of a scenario.
 
 We define the Execution step of a scenario as:
 
