@@ -53,7 +53,7 @@ Use the steps below to create your orchestration chain:
    - `OWNERS`: This is a required file to outline who can approve changes to this chain. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
    - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
 4. Populate the files you have created to create your orchestrate chain
-   - See the instructions in the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for additional help
+   - See the instructions in the [Step Registry - Chain Guide](../Step_Registry/Step_Registry_Chain_Guide.md) for additional help
 5. Add the new chain to the scenario's chain.
    - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md)
 6. Add any required environment variables to the scenario's OpenShift CI configuration file
