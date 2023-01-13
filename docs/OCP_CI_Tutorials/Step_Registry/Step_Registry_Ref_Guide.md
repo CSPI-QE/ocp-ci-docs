@@ -77,7 +77,7 @@ ref:
     A sample ref that does something
 
 ```
-The ref configuration above is fairly simple. But, for our purposes (so far) this is about as complicated as a ref should be, barring some additional credentials (secrets) or environment variables. 
+The ref configuration above is fairly simple. For our purposes (so far) this is about as complicated as a ref should be, barring some additional credentials (secrets) or environment variables. 
 
 Here is how we define and get each of the values in the configuration above:
 
