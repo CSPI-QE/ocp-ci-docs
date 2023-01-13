@@ -14,9 +14,9 @@
 
 
 ## What is a Ref?
-A ref is the most basic step in the step registry, it can be thought of as the building-blocks of other steps. A ref is essentially a BASH script that be used on it's own or as part of a chain or workflow. A ref is comprised of five files:
+A ref is the most basic step in the step registry, it can be thought of as the building-blocks of other steps. A ref is essentially a BASH script that be used on its own or as part of a chain or workflow. A ref is comprised of five files:
 
-- **Configuration file:** A YAML file used to define the refs required resources, environment variables, secrets, container, etc.
+- **Configuration file:** A YAML file used to define the ref's required resources, environment variables, secrets, container, etc.
 - **OWNERS file:** A file used by OpenShift GitHub robots as a list of users who are allowed to approve or deny changes to a step.
 - **BASH script:** The BASH script that is executed in the ref.
 - **README.md (CSPI requirement):** A documentation file written in Markdown. While not required by OpenShift CI, this is a CSPI requirement.
@@ -77,23 +77,23 @@ ref:
     A sample ref that does something
 
 ```
-The ref configuration above is fairly simple. But, for our purposes (so far) this is about as complicated as a ref should be, barring some additional credentials (secrets) or environment variables. 
+The ref configuration above is fairly simple. For our purposes (so far) this is about as complicated as a ref should be, barring some additional credentials (secrets) or environment variables. 
 
 Here is how we define and get each of the values in the configuration above:
 
 - `as:` This is the name of the ref. You'll notice it is just the name of the configuration file sans the `-ref.yaml` ending. This is also how you will call this ref to be executed in [chains](Step_Registry_Chain_Guide.md) and [workflows](Step_Registry_Workflow_Guide.md).
-- `from:` This value is the name of the container you'd like this script to be executed in. You can uses a [custom container](../Containers/Container_Creation_Guide.md) or one of the [available containers within the OpenShift CI image registry](https://docs.ci.openshift.org/docs/how-tos/use-registries-in-build-farm/) (`cli` seems to be a popular image to use).
-- `commands:` The value for commands simply points to the `-commands.sh` file that we will populate in the next section. This is telling the ref which BASH script to run.
-- `resources:` This stanza defines the resources that are needed to run your new ref.
-  - `requests:` This stanza defines the optimal resources needed to run this ref.
-    - `cpu:` The number of CPUs requested.
-    - `memory:` The amount of memory requested.
+- `from:` This value is the name of the container you'd like this script to be executed in. You can use a [custom container](../Containers/Container_Creation_Guide.md) or one of the [available containers within the OpenShift CI image registry](https://docs.ci.openshift.org/docs/how-tos/use-registries-in-build-farm/) (`cli` seems to be a popular image to use).
+- `commands:` The value for commands simply points to the `-commands.sh` file that we will populate in the next section. This is telling the ref which bash script to run.
+- `resources:` This stanza defines the resources that are needed to run your new ref
+  - `requests:` This stanza defines the optimal resources needed to run this ref
+    - `cpu:` The number of CPUs requested
+    - `memory:` The amount of memory requested
   - `limits:` This stanza defines the maximum resources this ref should be allowed to utilize. **Optional**
-    - `cpu:` The number of CPUs requested.
-    - `memory:` The amount of memory requested.
-- `credentails:` This stanza defines a list of any credentials or secrets the ref may need for execution. Please see the [Secrets Guide](../Secrets/Secrets_Guide.md) for more information regarding the usage of this stanza. **Optional**
-  - `namespace:` Defines the credential's namespace defined in Vault.
-  - `name:` Defines the name of the credential in Vault.
+    - `cpu:` The number of CPUs requested
+    - `memory:` The amount of memory requested
+- `credentials:` This stanza defines a list of any credentials or secrets the ref may need for execution. Please see the [Secrets Guide](../Secrets/Secrets_Guide.md) for more information regarding the usage of this stanza. **Optional**
+  - `namespace:` Defines the credential's namespace defined in Vault
+  - `name:` Defines the name of the credential in Vault
   - `mount_path:` Defines where the file(s) containing the credentials should be mounted during execution. If you have more than one item in this list, the `mount_path` values cannot be the same.
 - `env:` This stanza defines a list of environment variables needed for this ref to execute. **Optional**
   - `name:` Defines the name of an environment variable.
