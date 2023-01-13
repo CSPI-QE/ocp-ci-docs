@@ -91,7 +91,7 @@ Here is how we define and get each of the values in the configuration above:
   - `limits:` This stanza defines the maximum resources this ref should be allowed to utilize. **Optional**
     - `cpu:` The number of CPUs requested
     - `memory:` The amount of memory requested
-- `credentails:` This stanza defines a list of any credentials or secrets the ref may need for execution. Please see the [Secrets Guide](../Secrets/Secrets_Guide.md) for more information regarding the usage of this stanza. **Optional**
+- `credentials:` This stanza defines a list of any credentials or secrets the ref may need for execution. Please see the [Secrets Guide](../Secrets/Secrets_Guide.md) for more information regarding the usage of this stanza. **Optional**
   - `namespace:` Defines the credential's namespace defined in Vault
   - `name:` Defines the name of the credential in Vault
   - `mount_path:` Defines where the file(s) containing the credentials should be mounted during execution. If you have more than one item in this list, the `mount_path` values cannot be the same.
