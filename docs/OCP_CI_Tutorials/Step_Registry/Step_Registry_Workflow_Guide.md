@@ -83,7 +83,7 @@ workflow:
     A sample workflow that runs a chain before a test and a ref after the test.
 ```
 
-The workflow configuration above runs a both chain and ref before and after a test is run.
+The workflow configuration above runs both chain and ref before and after a test is run.
 
 Here is how we define and get each of the values in the configuration file above:
 
