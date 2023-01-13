@@ -7,7 +7,7 @@
   - [Using a Chain](#using-a-chain)
 
 ## Introduction
-This document aims to define an guide you through creating the "Execution" step of a scenario.
+This document aims to define and guide you through creating the "Execution" step of a scenario.
 
 We define the Execution step of a scenario as:
 
@@ -31,8 +31,8 @@ If a single ref is the best option for your scenario, use the following steps to
    - `OWNERS`: This is a required file to outline who can approve changes to this ref. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
    - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
 4. Populate the files you have created to create your execute ref
-   - See the instructions in the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for additional help
-5. Add the new chain to the scenario's chain.
+   - See the instructions in the [Step Registry - Ref Guide](../Step_Registry/Step_Registry_Ref_Guide.md) for additional help
+5. Add the new ref to your scenario's chain.
    - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md)
 6. Add any required environment variables to the scenario's OpenShift CI configuration file
    - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder
@@ -71,8 +71,8 @@ If you have decided that a chain is the best way to complete the execution step 
    - `OWNERS`: This is a required file to outline who can approve changes to this chain. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
    - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
 4. Populate the files you have created to create your execute chain
-   - See the instructions in the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for additional help
-5. Add the new chain to the scenario's chain.
+   - See the instructions in the [Step Registry - Chain Guide](../Step_Registry/Step_Registry_Chain_Guide.md) for additional help
+5. Add the new chain to your scenario's chain.
    - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md)
 6. Add any required environment variables to the scenario's OpenShift CI configuration file
    - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder 

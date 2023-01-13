@@ -16,10 +16,10 @@ We define the Orchestration step of a scenario as:
 Please follow the guide below to create the orchestration step of your scenario.
 
 ## Scenario Orchestration
-There are a couple of ways to go about creating the orchestration step of a scenario, depending on the amount of work that need to be done during this step. If there isn't much work to be done and it can all be done in a single container using a single BASH script, a ref can be used for this step. If there is a lot of work to be done and you need to utilize steps that aren't specific to this scenario, you'll need to use a chain (most common).
+There are a couple of ways to go about creating the orchestration step of a scenario, depending on the amount of work that needs to be done during this step. If there isn't much work to be done and it can all be done in a single container using a single BASH script, a ref can be used for this step. If there is a lot of work to be done and you need to utilize steps that aren't specific to this scenario, you'll need to use a chain (most common).
 
 ### Using a Chain
-This step of your scenario will likely use a chain considering this step usually requires the most work. A chain is really just a list of refs and/or chains that execute in order (see the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for more information). 
+This step of your scenario will likely use a chain considering this step usually requires the most work. A chain is really just a list of refs and/or chains that execute in order (see the [Step Registry - Chain Guide](../Step_Registry/Step_Registry_Chain_Guide.md) for more information). 
 
 Below is a basic representation of what an orchestration chain could look like. This example is an orchestration chain that executes a ref, another chain, then another ref. This structure allows us to string reusable steps and scenario specific steps together to complete the orchestration step.
 
@@ -53,8 +53,8 @@ Use the steps below to create your orchestration chain:
    - `OWNERS`: This is a required file to outline who can approve changes to this chain. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
    - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
 4. Populate the files you have created to create your orchestrate chain
-   - See the instructions in the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for additional help
-5. Add the new chain to the scenario's chain.
+   - See the instructions in the [Step Registry - Chain Guide](../Step_Registry/Step_Registry_Chain_Guide.md) for additional help
+5. Add the new chain to your scenario's chain.
    - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md)
 6. Add any required environment variables to the scenario's OpenShift CI configuration file
    - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder 
@@ -73,8 +73,8 @@ If you have decided that using a ref is the best option for your scenario, follo
    - `OWNERS`: This is a required file to outline who can approve changes to this ref. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
    - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
 4. Populate the files you have created to create your orchestrate ref
-   - See the instructions in the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for additional help
-5. Add the new chain to the scenario's chain.
+   - See the instructions in the [Step Registry - Ref Guide](../Step_Registry/Step_Registry_Ref_Guide.md) for additional help
+5. Add the new ref to your scenario's chain.
    - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md)
 6. Add any required environment variables to the scenario's OpenShift CI configuration file
    - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder

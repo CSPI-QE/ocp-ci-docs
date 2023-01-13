@@ -82,7 +82,7 @@ The ref configuration above is fairly simple. But, for our purposes (so far) thi
 Here is how we define and get each of the values in the configuration above:
 
 - `as:` This is the name of the ref. You'll notice it is just the name of the configuration file sans the `-ref.yaml` ending. This is also how you will call this ref to be executed in [chains](Step_Registry_Chain_Guide.md) and [workflows](Step_Registry_Workflow_Guide.md).
-- `from:` This value is the name of the container you'd like this script to be executed in. You can uses a [customer container](../Containers/Container_Creation_Guide.md) or one of the [available containers within the OpenShift CI image registry](https://docs.ci.openshift.org/docs/how-tos/use-registries-in-build-farm/) (`cli` seems to be a popular image to use).
+- `from:` This value is the name of the container you'd like this script to be executed in. You can uses a [custom container](../Containers/Container_Creation_Guide.md) or one of the [available containers within the OpenShift CI image registry](https://docs.ci.openshift.org/docs/how-tos/use-registries-in-build-farm/) (`cli` seems to be a popular image to use).
 - `commands:` The value for commands simply points to the `-commands.sh` file that we will populate in the next section. This is telling the ref which bash script to run.
 - `resources:` This stanza defines the resources that are needed to run your new ref
   - `requests:` This stanza defines the optimal resources needed to run this ref

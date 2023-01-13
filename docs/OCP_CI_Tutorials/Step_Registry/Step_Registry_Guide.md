@@ -23,12 +23,12 @@ This document is meant to serve as a general guide to the step registry in OpenS
 The step registry is a folder in the [openshift/release](https://github.com/openshift/release) repository that stores steps that can be used during test execution. For the purposes of this document, we will only cover refs, chains, and workflows as those are the steps primarily used by the CSPI team at the time of writing this document.
 
 ### Refs
-A ref is the most basic step in the step registry, it can be thought of as the building-blocks of other steps. A ref is essentially a BASH script that be used on it's own or as part of a chain or workflow. 
+A ref is the most basic step in the step registry, it can be thought of as the building-blocks of other steps. A ref is essentially a BASH script that can be used on it's own or as part of a chain or workflow. 
 
 Please see the [Ref Guide](Step_Registry_Ref_Guide.md) for more information.
 
 ### Chains
-A chain allows you to string refs and other chains together to be executed in order. Chains are useful to help keep configurations clean and useful. When we create a scenario's chain to follow the "orchestrate, execute, report" structure the CSPI follows, it allows us to see the whole scenario in one configuration file and may prevent some confusion. 
+A chain allows you to string refs and other chains together to be executed in order. Chains are useful to help keep configurations clean and useful. When we create a scenario's chain to follow the "orchestrate, execute, report" structure that CSPI follows, it allows us to see the whole scenario in one configuration file and may prevent some confusion. 
 
 Please see the [Chain Guide](Step_Registry_Chain_Guide.md) for more information.
 

@@ -12,7 +12,7 @@
   - [Finalization](#finalization)
 
 ## What is a Chain?
-A chain allows you to string refs and other chains together to be executed in order. Chains are useful to help keep configurations clean and useful. When we create a scenario's chain to follow the "orchestrate, execute, report" structure the CSPI follows, it allows us to see the whole scenario in one configuration file and may prevent some confusion. 
+A chain allows you to string refs and other chains together to be executed in order. Chains are useful to help keep configurations clean and useful. When we create a scenario's chain to follow the "orchestrate, execute, report" structure that CSPI follows, it allows us to see the whole scenario in one configuration file and may prevent some confusion. 
 
 Below is a basic representation of what a chain could look like:
 

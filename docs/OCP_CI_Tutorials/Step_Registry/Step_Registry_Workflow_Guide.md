@@ -63,7 +63,7 @@ A workflow is only comprised of 4 files:
 ### Populating the Files
 
 #### `new-step-workflow.yaml`
-This file is meant to serve as the configuration file for the new workflow being create this file outlines:
+This file is meant to serve as the configuration file for the new workflow being created. This file outlines:
 - The name of the workflow
 - The steps you'd like the workflow to run prior to and after a test executes
   
@@ -83,7 +83,7 @@ workflow:
     A sample workflow that runs a chain before a test and a ref after the test.
 ```
 
-The workflow configuration above runs a both chain and ref before and after a test is run.
+The workflow configuration above runs both chain and ref before and after a test is run.
 
 Here is how we define and get each of the values in the configuration file above:
 
