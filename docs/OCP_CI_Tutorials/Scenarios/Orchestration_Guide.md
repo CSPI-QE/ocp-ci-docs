@@ -48,16 +48,16 @@ Use the steps below to create your orchestration chain:
    - **Example:** `ci-operator/step-registry/interop/mtr` 
 2. In your new scenario folder, add a folder titled "orchestrate".
    - **Example:** `ci-operator/step-registry/interop/mtr/orchestrate`
-3. Create the following files in your new "orchestrate" folder
+3. Create the following files in your new "orchestrate" folder.
    - `interop-{scenario name}-orchestrate-chain.yaml`: This file is the OpenShift CI configuration file for this chain. You will be outline which steps to run and in what order here.
    - `OWNERS`: This is a required file to outline who can approve changes to this chain. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
    - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
-4. Populate the files you have created to create your orchestrate chain
-   - See the instructions in the [Step Registry - Chain Guide](../Step_Registry/Step_Registry_Chain_Guide.md) for additional help
+4. Populate the files you have created to create your orchestrate chain.
+   - See the instructions in the [Step Registry - Chain Guide](../Step_Registry/Step_Registry_Chain_Guide.md) for additional help.
 5. Add the new chain to your scenario's chain.
-   - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md)
-6. Add any required environment variables to the scenario's OpenShift CI configuration file
-   - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder 
+   - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md).
+6. Add any required environment variables to the scenario's OpenShift CI configuration file.
+   - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder .
 7. Run `make update` in the root of the `openshift/release` repository to update OpenShift CI's metadata files.
 
 ### Using a Ref
@@ -67,15 +67,15 @@ If you have decided that using a ref is the best option for your scenario, follo
    - **Example:** `ci-operator/step-registry/interop/mtr` 
 2. In your new scenario folder, add a folder titled "orchestrate".
    - **Example:** `ci-operator/step-registry/interop/mtr/orchestrate`
-3. Create the following files in your new "orchestrate" folder
-   - `interop-{scenario name}-orchestrate-ref.yaml`: This file is the OpenShift CI configuration file for this ref
-   - `interop-{scenario name}-orchestrate-commands.sh`: This is the BASH script your new ref will execute
+3. Create the following files in your new "orchestrate" folder:
+   - `interop-{scenario name}-orchestrate-ref.yaml`: This file is the OpenShift CI configuration file for this ref.
+   - `interop-{scenario name}-orchestrate-commands.sh`: This is the BASH script your new ref will execute.
    - `OWNERS`: This is a required file to outline who can approve changes to this ref. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
    - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
-4. Populate the files you have created to create your orchestrate ref
-   - See the instructions in the [Step Registry - Ref Guide](../Step_Registry/Step_Registry_Ref_Guide.md) for additional help
+4. Populate the files you have created to create your orchestrate ref.
+   - See the instructions in the [Step Registry - Ref Guide](../Step_Registry/Step_Registry_Ref_Guide.md) for additional help.
 5. Add the new ref to your scenario's chain.
-   - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md)
-6. Add any required environment variables to the scenario's OpenShift CI configuration file
-   - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder
+   - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md).
+6. Add any required environment variables to the scenario's OpenShift CI configuration file.
+   - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder.
 7. Run `make update` in the root of the `openshift/release` repository to update OpenShift CI's metadata files.

@@ -12,8 +12,8 @@
 
 ## Introduction
 This document is meant to serve as a general guide to the step registry in OpenShift CI. It will cover:
-- The difference between the types of steps
-- The `interop` folder in the step registry
+- The difference between the types of steps.
+- The `interop` folder in the step registry.
 
 > **NOTE:**
 > 
@@ -35,7 +35,7 @@ Please see the [Chain Guide](Step_Registry_Chain_Guide.md) for more information.
 ### Workflows
 A workflow can be thought of as a set of two [chains](Step_Registry_Chain_Guide.md). One "chain" is defined as a `pre` step and the other is defined as a `post` step. These steps are run before and after a test is run.
 
-Workflows can be useful in many situations, but CSPI currently uses them mainly as cluster provisioning and deprovisioning steps. It is possible that our use of workflows will expand as we continue to grow in OpenShift CI
+Workflows can be useful in many situations, but CSPI currently uses them mainly as cluster provisioning and deprovisioning steps. It is possible that our use of workflows will expand as we continue to grow in OpenShift CI.
 
 Please see the [Workflow Guide](Step_Registry_Workflow_Guide.md) for more information.
 
@@ -48,6 +48,6 @@ The `ci-operator/step-registry/interop/tooling` folder is meant to hold any re-u
 ### Scenarios
 The `ci-operator/step-registry/interop/{scenario-name}` folders are meant to hold the chains and refs needed to execute specific scenarios. This folder should hold any scenario-specific steps like:
 
-- The Orchestrate chain or ref for a scenario
-- The Execute chain or ref for a scenario
-- Any other scenario-specific steps that must be used during the execution of a scenario
+- The Orchestrate chain or ref for a scenario.
+- The Execute chain or ref for a scenario.
+- Any other scenario-specific steps that must be used during the execution of a scenario.
