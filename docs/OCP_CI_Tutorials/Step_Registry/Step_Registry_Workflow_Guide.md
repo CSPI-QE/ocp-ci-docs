@@ -63,7 +63,7 @@ A workflow is only comprised of 4 files:
 ### Populating the Files
 
 #### `new-step-workflow.yaml`
-This file is meant to serve as the configuration file for the new workflow being create this file outlines:
+This file is meant to serve as the configuration file for the new workflow being created. This file outlines:
 - The name of the workflow
 - The steps you'd like the workflow to run prior to and after a test executes
   
