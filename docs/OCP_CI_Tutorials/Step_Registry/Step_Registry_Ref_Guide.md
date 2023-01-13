@@ -16,7 +16,7 @@
 ## What is a Ref?
 A ref is the most basic step in the step registry, it can be thought of as the building-blocks of other steps. A ref is essentially a BASH script that be used on its own or as part of a chain or workflow. A ref is comprised of five files:
 
-- **Configuration file:** A YAML file used to define the refs required resources, environment variables, secrets, container, etc.
+- **Configuration file:** A YAML file used to define the ref's required resources, environment variables, secrets, container, etc.
 - **OWNERS file:** A file used by OpenShift GitHub robots as a list of users who are allowed to approve or deny changes to a step.
 - **BASH script:** The BASH script that is executed in the ref
 - **README.md (CSPI requirement):** A documentation file written in Markdown. While not required by OpenShift CI, this is a CSPI requirement.
