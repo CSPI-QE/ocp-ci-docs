@@ -57,7 +57,7 @@ Use the steps below to create your orchestration chain:
 5. Add the new chain to your scenario's chain.
    - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md).
 6. Add any required environment variables to the scenario's OpenShift CI configuration file.
-   - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder .
+   - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder.
 7. Run `make update` in the root of the `openshift/release` repository to update OpenShift CI's metadata files.
 
 ### Using a Ref
