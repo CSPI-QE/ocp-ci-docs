@@ -19,7 +19,7 @@ Please follow the guide below to create the orchestration step of your scenario.
 There are a couple of ways to go about creating the orchestration step of a scenario, depending on the amount of work that needs to be done during this step. If there isn't much work to be done and it can all be done in a single container using a single BASH script, a ref can be used for this step. If there is a lot of work to be done and you need to utilize steps that aren't specific to this scenario, you'll need to use a chain (most common).
 
 ### Using a Chain
-This step of your scenario will likely use a chain considering this step usually requires the most work. A chain is really just a list of refs and/or chains that execute in order (see the [Step Registry Guide](../Step_Registry/Step_Registry_Guide.md) for more information). 
+This step of your scenario will likely use a chain considering this step usually requires the most work. A chain is really just a list of refs and/or chains that execute in order (see the [Step Registry - Chain Guide](../Step_Registry/Step_Registry_Chain_Guide.md) for more information). 
 
 Below is a basic representation of what an orchestration chain could look like. This example is an orchestration chain that executes a ref, another chain, then another ref. This structure allows us to string reusable steps and scenario specific steps together to complete the orchestration step.
 
