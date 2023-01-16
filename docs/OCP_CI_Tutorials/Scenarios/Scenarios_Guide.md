@@ -17,7 +17,7 @@
 ## Overview
 The following Headers are phases that MUST be done for each scenario. They are needed to provide a structure to the many OpenShift layered product scenarios that will be running on OpenShift CI.
 
-Below is a basic flow chart of how a OpenShift CI scenario may look. Each scenario should have a chain where most of the work is completed. This chain should be named something like `interop-{layered-product name}-chain`. The scenario chain should execute the orchestrate, execute, and report steps in order. The orchestrate, execute, and report steps of a scenario's chain can either be another chain or a single ref depending on your scenario's specific needs.
+Below is a basic flow chart of how a OpenShift CI scenario may look. Each scenario should have a chain where most of the work is completed. This chain should be named something like `interop-{product_name}-chain`. The scenario chain should execute the orchestrate, execute, and report steps in order. The orchestrate, execute, and report steps of a scenario's chain can either be another chain or a single ref depending on your scenario's specific needs.
 
 ```mermaid
 ---

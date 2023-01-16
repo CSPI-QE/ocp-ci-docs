@@ -36,7 +36,7 @@ Please follow the steps below to create a ref in the step registry:
 
 > **IMPORTANT:**
 >
-> When creating the `.yaml` and `.sh` files in step 2 above, please keep in mind that they must follow a naming standard or OpenShift CI will not accept them. You'll notice the folder I created is named "new-step", both the `.yaml` and `.sh` files need to start with that name and end with `-ref.yaml` and `-commands.sh`, respectively.
+> When creating the `.yaml` and `.sh` files in step 2 above, please keep in mind that they must follow a [naming standard](https://docs.ci.openshift.org/docs/architecture/step-registry/#registry-layout-and-naming-convention) or OpenShift CI will not accept them. You'll notice the folder I created is named "new-step", both the `.yaml` and `.sh` files need to start with that name and end with `-ref.yaml` and `-commands.sh`, respectively.
 >
 > If you create the new folder for your ref in an existing folder under `ci-operator/step-registry/`, you must include the name of the parent folder in the name as well. For example, if you created the `new-step` folder under `ci-operator/step-registry/existing-folder`, the names of your files would be `existing-folder-new-step-ref.yaml` and `existing-folder-new-step-commands.sh`.
 

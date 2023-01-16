@@ -12,7 +12,7 @@
   - [Finalization](#finalization)
 
 ## What is a Workflow?
-A workflow can be thought of as a set of two [chains](Step_Registry_Chain_Guide.md). One "chain" is defined as a `pre` step and the other is defined as a `post` step. These steps are run before and after a test is run.
+A workflow can be thought of as a set of [chains](Step_Registry_Chain_Guide.md) and [refs](Step_Registry_Ref_Guide.md). Any of these steps can be defined as either a `pre` step, `test` step, or `post` step.
 
 Workflows can be useful in many situations, but CSPI currently uses them mainly as cluster provisioning and deprovisioning steps. It is possible that our use of workflows will expand as we continue to grow in OpenShift CI.
 
@@ -56,7 +56,7 @@ A workflow is only comprised of 4 files:
 
 > **IMPORTANT:**
 >
-> When creating the `.yaml` file in step 2 above, please keep in mind that it must follow a naming standard or OpenShift CI will not accept it. You'll notice the folder I created is named "new-step", the `.yaml` file needs to start with that name and end with `-workflow.yaml`.
+> When creating the `.yaml` file in step 2 above, please keep in mind that it must follow a [naming standard](https://docs.ci.openshift.org/docs/architecture/step-registry/#registry-layout-and-naming-convention) or OpenShift CI will not accept it. You'll notice the folder I created is named "new-step", the `.yaml` file needs to start with that name and end with `-workflow.yaml`.
 >
 > If you create the new folder for your workflow in an existing folder under `ci-operator/step-registry/`, you must include the name of the parent folder in the name as well. For example, if you created the `new-step` folder under `ci-operator/step-registry/existing-folder`, the name of your file would be `existing-folder-new-step-workflow.yaml`.
 

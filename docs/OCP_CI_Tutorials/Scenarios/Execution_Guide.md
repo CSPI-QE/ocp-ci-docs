@@ -11,12 +11,12 @@ This document aims to define and guide you through creating the "Execution" step
 
 We define the Execution step of a scenario as:
 
-> The execution of any interop tests in a scenario. This step should only consist of any setup that absolutely must occur in this step (rather than the [orchestration step](Orchestration_Guide.md)) and the execution of interop tests. The execution of these tests should result in one or more xUnit (xml) files.
+> The execution of any tests in a scenario. This step should only consist of any setup that absolutely must occur in this step (rather than the [orchestration step](Orchestration_Guide.md)) and the execution of tests. The execution of these tests should result in one or more xUnit (xml) files.
 
 Please follow the guide below to create the execution step of your scenario.
 
 ## Scenario Execution
-In most situations, the execution step of a scenario would occur in a single ref. However, we recognize that this process is evolving as we onboard more scenarios. If your test execution will require more than a single ref, feel free to utilize a chain to complete this step of your scenario.
+In most situations, the execution step of a scenario would occur in a single ref. However, we recognize that this process is evolving as we onboard more scenarios. If your test execution will require more than a single ref, feel free to utilize a [chain](#using-a-chain) to complete this step of your scenario.
 
 ### Using a Ref
 If a single ref is the best option for your scenario, use the following steps to create an execution ref:
@@ -26,8 +26,8 @@ If a single ref is the best option for your scenario, use the following steps to
 2. In your new scenario folder, add a folder titled "execute".
    - **Example:** `ci-operator/step-registry/interop/mtr/execute`
 3. Create the following files in your new "execute" folder:
-   - `interop-{scenario name}-execute-ref.yaml`: This file is the OpenShift CI configuration file for this ref.
-   - `interop-{scenario name}-execute-commands.sh`: This is the BASH script your new ref will execute.
+   - `interop-{scenario_name}-execute-ref.yaml`: This file is the OpenShift CI configuration file for this ref.
+   - `interop-{scenario_name}-execute-commands.sh`: This is the BASH script your new ref will execute.
    - `OWNERS`: This is a required file to outline who can approve changes to this ref. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
    - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
 4. Populate the files you have created to create your execute ref:
@@ -35,7 +35,8 @@ If a single ref is the best option for your scenario, use the following steps to
 5. Add the new ref to your scenario's chain.
    - **Note:** More information about this chain can be found in the [Scenarios Guide](Scenarios_Guide.md).
 6. Add any required environment variables to the scenario's OpenShift CI configuration file:
-   - **Note:** This is the file located in the `ci-operator/config/{test organization}/{test repository}` folder.
+   - **Example:** [Using this variable once the configuration file has the variable(s) defined.](../Step_Registry/Step_Registry_Ref_Guide.md#new-step-commandssh)
+   - **Note:** This is the file located in the `ci-operator/config/{test_organization}/{test_repository}` folder.
 7. Run `make update` in the root of the `openshift/release` repository to update OpenShift CI's metadata files.
 
 ### Using a Chain

@@ -17,7 +17,7 @@ This document is meant to serve as a general guide to the step registry in OpenS
 
 > **NOTE:**
 > 
-> This is guide is not meant to replace the official OpenShift CI documentation, but rather act as supplemental documentation for how the CSPI team plans to use these steps. Please see the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/architecture/ci-operator-internals/steps/) for additional information.
+> This is guide is not meant to replace the official OpenShift CI documentation, but rather act as supplemental documentation for how the CSPI team plans to use these steps. Please see the official OpenShift CI [ steps documentation](https://docs.ci.openshift.org/docs/architecture/ci-operator-internals/steps/) or [step-registry documentation](https://docs.ci.openshift.org/docs/architecture/step-registry/) for additional information.
 
 ## Step Types
 The step registry is a folder in the [openshift/release](https://github.com/openshift/release) repository that stores steps that can be used during test execution. For the purposes of this document, we will only cover refs, chains, and workflows as those are the steps primarily used by the CSPI team at the time of writing this document.
@@ -33,7 +33,7 @@ A chain allows you to string refs and other chains together to be executed in or
 Please see the [Chain Guide](Step_Registry_Chain_Guide.md) for more information.
 
 ### Workflows
-A workflow can be thought of as a set of two [chains](Step_Registry_Chain_Guide.md). One "chain" is defined as a `pre` step and the other is defined as a `post` step. These steps are run before and after a test is run.
+A workflow can be thought of as a set of [chains](Step_Registry_Chain_Guide.md) and [refs](Step_Registry_Ref_Guide.md). Any of these steps can be defined as either a `pre` step, `test` step, or `post` step.
 
 Workflows can be useful in many situations, but CSPI currently uses them mainly as cluster provisioning and deprovisioning steps. It is possible that our use of workflows will expand as we continue to grow in OpenShift CI.
 
@@ -46,7 +46,7 @@ The `ci-operator/step-registry/interop` folder is meant to house all of our scen
 The `ci-operator/step-registry/interop/tooling` folder is meant to hold any re-usable tooling the CSPI team created in the OpenShift CI step registry. These tools are encouraged to be used both in CSPI interop testing and in tests that other teams may be working on. We will own and maintain these tools.
 
 ### Scenarios
-The `ci-operator/step-registry/interop/{scenario-name}` folders are meant to hold the chains and refs needed to execute specific scenarios. This folder should hold any scenario-specific steps like:
+The `ci-operator/step-registry/interop/{scenario_name}` folders are meant to hold the chains and refs needed to execute specific scenarios. This folder should hold any scenario-specific steps like:
 
 - The Orchestrate chain or ref for a scenario.
 - The Execute chain or ref for a scenario.
