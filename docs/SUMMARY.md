@@ -1,6 +1,6 @@
 # Summary
 
-* [Welcome](Welcome.md)
+* [Welcome](README.md)
 
 ## Onboarding
 * [Onboarding Guide](Onboarding/Onboarding_Guide.md)
