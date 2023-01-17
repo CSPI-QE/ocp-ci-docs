@@ -14,5 +14,6 @@ jobs:
       - uses: tgymnich/fork-sync@v1.2.1
         with:
           owner: calebevans
+          github_token: ${{ secrets.PERSONAL_TOKEN }}
           base: main
           head: main
