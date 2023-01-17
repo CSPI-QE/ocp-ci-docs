@@ -31,7 +31,7 @@ Scenario maintenance tasks include:
 ## Scenario Expansions
 > This is the responsibility of the PQE team.
 
-A scenario expansion can be defined as preparing your test scenario to execute tests against a newer layered product release then was previously configured. For example, if the scenario executes tests for `ACM2.6 on OCP4.12` then an expansion would mean to extend the config for this scenario to now include testing for `ACM2.7 on OCP4.12`
+A scenario expansion can be defined as preparing your test scenario to execute tests against a newer layered product release than what was previously configured. For example, if the scenario executes tests for `ACM2.6 on OCP4.12` then an expansion would mean to extend the config for this scenario to now include testing for `ACM2.7 on OCP4.12`
 
 ### Updating the Scenario Config
 Here we have the `tests"` section of a scenario config for the ACM scenario.
@@ -101,7 +101,7 @@ This will lead to two OCP clusters being provisioned in parallel (one will be th
 ## Scenario Deprecations
 > This is the responsibility of the PQE team.
 
-When a layered product version is no longer supported on the OpenShift build that it is being tested on we must remove the older version of the layered product from the scenario config file. Using the example above a scenario deprecation will just involve removing the test stanza for the older version that needs to be deprecated.
+When a layered product version is no longer supported on the OpenShift release that it is being tested on we must remove the older version of the layered product from the scenario config file. Using the example above a scenario deprecation will just involve removing the test stanza for the older version that needs to be deprecated.
 
  For example if we had
  ```
@@ -152,12 +152,12 @@ And we wanted to deprecate testing `ACM2.5` then we will just remove the followi
     - chain: interop-acm
     workflow: ipi-aws
 ```
-While scenario expansions must have a passing rehearsal job for the PR to be merged a deprecation does not.
+While scenario expansions must have a passing rehearsal job for the PR to be merged, a deprecation does not.
 
 ## OpenShift Deployment
 >This responsibility is abstracted away from both the CSPI-QE team and PQE teams to the workflow OWNERS. 
 
-This responsibility falls to whoever the own of the workflow that is being used to deploy the OpenShift environment needed by the OpenShift Layered Product Scenario. Each workflow will most likely have a different owner. If you need support for a problem in a workflow you'll need to find the workflow that you are using in the [release repo's step-registry](https://github.com/openshift/release/tree/master/ci-operator/step-registry) and contact the users in the OWNERS file.
+This responsibility falls to whoever the owner of the workflow that is being used to deploy the OpenShift environment needed by the OpenShift Layered Product Scenario. Each workflow will most likely have a different owner. If you need support for a problem in a workflow you'll need to find the workflow that you are using in the [release repo's step-registry](https://github.com/openshift/release/tree/master/ci-operator/step-registry) and contact the users in the OWNERS file.
 
 ## Layered Product Deployment
 >This is the responsibility of the PQE team.
@@ -167,7 +167,7 @@ The model being followed by this [layered product onboarding](../../Onboarding/O
 ## Test Execution
 >This is the responsibility of the PQE team.
 
-Similar to the layered product deployment the code being used to setup and execute the testing will be coming from the product QE's test repositories. If there are tests failing for any reason the product QE team will need to fix the problem in their test repo.
+Similar to the layered product deployment the code being used to setup and execute the tests will be coming from the product QE's test repositories. If there are tests failing for any reason the product QE team will need to fix the problem in their test repo.
 
 ## Triggering Cadence
 >This is the responsibility of the CSPI-QE team.

@@ -20,7 +20,7 @@ This doc is meant to be used by Product QE teams to prepare themselves and their
 
 You will be working through and updating the following information in the prerequisite Jira ticket that you will be assigned when starting this prerequisite process.
 
->Please reach on the Slack channel [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) to notify us that you want to start the prerequisite process so that we can get you started with a prerequisite ticket.
+>Please reach out to us on the Slack channel [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) to let us know that you want to start the prerequisite process so that we can get you started with a prerequisite ticket.
 
 ## Prerequisites at a Glance
 1. Resources
@@ -81,7 +81,7 @@ See the [Container Creation Guide](../OCP_CI_Tutorials/Containers/Container_Crea
 - Confirmation that the containerized deployment and testing can be run outside of the company firewall and doesn't rely on internal dependencies.
 
 ## Valid Test Output
-- Produce J-unit XMLs in a valid format for each test that is executed.
+- Produce JUnit XMLs in a valid format for each test that is executed.
   - This will be needed for reporting. 
 
 See [Report Guide](../OCP_CI_Tutorials/Scenarios/Reporting_Guide.md) for more information.
