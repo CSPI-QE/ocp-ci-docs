@@ -108,3 +108,5 @@ There cannot be any discrepancies between these different places. If there is we
 
 ### Ensure all parties are OWNERS
 There is the [concept of OWNERS files within OpenShift CI's CI operator](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) in the release repo. They are meant to hold the names of the people responsible for the code being added. This will allow them to be reviewers on future code changes. All members of responsible parties should be added to the OWNERS file.
+
+See the [official Kubernetes documentation](https://github.com/kubernetes/community/blob/master/contributors/guide/owners.md) for more details.
