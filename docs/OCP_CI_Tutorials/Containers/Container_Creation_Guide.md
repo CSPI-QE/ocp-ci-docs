@@ -173,7 +173,7 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-pytest /tmp/tests/test_mock_tests.py -vv --junitxml=${SHARED_DIR}/xunit_output.xml
+pytest /tmp/tests/test_mock_tests.py -vv --junitxml=${SHARED_DIR}/junit_output.xml
 ```
 
-The shell script above utilizes `pytest` to execute the tests that were copied into the container in the [Creating Containerized Tests](#creating-containerized-tests) section of this guide. The xUnit results will be placed in the `SHARED_DIR` where they can be reported in later steps or other containers.
+The shell script above utilizes `pytest` to execute the tests that were copied into the container in the [Creating Containerized Tests](#creating-containerized-tests) section of this guide. The JUnit results will be placed in the `SHARED_DIR` where they can be reported in later steps or other containers.

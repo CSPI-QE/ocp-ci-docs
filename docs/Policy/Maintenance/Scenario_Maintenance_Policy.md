@@ -60,7 +60,7 @@ If our goal is to expand the scenario so that we also test `ACM2.7` then we just
 
 ```
 tests:
-- as: acm-interop-aws
+- as: acm2.6-interop-aws
   cron: 0 1 * * 1
   steps:
     cluster_profile: aws-cspi-qe
@@ -74,7 +74,7 @@ tests:
     test:
     - chain: interop-acm
     workflow: ipi-aws
-- as: acm-interop-aws
+- as: acm2.7-interop-aws
   cron: 0 1 * * 1
   steps:
     cluster_profile: aws-cspi-qe
@@ -106,7 +106,7 @@ When a layered product version is no longer supported on the OpenShift release t
  For example if we had
  ```
 tests:
-- as: acm-interop-aws
+- as: acm2.5-interop-aws
   cron: 0 1 * * 1
   steps:
     cluster_profile: aws-cspi-qe
@@ -120,7 +120,7 @@ tests:
     test:
     - chain: interop-acm
     workflow: ipi-aws
-- as: acm-interop-aws
+- as: acm2.6-interop-aws
   cron: 0 1 * * 1
   steps:
     cluster_profile: aws-cspi-qe
@@ -137,7 +137,7 @@ tests:
 ```
 And we wanted to deprecate testing `ACM2.5` then we will just remove the following test stanza
 ```
-- as: acm-interop-aws
+- as: acm2.5-interop-aws
   cron: 0 1 * * 1
   steps:
     cluster_profile: aws-cspi-qe
@@ -157,12 +157,12 @@ While scenario expansions must have a passing rehearsal job for the PR to be mer
 ## OpenShift Deployment
 >This responsibility is abstracted away from both the CSPI-QE team and PQE teams to the workflow OWNERS. 
 
-This responsibility falls to whoever the owner of the workflow that is being used to deploy the OpenShift environment needed by the OpenShift Layered Product Scenario. Each workflow will most likely have a different owner. If you need support for a problem in a workflow you'll need to find the workflow that you are using in the [release repo's step-registry](https://github.com/openshift/release/tree/master/ci-operator/step-registry) and contact the users in the OWNERS file.
+This responsibility falls on the owner of the workflow that is being used to deploy the OpenShift environment needed by the OpenShift Layered Product Scenario. Each workflow will most likely have a different owner. If you need support for a problem in a workflow you'll need to find the workflow that you are using in the [release repo's step-registry](https://github.com/openshift/release/tree/master/ci-operator/step-registry) and contact the users in the OWNERS file.
 
 ## Layered Product Deployment
 >This is the responsibility of the PQE team.
 
-The model being followed by this [layered product onboarding](../../Onboarding/Onboarding_Guide.md) is built on the idea that automation that is already created and being maintained should not be recreated by a different team attempting to achieve the same result. Therefore the onboarding of the scenario will ensure that the layered product deployment relies on automation built by that products QE team. If there are failures in the OCP CI scenario for the layered product deployment then it will need to be fixed at the source, which will be the layered product QE team's repositories.
+The model being followed by this [layered product onboarding](../../Onboarding/Onboarding_Guide.md) is built on the idea that automation that is already created and being maintained should not be recreated by a different team attempting to achieve the same result. Therefore the onboarding of the scenario will ensure that the layered product deployment relies on automation built by that product's QE team. If there are failures in the OCP CI scenario for the layered product deployment then it will need to be fixed at the source, which will be the layered product QE team's repositories.
 
 ## Test Execution
 >This is the responsibility of the PQE team.

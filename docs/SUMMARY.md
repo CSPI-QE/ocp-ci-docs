@@ -16,7 +16,7 @@
     * [Celebrate & Share](Onboarding/Celebrate_%26_Share_Guide.md)
 
 ## Tutorials
-* [Scenarios](OCP_CI_Tutorials/Scenarios/Interop_Scenarios_Guide.md)
+* [Scenarios](OCP_CI_Tutorials/Scenarios/Scenarios_Guide.md)
   * [Provision](OCP_CI_Tutorials/Scenarios/Provision.md)
   * [Orchestrate](OCP_CI_Tutorials/Scenarios/Orchestration_Guide.md)
   * [Execute](OCP_CI_Tutorials/Scenarios/Execution_Guide.md)

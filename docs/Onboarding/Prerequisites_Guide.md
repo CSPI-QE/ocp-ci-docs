@@ -5,7 +5,7 @@
 - [Prerequisites at a Glance](#prerequisites-at-a-glance)
 - [Resources](#resources)
 - [Upstream Considerations](#upstream-considerations)
-  - [1. Public GitHub repositories](#1-public-github-repositories)
+  - [1. Public GitHub repositories (preferred)](#1-public-github-repositories-preferred)
   - [2. Private GitHub repositories](#2-private-github-repositories)
 - [GitHub Org Requirements](#github-org-requirements)
 - [GitHub User Readiness](#github-user-readiness)
@@ -14,6 +14,7 @@
 - [Resolve Internal Dependencies](#resolve-internal-dependencies)
 - [Valid Test Output](#valid-test-output)
 - [Documented Tests](#documented-tests)
+- [Completion](#completion)
 
 ## Overview
 This doc is meant to be used by Product QE teams to prepare themselves and their testing repositories to run within OpenShift CI.
@@ -43,7 +44,7 @@ Running in OpenShift CI is by default upstream and open to the public. All gener
 - No exposed secrets in any artifact generated from product deployment or product testing.
 
 There are two paths for onboarding your layered product scenario into OpenShift CI that you can take
-### 1. Public GitHub repositories
+### 1. Public GitHub repositories (preferred)
 - A Github organization that can be used for testing within OpenShift CI.
 - Layered product deployment automation in public GitHub repositories within that org.
 - Layered product testing automation in public GitHub repositories repo within that org.
@@ -87,4 +88,9 @@ See the [Container Creation Guide](../OCP_CI_Tutorials/Containers/Container_Crea
 See [Report Guide](../OCP_CI_Tutorials/Scenarios/Reporting_Guide.md) for more information.
 
 ## Documented Tests
-- Helpful documentation for tests that are being run that can be linked to in the scenarios README.md
+- Helpful documentation for tests that are being run that can be linked to in the [scenarios README.md](../Policy/Documentation/Scenario_Documentation_Policy.md)
+
+## Completion
+We define completion of your teams prerequisites as:
+
+> **All components of the prerequisite Jira ticket being complete and most importantly reviewed, verified, and approved by all parties.** Once the prerequisites are met we expect that the scenario can be implemented without any blockers. This allows us to plan the implementation appropriately as we attempt to do this for 30+ layered products.

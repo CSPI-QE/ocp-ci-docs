@@ -55,7 +55,7 @@ See the [Orchestration Guide](Orchestration_Guide.md)) for detailed information 
 ## Execute
 We define execute as:
 
-> The execution of any interop tests in a scenario. This step should only consist of any setup that absolutely must occur in this step (rather than the [orchestration step](Orchestration_Guide.md)) and the execution of interop tests. The execution of these tests should result in one or more xUnit (xml) files.
+> The execution of any interop tests in a scenario. This step should only consist of any setup that absolutely must occur in this step (rather than the [orchestration step](Orchestration_Guide.md)) and the execution of interop tests. The execution of these tests should result in one or more JUnit (xml) files.
 
 See the [Execution Guide](Execution_Guide.md) for detailed information meant to help you organize your test execution.
 
