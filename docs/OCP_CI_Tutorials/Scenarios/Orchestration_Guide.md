@@ -50,7 +50,7 @@ Use the steps below to create your orchestration chain:
    - **Example:** `ci-operator/step-registry/interop/mtr/orchestrate`
 3. Create the following files in your new "orchestrate" folder.
    - `interop-{scenario_name}-orchestrate-chain.yaml`: This file is the OpenShift CI configuration file for this chain. You will be outlining which steps to run and in what order here.
-   - `OWNERS`: This is a required file to outline who can approve changes to this chain. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
+   - `OWNERS`: This is a required file to outline who can approve changes to this ref. See the [official Kubernetes documentation](https://github.com/kubernetes/community/blob/master/contributors/guide/owners.md) for more details.
    - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
 4. Populate the files you have created to create your orchestrate chain.
    - See the instructions in the [Step Registry - Chain Guide](../Step_Registry/Step_Registry_Chain_Guide.md) for additional help.
@@ -70,7 +70,7 @@ If you have decided that using a ref is the best option for your scenario, follo
 3. Create the following files in your new "orchestrate" folder:
    - `interop-{scenario_name}-orchestrate-ref.yaml`: This file is the OpenShift CI configuration file for this ref.
    - `interop-{scenario_name}-orchestrate-commands.sh`: This is the BASH script your new ref will execute.
-   - `OWNERS`: This is a required file to outline who can approve changes to this ref. See the [official OpenShift CI documentation](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#repositories-under-existing-organizations) for more details.
+   - `OWNERS`: This is a required file to outline who can approve changes to this ref. See the [official Kubernetes documentation](https://github.com/kubernetes/community/blob/master/contributors/guide/owners.md) for more details.
    - `README.md`: Used to document your new ref. See the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) for more information.
 4. Populate the files you have created to create your orchestrate ref.
    - See the instructions in the [Step Registry - Ref Guide](../Step_Registry/Step_Registry_Ref_Guide.md) for additional help.

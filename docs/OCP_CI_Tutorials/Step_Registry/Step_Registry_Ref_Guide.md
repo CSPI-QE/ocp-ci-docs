@@ -154,7 +154,7 @@ pytest /tmp/tests/test_some_test_cases.py -vv --junitxml=${SHARED_DIR}/junit_out
 ```
 
 #### `OWNERS`
-Follow the instructions in the ["OWNERS File" section of the Step Registry Guide](Step_Registry_Guide.md#owners-file).
+See the [official Kubernetes documentation](https://github.com/kubernetes/community/blob/master/contributors/guide/owners.md).
 
 #### `README.md`
 Follow the instructions in the [Step Registry Documentation Policy](../../Policy/Documentation/Step_Registry_Documentation_Policy.md) document.
