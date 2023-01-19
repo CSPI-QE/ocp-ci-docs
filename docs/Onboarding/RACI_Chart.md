@@ -18,4 +18,4 @@
 | Report              | R       | A          | C                  |
 | Document            | R       | A          |                    |
 | Production          | R       | A          | I                  |
-| Maintenance         | C       | R          | I                  |
+| Maintenance         | R       | R          | I                  |

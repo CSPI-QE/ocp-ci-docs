@@ -150,7 +150,7 @@ set -o pipefail
 
 # If the container you define in the from key/value pair of the configuration document has
 # Pytest installed, you could execute test cases in this script and output the results to the SHARED_DIR
-pytest /tmp/tests/test_some_test_cases.py -vv --junitxml=${SHARED_DIR}/xunit_output.xml
+pytest /tmp/tests/test_some_test_cases.py -vv --junitxml=${SHARED_DIR}/junit_output.xml
 ```
 
 #### `OWNERS`
