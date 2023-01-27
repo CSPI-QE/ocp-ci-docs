@@ -1,12 +1,14 @@
 # OpenShift CI Scenario Test Orchestration Guide<!-- omit from toc -->
 
 ## Table of Contents<!-- omit from toc -->
+
 - [Introduction](#introduction)
 - [Scenario Orchestration](#scenario-orchestration)
   - [Using a Chain](#using-a-chain)
   - [Using a Ref](#using-a-ref)
 
 ## Introduction
+
 This document aims to define and guide you through creating the "Orchestration" step of a scenario.
 
 We define the Orchestration step of a scenario as:
@@ -16,9 +18,11 @@ We define the Orchestration step of a scenario as:
 Please follow the guide below to create the orchestration step of your scenario.
 
 ## Scenario Orchestration
+
 There are a couple of ways to go about creating the orchestration step of a scenario, depending on the amount of work that needs to be done during this step. If there isn't much work to be done and it can all be done in a single container using a single BASH script, a ref can be used for this step. If there is a lot of work to be done and you need to utilize steps that aren't specific to this scenario, you'll need to use a chain (most common).
 
 ### Using a Chain
+
 This step of your scenario will likely use a chain considering this step usually requires the most work. A chain is really just a list of refs and/or chains that execute in order (see the [Step Registry - Chain Guide](../Step_Registry/Step_Registry_Chain_Guide.md) for more information). 
 
 Below is a basic representation of what an orchestration chain could look like. This example is an orchestration chain that executes a ref, another chain, then another ref. This structure allows us to string reusable steps and scenario specific steps together to complete the orchestration step.
@@ -61,6 +65,7 @@ Use the steps below to create your orchestration chain:
 7. Run `make update` in the root of the `openshift/release` repository to update OpenShift CI's metadata files.
 
 ### Using a Ref
+
 If you have decided that using a ref is the best option for your scenario, follow these steps to create the orchestration ref:
 
 1. In the [openshift/release](https://github.com/openshift/release) repository, create a folder for your scenario under `ci-operator/step-registry/interop` if one does not exist already.
