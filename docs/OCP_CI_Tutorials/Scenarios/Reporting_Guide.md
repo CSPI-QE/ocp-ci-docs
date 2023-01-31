@@ -73,6 +73,11 @@ Once you have your fork created, follow these instructions to create a new dashb
    2.  Create a new branch and name it whatever you'd like.
 2. In your new branch, create a new file in the `config/testgrids/openshift` directory. The name of the file should be the same name as your new dashboard
    - **Example:** `config/testgrids/openshift/redhat-openshift-4.12-interop.yaml`
+
+> **IMPORTANT**:
+>
+> Do not use `-release-` at all in your file name or your dashboard name. This will break the OpenShift CI automation that generates their TestGrid dashboards. See this pull request for more information: [kubernetes/test-infra PR #28593](https://github.com/kubernetes/test-infra/pull/28593 )
+
 3. Write your configuration file.
    - **Note:** Use the example in the [TestGrid Configuration Example and Description](#testgrid-configuration-example-and-description) section of this document.
 4. After you have pushed your changes to your fork, follow the [pull request process](#pull-request-process) to submit a PR and have your dashboard created.
