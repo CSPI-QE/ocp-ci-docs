@@ -91,7 +91,7 @@ This section of your documentation should describe how this scenario works. The 
 
 Under the "Process" header of your documentation be sure to include how and where the test cluster for this scenario is being provisioned and deprovisioned. 
 
-This could be as simple as linking to a workflow being utilized to do this work as the workflow (and it's documentation) may not be maintained by CSPI or PQE:
+This could be as simple as linking to a workflow being utilized to do this work as the workflow (and its documentation) may not be maintained by CSPI or PQE:
 
 `ci-operator/config/windup/windup_integration_test/README.md`
 

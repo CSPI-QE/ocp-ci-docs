@@ -14,31 +14,30 @@ Scenario onboarding documentation for OpenShift CI created by the CSPI team
 ### Pull Requests
 
 - All pull requests must be reviewed by another member of the team before being merged.
-- Don't merge your own pull request. Ask someone that did a final review of your changes to merge your pull request when you are ready.
+- Do not merge your own pull request. Ask a reviewer who performed a final review of your changes to merge your pull request when you are ready.
 - All pull requests must pass [linting](#linting) before being merged. This check will occur when a pull request is created in GitHub actions.
 
 ### Linting
 
-- This repository uses [`markdownlin-cli2`](https://github.com/DavidAnson/markdownlint-cli2) as it's linter.
+- This repository uses [`markdownlint-cli2`](https://github.com/DavidAnson/markdownlint-cli2) as its linter.
 - The [rules](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md) used for linting can be found in the [`.markdownlint.json`](.markdownlint.json) file.
-- Passing the linting is required for merge requests. The GitHub action that enforces that rule can be found at [`.github/workflows/pull_request.yml`](.github/workflows/pull_request.yml).
-- To test linting in your local environment prior to creating a pull requests (**recommended**), use the [pre-commit](https://pre-commit.com/) [hook](.pre-commit-config.yaml):
-  1. [Install pre-commit](https://pre-commit.com/#install), if you haven't already
-  2. Execute `pre-commit run --all-files` in the root of your local copy of this repository
+- All pull requests are required to pass linting. The GitHub action that enforces that rule can be found at [`.github/workflows/pull_request.yml`](.github/workflows/pull_request.yml).
+- To test linting in your local environment prior to creating a pull request (**recommended**), use the [pre-commit](https://pre-commit.com/) [hook](.pre-commit-config.yaml):
+  1. [Install pre-commit](https://pre-commit.com/#install), if you haven't already.
+  2. Execute `pre-commit run --all-files` in the root of your local copy of this repository.
   3. Fix any errors reported by that command.
    
 
-### MarkDown Resources
+### Markdown Resources
 
 #### Documentation
 
 - [Official Markdown Documentation](https://www.markdownguide.org/getting-started/)
 - [Mermaid Documentation](https://mermaid.js.org/intro/)
-  - Used to dynamically generate flow (and other) charts within Markdown
-
+  - Used to dynamically generate flowcharts and other diagrams within Markdown
 #### Editors
 
-- [Visual Studio Code](https://code.visualstudio.com/docs/languages/markdown) **Recommended**
+- [Visual Studio Code](https://code.visualstudio.com/docs/languages/markdown) (**_Recommended_**)
 - [PyCharm](https://www.jetbrains.com/help/pycharm/markdown.html)
 - [Obsidian](https://obsidian.md/)
 - [Remarkable](https://remarkableapp.github.io/index.html)
@@ -46,7 +45,7 @@ Scenario onboarding documentation for OpenShift CI created by the CSPI team
 #### Plugins
 
 > **NOTE:** 
-> As our recommended editor, these plugins are specific to Visual Studio Code
+> These plugins are specific to Visual Studio Code, our recommended editor
 
 - [Markdown All In One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
 - [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)

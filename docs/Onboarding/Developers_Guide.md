@@ -40,7 +40,7 @@ If you create/update a ci-operator/config file it will:
 
 ## Rehearsal Job
 
-A rehearsal job is meant to execute a prow job to prove that your changes are valid prior to merging. Not all PRs will require rehearsals, the `openshift-ci-robot` will comment on your PR alerting you that a rhearsable test has been affected by your change.
+A rehearsal job is meant to execute a Prow job to prove that your changes are valid prior to merging. Not all PRs will require rehearsals, the `openshift-ci-robot` will comment on your PR alerting you that a rehearsable test has been affected by your change.
 
 > **IMPORTANT:**
 > Make sure that you review the affected jobs and only run the rehearsal if you know the jobs that will execute are the ones you are targeting. We don't want to actually run other teams jobs which will use their cloud infrastructure and accrue unnecessary costs.

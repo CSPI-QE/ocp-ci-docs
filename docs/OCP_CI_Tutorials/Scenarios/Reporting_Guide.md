@@ -14,11 +14,11 @@
 
 ## Introduction
 
-Because OpenShift CI does not have reporting built into it's logic, we must configure and maintain our reporting step. This process may change as we evolve our processes in OpenShift CI, but we have tried to make this step as easy as possible. Please see each section below to see how to report your scenarios to each of the platforms.
+Because OpenShift CI does not have reporting built into its logic, we must configure and maintain our reporting step. This process may change as we evolve our processes in OpenShift CI, but we have tried to make this step as easy as possible. Please see each section below to see how to report your scenarios to each of the platforms.
 
 ## TestGrid
 
-TestGrid is a Kubernetes community project that allow users to create dashboards of Prow job results. TestGrid uses it's configuration files to build these dashboards, retrieve the Prow job results of all jobs defined in the dashboards, and displays the results in a grid pattern
+TestGrid is a Kubernetes community project that allow users to create dashboards of Prow job results. TestGrid uses its configuration files to build these dashboards, retrieve the Prow job results of all jobs defined in the dashboards, and displays the results in a grid pattern
 
 Please see the following resources for more information about TestGrid:
 
@@ -69,9 +69,9 @@ Creating a new TestGrid dashboard is very simple. Before you get started you wil
 Once you have your fork created, follow these instructions to create a new dashboard:
 
 1. Prepare Git:
-   1.  Clone a copy of your fork to your computer
+   1.  Clone a copy of your fork to your computer.
    2.  Create a new branch and name it whatever you'd like.
-2. In your new branch, create a new file in the `config/testgrids/openshift` directory. The name of the file should be the same name as your new dashboard
+2. In your new branch, create a new file in the `config/testgrids/openshift` directory. The name of the file should be the same name as your new dashboard.
    - **Example:** `config/testgrids/openshift/redhat-openshift-4.12-interop.yaml`
 
 > **IMPORTANT**:
@@ -87,14 +87,14 @@ Once you have your fork created, follow these instructions to create a new dashb
 If there is already a suitable dashboard created in TestGrid to hold your new Prow job, follow this guide to get it appended to the existing dashboard. Before you get started you will need to [fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks) the [kubernetes/test-infra](https://github.com/kubernetes/test-infra) repository into your personal GitHub organization.
 
 1. Prepare Git:
-   1.  Clone a copy of your fork to your computer
+   1.  Clone a copy of your fork to your computer.
    2.  Create a new branch and name it whatever you'd like.
 2.  In your new branch, find the configuration file for the dashboard you'd like to use.
     - **Note**: The config files should be in the `config/testgrids/openshift` directory and the name of the file should be the same as the name on the TestGrid website.
     - **Example:** `config/testgrids/openshift/redhat-openshift-4.12-interop.yaml`
 3. Create an entry in the `test_groups` stanza of the config file.
     - **Note:** Use the example in the [TestGrid Configuration Example and Description](#testgrid-configuration-example-and-description) section of this document.
-    - **Note:** The `name` value in this item needs to be unique, not just in the document but in the other configs as well. You may want to search the repo for the string you decide on to make sure it isn't used.
+    - **Note:** The `name` value in this item needs to be unique, not just in the document, but in the other configs as well. You may want to search the repo for the string you decide on to make sure it isn't used.
 4. Create a new `dashboard_tab` entry in the `dashboards` stanza of the configuration file. 
 5. After you have pushed your changes to your fork, follow the [pull request process](#pull-request-process) to submit a PR and have your dashboard created.
 

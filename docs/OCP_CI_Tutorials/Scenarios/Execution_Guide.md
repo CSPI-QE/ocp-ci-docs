@@ -9,13 +9,13 @@
 
 ## Introduction
 
-This document aims to define and guide you through creating the "Execution" step of a scenario.
+The purpose of this document is to define and guide you through creating the "Execution" step of a scenario.
 
 We define the Execution step of a scenario as:
 
 > The execution of any tests in a scenario. This step should only consist of any setup that absolutely must occur in this step (rather than the [orchestration step](Orchestration_Guide.md)) and the execution of tests. The execution of these tests should result in one or more JUnit (xml) files.
 
-Please follow the guide below to create the execution step of your scenario.
+Please follow the guide below to create the Execution step of your scenario.
 
 ## Scenario Execution
 

@@ -7,7 +7,7 @@
   - [1. Create a directory within the config directory](#1-create-a-directory-within-the-config-directory)
   - [2. Create directories for the scenario in the step-registry](#2-create-directories-for-the-scenario-in-the-step-registry)
   - [3. Create the Scenario Chain](#3-create-the-scenario-chain)
-  - [4. Create Config in Directory from Step #1.](#4-create-config-in-directory-from-step-1)
+  - [4. Create Config in Directory from Step #1](#4-create-config-in-directory-from-step-1)
     - [OCP Image Version](#ocp-image-version)
     - [Test stanza creation](#test-stanza-creation)
   - [5. Submit PR](#5-submit-pr)
@@ -19,7 +19,7 @@ Here we will start our PR submission process to the [openshift/release](https://
 > We will use 1 PR for the entire scenario development process. The reasons for this are many, but primarily it is because just merging a config in the release repo is equivalent to pushing the scenario into production. We don't want incomplete scenarios running or cluttering the release repo.
 
 We will create the file structure that is common to all interop scenarios.
-The result will be a prow job that is capable of deploying an OCP cluster.
+The result will be a Prow job that is capable of deploying an OCP cluster.
 
 ## Create Foundational OpenShift CI Scenario Files
 
@@ -45,7 +45,6 @@ To make sure you start out correctly please see the [Scenario Developers Guide](
 
 `ci-operator/step-registry/interop/{product_name}/interop-{product_name}-chain.yaml`
 
-- **product_name**: The shortname of the product under test.
 
 ```yaml
 chain:
@@ -83,7 +82,6 @@ tests:
     workflow: aws-ipi
 ```
 
-- **product_name**: The shortname of the product under test.
 
 ### 5. Submit PR
 

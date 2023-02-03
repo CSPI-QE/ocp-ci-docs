@@ -19,7 +19,7 @@
 
 The following Headers are phases that MUST be done for each scenario. They are needed to provide a structure to the many OpenShift layered product scenarios that will be running on OpenShift CI.
 
-Below is a basic flow chart of how a OpenShift CI scenario may look. Each scenario should have a chain where most of the work is completed. This chain should be named something like `interop-{product_name}-chain`. The scenario chain should execute the orchestrate, execute, and report steps in order. The orchestrate, execute, and report steps of a scenario's chain can either be another chain or a single ref depending on your scenario's specific needs.
+Below is a basic flow chart of how an OpenShift CI scenario may look. Each scenario should have a chain where most of the work is completed. This chain should be named something like `interop-{product_name}-chain`. The scenario chain should execute the orchestrate, execute, and report steps in order. The orchestrate, execute, and report steps of a scenario's chain can either be another chain or a single ref depending on your scenario's specific needs.
 
 ```mermaid
 ---
@@ -45,7 +45,7 @@ flowchart LR
 ## Provision
 
 We define provision as:
-> The initial setup of your scenarios files and the OpenShift installation
+> The initial setup of your scenario's files and the OpenShift installation
 
 See the [Provision Guide](Provision_Guide.md) for detailed information meant to help you build the foundation of your scenario.
 
@@ -83,7 +83,7 @@ This is meant to be a sort of final check just to make sure that you and your re
 
 ### Remove Spot Instances
 
-We cannot merge any code into the release repo meant to be used in production that is using Spot Instances. These can be unreliable and will lead to clusters going offline during production runs. We should be using them to save costs in development but when it is time to merge the scenario code we must ensure we remove the use of spot instances.
+We cannot merge any code into the release repo meant to be used in production that is using spot instances. These can be unreliable and will lead to clusters going offline during production runs. We should be using them to save costs in development but when it is time to merge the scenario code we must ensure we remove the use of spot instances.
 
 ### Ensure Trigger is Configured
 
@@ -102,7 +102,7 @@ tests:
     workflow: cucushift-installer-rehearse-aws-ipi
 ```
 
-A good way to verify your using what you expect to use for the value of cron you can use [Cronitor](https://crontab.guru/#0_1_*_*_1)
+A good way to verify that you're using what you expect to use for the value of cron you can use [Cronitor](https://crontab.guru/#0_1_*_*_1)
 
 ### Ensure Test execution output matches reporting
 
@@ -112,7 +112,7 @@ It is important that we verify the different levels of artifacts and make sure t
 
 For example, we might need to check the following:
 
-- Console output (prow job)
+- Console output (Prow job)
 - Pod logs
 - XML artifacts
 - TestGrid
