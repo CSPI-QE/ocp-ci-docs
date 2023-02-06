@@ -30,6 +30,8 @@
   - [Step Registry - Chain Guide](OCP_CI_Tutorials/Step_Registry/Step_Registry_Chain_Guide.md)
   - [Step Registry - Workflow Guide](OCP_CI_Tutorials/Step_Registry/Step_Registry_Workflow_Guide.md)
 - [Triggering](OCP_CI_Tutorials/Triggering/Triggering_Guide.md)
+- [TestGrid](OCP_CI_Tutorials/TestGrid/TestGrid.md)
+  - [Manual Dashboard Creation and Modification Guide](OCP_CI_Tutorials/TestGrid/TestGrid_Dashboard_Creation_and_Modification_Guide.md)
 
 ## Policy
 

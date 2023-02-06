@@ -35,6 +35,7 @@ Scenario onboarding documentation for OpenShift CI created by the CSPI team
 - [Official Markdown Documentation](https://www.markdownguide.org/getting-started/)
 - [Mermaid Documentation](https://mermaid.js.org/intro/)
   - Used to dynamically generate flowcharts and other diagrams within Markdown
+
 #### Editors
 
 - [Visual Studio Code](https://code.visualstudio.com/docs/languages/markdown) (**_Recommended_**)
