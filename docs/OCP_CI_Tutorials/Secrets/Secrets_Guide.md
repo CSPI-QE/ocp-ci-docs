@@ -1,6 +1,7 @@
 # OpenShift CI Interop Scenario Secrets Guide<!-- omit from toc -->
 
 ## Table of Contents<!-- omit from toc -->
+
 - [Overview](#overview)
 - [Collections](#collections)
   - [Create Collection](#create-collection)
@@ -16,11 +17,13 @@
   - [Use Secret During OpenShift CI Execution](#use-secret-during-openshift-ci-execution)
 
 ## Overview
+
 OpenShift CI provides its own Hashicorp Vault instance that we can use. This makes the use of secrets standard for anyone who needs them. Most of everything that we do for secrets was discovered from the OpenShift CI documentation [Adding a New Secret to CI](https://docs.ci.openshift.org/docs/how-tos/adding-a-new-secret-to-ci/)
 
 ## Collections
 
 ### Create Collection
+
 Each scenario being tested will have its own collection. This allows us to prevent secret sharing between members of other collections meant to hold secrets for other scenarios.
 
 First go to [selfservice.vault.ci.openshift.org](https://selfservice.vault.ci.openshift.org/secretcollection?ui=true) and login.
@@ -30,15 +33,19 @@ If you do not see a collection in the table for the scenario that your testing i
 Please reach out on slack at [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) to ask if the collection for the scenario you are testing has already been created. If it has go to the [next section](#get-access-to-a-scenario-collection)
 
 If it hasn't you can create the collection by clicking the `New Collection` button and adding the name. Follow the naming structure of `{product short name}-qe`.
+
 ### Get Access to a Scenario Collection
-If you do not see a collection in the table and you have verified that it exists then you just need to be added by one of the collection owners. Please reach out on slack at [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) and provide details about what and why you would like to be added to a specific collection.
+
+If you do not see a collection in the table, and you have verified that it exists then you just need to be added by one of the collection owners. Please reach out on slack at [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) and provide details about what and why you would like to be added to a specific collection.
 
 ### Get Access to the cspi-qe Collection
+
 This collection holds team specific information holding things like AWS creds, pull secrets, ..etc. If you need access to this collection reach out on slack at [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) and provide details about why you would like to be added to the cspi-qe collection.
 
 ## Vault
 
 ### Sign in to Vault
+
 Now that you are a member of a collection you can login to vault and access that collection.
 
 Go to [vault.ci.openshift.org](https://vault.ci.openshift.org/ui/vault/auth?with=oidc%2F) and click `Sign in with OIDC Provider`.
@@ -50,18 +57,22 @@ We care about `kv/` this is where you'll find secret directories that correspond
 From here you can use the UI or Vault CLI to view, create, edit, and delete secrets.
 
 ### Secrets in OpenShift CI
+
 In order to use a secret in Vault in OpenShift CI, the secret must include two key/value pairs:
+
 - `secretsync/target-name`: The [name](#openshift-ci-secret-name) of the secret in OpenShift CI
 - `secretsync/target-namespace`: The [namespace](#openshift-ci-secret-namespace) of the secret in OpenShift CI
 
 Outside of those two values, any key/value pair desired can be added to the same path for that secret making them available for use in OpenShift CI.
 
 #### OpenShift CI Secret Name
+
 The name of a secret in OpenShift CI must be unique. When deciding on a name for a secret, make sure to be descriptive. Using a descriptive name will help with readability in OpenShift CI configuration files as well as making it less-likely that a name is used twice.
 
 Best practice in naming these secrets would be something similar to `scenario_name-name_of_secret`. As an example, for the MTR scenario, the FTP credentials used are named `mtr-ftp-credentials`. This name is unique and descriptive.
 
 #### OpenShift CI Secret Namespace
+
 The Namespace of your secret in the build clusters. Multiple namespaces can be targeted by using a comma-separated list. For the purpose of this document, `test-credentials` will be used as the namespace. This namespace allows for the use of a secret in the step of a job within OpenShift CI.
 
 From the OpenShift CI [Adding a New Secret to CI](https://docs.ci.openshift.org/docs/how-tos/adding-a-new-secret-to-ci/) documentation:
@@ -71,6 +82,7 @@ From the OpenShift CI [Adding a New Secret to CI](https://docs.ci.openshift.org/
 ## Tutorial - Create and Use Secrets in OpenShift CI
 
 ### Create a New Secret
+
 1. [Create a new collection](#create-collection), if one doesn't already exist.
 2. [Sign into vault](#sign-in-to-vault) and navigate to `kv/NAME_OF_COLLECTION`.
 3. Click the "Create secret" button in the upper right-hand corner.
@@ -88,9 +100,11 @@ From the OpenShift CI [Adding a New Secret to CI](https://docs.ci.openshift.org/
 Now that a secret has been created in Vault, it is available for use in OpenShift CI steps.
 
 ### Use Secret During OpenShift CI Execution
+
 For the following steps, this document will refer to the configuration of a `ref` step in OpenShift CI. For simplicity, here is the configuration that will be referred to:
 
 `some-test-ref.yaml`
+
 ```yaml
 ref:
   as: some-test-ref
@@ -120,4 +134,4 @@ ref:
           - `username`: `SomeUser`
           - `password`: `CleverPassword`
         - In this example, there would be two files found in `tmp/secrets/test` - one file named `username` and one file named `password`. Each file would hold a single clear-text line - the value ("`SomeUser`" and "`CleverPassword`")
-    2. Using these values can be as easy as setting the contents of each file to a variable: `USERNAME=$(cat /tmp/secrets/test/username)`
+   2. Using these values can be as easy as setting the contents of each file to a variable: `USERNAME=$(cat /tmp/secrets/test/username)`
