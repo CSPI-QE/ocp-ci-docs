@@ -107,7 +107,7 @@ Using a container is very easy in OpenShift CI. There are several ways it can be
 
 To define a container in OpenShift CI, two stanzas need to be added to the configuration file in OpenShift CI. Keep in mind, the configuration files in OpenShift CI are named based on the organization, repository, and branch of the test repository. So when we specify the Dockerfile's location or the context of the build, it is relative to the root of the testing repository. 
 
-Pretend we have a test repository in the `CSPI-QE` organization named `mock_tests` and we'd like to use the `main` branch of the repository to test with. The configuration file in the `openshift/release` repository would be `ci-operator/config/cspi-qe/mock_tests/cspi-qe-mock_tests-main.yaml`. 
+Pretend we have a test repository in the `CSPI-QE` organization named `mock_tests` and we'd like to use the `main` branch of the repository to test with. The configuration file in the `openshift/release` repository would be `ci-operator/config/CSPI-QE/mock_tests/CSPI-QE-mock_tests-main.yaml`. 
 
 Inside of this pretend repository there is a directory named `dockerfiles` containing the Dockerfile we made above. In the root of the repository in the test file, `test_mock_tests.py`.
 
