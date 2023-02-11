@@ -22,20 +22,19 @@ Here is an example of using a workflow in the MTR scenario:
 
 ```yaml
 tests:
-- as: mtr-scenario
-  interval: 960h
+- as: mtr-interop-aws
+  cron: 0 1 * * 1
   steps:
     cluster_profile: aws-cspi-qe
     env:
       BASE_DOMAIN: aws.interop.ccitredhat.com
-      MTR_VERSION: "1"
-      SELENIUM_NAMESPACE: mtr
-      SUB_INSTALL_NAMESPACE: mtr
-      SUB_PACKAGE: mtr-operator
-      SUB_SOURCE: redhat-operators
-      SUB_TARGET_NAMESPACES: mtr
+      RESULTS_FILE: windup-ui-results.xml
+      SUB_CHANNEL: alpha
     test:
-    - chain: interop-mtr
+    - chain: mtr-install
+    - ref: mtr-deploy-windup
+    - chain: mtr-execute-interop-ui-tests
+    - ref: lp-interop-tooling-archive-results
     workflow: ipi-aws
 ```
 

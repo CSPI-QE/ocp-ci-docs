@@ -21,9 +21,7 @@ Before we discuss how to use containers in OpenShift CI, it is important to unde
         prow[Prow Cluster]-->test[Test Cluster]
 ```
 
-`Figure 1: _Cluster Graph`
-
-Figure 1 above shows a simple flowchart which illustrates that there are really two clusters provisioned when you execute a CSPI job in OpenShift CI.
+The flowchart above illustrates that there are actually two clusters being utilized when a CSPI job is executing in OpenShift CI.
 
 1. **Prow Cluster**
    - The Prow cluster actually executes the various steps (chains, workflows, refs, _etc._) of a test.
@@ -57,7 +55,7 @@ def testEquality():
    assert 1 == 1
 ```
 
-When creating your tests, there shouldn't be much of a change outside of keeping in mind that you will need to target a cluster from outside of said cluster. Another thing to keep in mind is that resources located behind Red Hat's firewalls will not be accessible as both the _Prow Cluster_ and the _Test Cluster_ will be running outside of Red Hat's network..
+When creating your tests, there shouldn't be much of a change outside of keeping in mind that you will need to target a cluster from outside of the _Prow Cluster_. Another thing to keep in mind is that resources located behind Red Hat's firewalls will not be accessible as both the _Prow Cluster_ and the _Test Cluster_ will be running outside of Red Hat's network..
 
 > **IMPORTANT:**
 > If your tests require any variables prior to executing the tests, please tell the CSPI team which variables are needed and (if possible) how to retrieve those variables. It is possible to get a variable (e.g. the web address of the test cluster) during a previous container's execution and that variable can be placed in a file in the `SHARED_DIR` for usage in other containers.
@@ -76,7 +74,7 @@ Below is the Dockerfile we will use to execute our tests:
 `Dockerfile`
 
 ```Dockerfile
-# Using a Python base image fulfills our Python and pip requirements
+# Using a Python base image fulfills our Python and Pip requirements
 FROM python:3.8
 
 # Update container for good measure
@@ -137,22 +135,24 @@ images:
   dockerfile_path: dockerfiles/Dockerfile
   to: mock-runner
 tests:
-- as: mock-private-scenario
-  interval: 960h
+- as: mock-scenario-aws
+  cron: 0 1 * * 1
   steps:
     cluster_profile: aws-cspi-qe
     env:
       BASE_DOMAIN: aws.interop.ccitredhat.com
     test:
-    - chain: interop-mock
+    - chain: mock-operator-install
+    - ref: mock-execute-tests
+    - ref: mock-archive-results
     workflow: ipi-aws
 ```
 
 In the `images` stanza, you can define multiple images to be built by simply adding another list item to the stanza. For our purposes, we are only defining one. You will need three key/value pairs to define the image to be built:
 
-- `context_dir` - Defines the [build context directory](https://docs.docker.com/build/building/context/)
-  - Remember, this is defined starting at the root of the test repository
-  - We have used `.` above, meaning the build context is the root of the test repository
+- `context_dir` - Defines the [build context directory](https://docs.docker.com/build/building/context/).
+  - Remember, this is defined starting at the root of the test repository.
+  - We have used `.` above, meaning the build context is the root of the test repository.
 - `dockerfile_path` - Defines the path to the Dockerfile you'd like to build. This is also relative to the root of the test repository.
 - `to` - Defines the name of the image created within OpenShift CI. This will be important later as we will use this name in a test step to make sure the commands are executed in the correct container.
 
@@ -160,15 +160,15 @@ Now that the image has been defined, it will be built and made available to test
 
 #### Execute in the Container
 
-To use the container in a step of the tests, you can specify that container in a ref's config file. For the purposes of this document, we will create a pretend ref in the step registry named `interop-mock-execute`. Below is the configuration file for this pretend ref: 
+To use the container in a step of the tests, you can specify that container in a ref's config file. For the purposes of this document, we will create a pretend ref in the step registry named `mock-execute-tests`. Below is the configuration file for this pretend ref: 
 
-`ci-operator/step-registry/interop/mock/execute/interop-mock-execute-ref.yaml`
+`ci-operator/step-registry/mock/execute-tests/mock-execute-tests-ref.yaml`
 
 ```yaml
 ref:
-  as: interop-mock-execute
+  as: mock-execute-tests
   from: mock-runner
-  commands: interop-mock-execute-commands.sh
+  commands: mock-execute-tests-commands.sh
   resources:
     requests:
       cpu: '1'
@@ -177,11 +177,11 @@ ref:
     Pretend ref...
 ```
 
-In the config file above, the only line you will need to specify is the `from: mock-runner` line in the `ref` stanza. This specifies the name of the image you defined in the [Define the Container](#define-the-container) step of this guide. Specifying this container ensures that anything in the `ci-operator/step-registry/interop/mock/execute/interop-mock-execute-commands.sh` file will be executed in your new container.
+In the config file above, the only line you will need to specify is the `from: mock-runner` line in the `ref` stanza. This specifies the name of the image you defined in the [Define the Container](#define-the-container) step of this guide. Specifying this container ensures that anything in the `ci-operator/step-registry/mock/execute-tests/mock-execute-tests-commands.sh` file will be executed in your new container.
 
 Here is a brief example of the shell script to execute the tests in your container:
 
-`ci-operator/step-registry/interop/mock/execute/interop-mock-execute-commands.sh`
+`ci-operator/step-registry/mock/execute-tests/mock-execute-tests-commands.sh`
 
 ```bash
 #!/bin/bash
