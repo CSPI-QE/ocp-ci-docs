@@ -181,7 +181,10 @@ This responsibility falls on the owner of the workflow that is being used to dep
 The model being followed by this [layered product onboarding](../../Onboarding/Onboarding_Guide.md) is built on the idea that automation that is already created and being maintained should not be recreated by a different team attempting to achieve the same result. Therefore the onboarding of the scenario will ensure that the layered product deployment relies on automation built by that product's QE team. If there are failures in the OCP CI scenario for the layered product deployment then it will need to be fixed at the source, which will be the layered product QE team's repositories.
 
 - If a product is able to be installed using the steps existing in the [operatorhub-subscribe ref](https://github.com/openshift/release/tree/master/ci-operator/step-registry/operatorhub/subscribe) than we can make use of that instead. 
->Most likely there will be more to the product deployment then just the main operator install.
+
+> **NOTE:**
+>
+> Most likely there will be more to the product deployment then just the main operator install.
 
 ## Test Execution
 
