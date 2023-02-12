@@ -35,8 +35,7 @@ Scenario maintenance tasks include:
 
 > This is the responsibility of the PQE team.
 
-**Currently under evaluation**
-
+**Currently under evaluation**:
 A scenario expansion can be defined as preparing your test scenario to execute tests against a newer layered product release than what was previously configured. For example, if the scenario executes tests for `ACM2.6 on OCP4.12` then an expansion would mean to extend the config for this scenario to now include testing for `ACM2.7 on OCP4.12`
 
 ### Updating the Scenario Config
@@ -109,8 +108,7 @@ This will lead to two OCP clusters being provisioned in parallel (one will be th
 
 > This is the responsibility of the PQE team.
 
-**Currently under evaluation**
-
+**Currently under evaluation**:
 When a layered product version is no longer supported on the OpenShift release that it is being tested on we must remove the older version of the layered product from the scenario config file. Using the example above, a scenario deprecation will just involve removing the test stanza for the older version that needs to be deprecated.
 
  For example if we had
