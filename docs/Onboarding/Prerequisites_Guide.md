@@ -82,6 +82,7 @@ There are two paths for onboarding your layered product scenario into OpenShift 
   - If your product is able to be installed using the steps existing in the  [operatorhub-subscribe ref](https://github.com/openshift/release/tree/master/ci-operator/step-registry/operatorhub/subscribe) than we can make use of that instead.
 - Product install configuration (anything that needs to be done post operator install) executed within a container (maintained by the product QE team in upstream repo or reachable registry).
 - Identify all environment variables and secrets needed for install.
+- All containerization must also be proven to work within an OpenShift cluster, not just proven in a local or special team based container environment.
 
 See the [Container Creation Guide](../OCP_CI_Tutorials/Containers/Container_Creation_Guide.md) for general guidance when creating your layered product deployment image(s).
 
@@ -90,6 +91,7 @@ See the [Container Creation Guide](../OCP_CI_Tutorials/Containers/Container_Crea
 - Product test environment setup executed within a container image (maintained by product QE team in test repo or reachable registry).
 - A script or command that can be run against the test container to trigger and generate an XML for the tests.
 - Identified all environment variables and secrets needed for testing.
+- All containerization must also be proven to work within an OpenShift cluster, not just proven in a local or special team based container environment.
 
 See the [Container Creation Guide](../OCP_CI_Tutorials/Containers/Container_Creation_Guide.md) for general guidance when creating your scenarios test image(s).
 

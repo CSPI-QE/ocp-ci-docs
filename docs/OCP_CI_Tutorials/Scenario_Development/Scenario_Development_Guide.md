@@ -20,7 +20,11 @@
   - [Make Update](#make-update)
   - [Rehearsal Job](#rehearsal-job)
   - [Spot Instances](#spot-instances)
-  - [OpenShift Local](#openshift-local)
+  - [Local Development](#local-development)
+    - [OpenShift Local (CRC)](#openshift-local-crc)
+    - [Hive](#hive)
+    - [Quicklabs](#quicklabs)
+    - [OpenShift CI Native Debugging](#openshift-ci-native-debugging)
 
 ## Scenario Development Guide
 
@@ -38,20 +42,21 @@ This guide is meant to explain our scenario development process and to point dev
    - OpenShift CI uses the test repositories GitHub organization and repository name to format these directories.
    - **Format:** `ci-operator/config/{GitHub organization}/{GitHub repository}`.
    - **Example:** For the MTR scenario, the tests live in the [windup/windup-ui-tests](https://github.com/windup/windup-ui-tests) repository. The directories for this scenario would be `ci-operator/config/windup/windup-ui-tests`.
+     - If the scenario has multiple test repos then a central repo maintained by PQE can be used or other solutions to this should be discussed.
 3. Create the scenario's configuration file in the directory created in the previous step.
    - OpenShift CI also uses the test repositories GitHub organization and repository name in the format of this filename. It also uses the desired branch name and allows you to add additional information.
-   - **Format:** `{GitHub organization}-{GitHub repository}-{desired branch}__lp-interop-{product_short_name}-ocp4.{xx}-interop.yaml`.
-   - **Example:** For the MTR scenario's OCP 4.13 config file, `windup-windup-ui-tests-main__lp-interop-mtr-ocp4.13.yaml`.
-   - **Note:** The `lp-interop` value in the format is to allow us to report this job reliably. The use of unique identifier allows us to write automation to report our jobs easily as well as opens possibilities to easily manipulate our scenarios in the future if needed.
+   - **Format:** `{GitHub organization}-{GitHub repository}-{desired branch}__{product_short_name}-ocp4.{xx}-lp-interop.yaml`.
+   - **Example:** For the MTR scenario's OCP 4.13 config file, `windup-windup-ui-tests-main__mtr-ocp4.13-lp-interop.yaml`.
+   - **Note:** The `-lp-interop` value in the format is to allow us to report this job reliably. The use of unique identifier allows us to write automation to report our jobs easily as well as opens possibilities to easily manipulate our scenarios in the future if needed.
 4. Create a directory in the `ci-operator/step-registry` directory for your product if one does not exist. The name of this folder should be the shortname of the layered product you are working on.
    - **Example:** For the MTR scenario, the directory's name is `ci-operator/step-registry/mtr`.
-   - This folder will hold steps that are specific to your product and scenario, like a step to install the product and step to execute the test suite. 
+   - This folder will hold steps that are specific to your product and scenario, like a step to install the product and step to execute the test suite.
 
 #### Write the Scenario
 
 Now that you have the setup complete, you can start to write the scenario. First, you'll want to get a shell for your configuration file written. In the configuration file you created in step 2 of the [Getting Started](#getting-started) section, use the guide below to start writing your configuration file:
 
-`some-mock-scenario-main__lp-interop-mock-ocp4.13-interop.yaml`
+`some-mock-scenario-main__mock-ocp4.13-lp-interop.yaml`
 
 ```yaml
 base_images:
@@ -112,7 +117,7 @@ tests:
 
 As CSPI has worked through how we would use OpenShift CI as our new OpenShift interop testing pipeline, we have gone through many iterations of how we planned on structuring our scenarios and our usage of the step registry. The structure proposed in this document is subject to change and is purposely written to be less rigid than the model our scenarios currently use.
 
-When writing a scenario in the CSPI OpenShift CI pipeline, please use the following as as guideline:
+When writing a scenario in the CSPI OpenShift CI pipeline, please use the following as a guideline:
 
 1. **Do** write re-usable and useful steps in the step registry
    - As mentioned in step 4 of the [Getting Started](#getting-started) section above, each layered product should have it's own folder in the step registry. This folder should be populated by you with [steps](../Step_Registry/Step_Registry_Guide.md) that are specific to the layered product you are testing. Some examples could be:
@@ -178,7 +183,7 @@ Each scenario should have at least one container image to execute the tests with
 
 #### TestGrid
 
-The majority (from what we can tell) of reporting in OpenShift CI is done through TestGrid. Luckily, the only thing we need to do to ensure this happens properly for our scenarios is include `lp-interop` in the name of our configuration files (see step 3 of the [Getting Started](#getting-started) section above). This is covered for in depth in the [TestGrid section of the Reporting Guide](../Reporting/Reporting_Guide.md#testgrid)
+The majority (from what we can tell) of reporting in OpenShift CI is done through TestGrid. Luckily, the only thing we need to do to ensure this happens properly for our scenarios is include `-lp-interop` in the name of our configuration files (see step 3 of the [Getting Started](#getting-started) section above). This is covered for in depth in the [TestGrid section of the Reporting Guide](../Reporting/Reporting_Guide.md#testgrid)
 
 #### Report Portal
 
@@ -300,7 +305,9 @@ tests:
     workflow: cucushift-installer-rehearse-aws-ipi-spot
 ```
 
-### OpenShift Local
+### Local Development
+These are just some of the ways that have been identified to test and develop efficiently but its really up to all of us to learn and identify the best way to do this for the problem that we are trying to solve. We definitely have creative freedom here. We just have to make sure that time and budget isn't being wasted testing small changes in the large PR rehearsal job the deploys a cluster each time something small needs to be tested.
+#### OpenShift Local (CRC)
 
 When possible please execute your code on a local cluster using OpenShift local ([Getting Started Guide](https://access.redhat.com/documentation/en-us/red_hat_openshift_local/2.12/html/getting_started_guide/index)). 
 
@@ -308,3 +315,12 @@ This will save:
 
 - **Time**: OpenShift local will come up faster and you will have it running longer, without needing to worry about how to keep up a cloud cluster through waits.
 - **Money**: Since it runs local on your machine we are not accruing cloud costs for any of your development that can be done with OpenShift Local.
+
+#### Hive
+Deploy Openshift cluster using [Hive](https://gitlab.cee.redhat.com/-/snippets/5832) (saves cloud costs and can stay up for long periods of time). We can use this when we need to test product QE's stuff on a cluster that has multinode backing it.
+
+#### Quicklabs
+Deploy clusters using [quicklabs](https://quicklab.upshift.redhat.com/). Same use case as above just not using our openstack as env, limited scale.
+
+#### OpenShift CI Native Debugging
+Testing prow job specifics secrets, vars, and things like that can be done through a PR to the release repo, but a cluster deployment is not needed. So if you need to test that a secret that you are using is going to show up properly you can submit a PR strictly for debugging purposes to run the prow job and discover the necessary things that you need to do. Once you've solved for that small problem you can then integrate the solution back into the larger PR for your scenario.
