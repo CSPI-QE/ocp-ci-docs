@@ -35,6 +35,7 @@ Scenario maintenance tasks include:
 
 > This is the responsibility of the PQE team.
 
+**Currently under evaluation**:
 A scenario expansion can be defined as preparing your test scenario to execute tests against a newer layered product release than what was previously configured. For example, if the scenario executes tests for `ACM2.6 on OCP4.12` then an expansion would mean to extend the config for this scenario to now include testing for `ACM2.7 on OCP4.12`
 
 ### Updating the Scenario Config
@@ -107,6 +108,7 @@ This will lead to two OCP clusters being provisioned in parallel (one will be th
 
 > This is the responsibility of the PQE team.
 
+**Currently under evaluation**:
 When a layered product version is no longer supported on the OpenShift release that it is being tested on we must remove the older version of the layered product from the scenario config file. Using the example above, a scenario deprecation will just involve removing the test stanza for the older version that needs to be deprecated.
 
  For example if we had
@@ -176,6 +178,12 @@ This responsibility falls on the owner of the workflow that is being used to dep
 
 The model being followed by this [layered product onboarding](../../Onboarding/Onboarding_Guide.md) is built on the idea that automation that is already created and being maintained should not be recreated by a different team attempting to achieve the same result. Therefore the onboarding of the scenario will ensure that the layered product deployment relies on automation built by that product's QE team. If there are failures in the OCP CI scenario for the layered product deployment then it will need to be fixed at the source, which will be the layered product QE team's repositories.
 
+- If a product is able to be installed using the steps existing in the [operatorhub-subscribe ref](https://github.com/openshift/release/tree/master/ci-operator/step-registry/operatorhub/subscribe) than we can make use of that instead. 
+
+> **NOTE:**
+>
+> Most likely there will be more to the product deployment then just the main operator install.
+
 ## Test Execution
 
 >This is the responsibility of the PQE team.
@@ -186,7 +194,7 @@ Similar to the layered product deployment the code being used to setup and execu
 
 >This is the responsibility of the CSPI-QE team.
 
-If there is ever a change to the cadence of testing we must update the cron configuration for all scenarios. The current model is to trigger using the latest OpenShift build on a weekly cadence each Monday morning.
+If there is ever a change to the cadence of testing we must update the cron configuration for all scenarios. The current model is to trigger using the latest pre-GA OpenShift build on a weekly cadence each Monday morning.
 
 See the [Triggering Guide](../../OCP_CI_Tutorials/Triggering/Triggering_Guide.md) for more information.
 

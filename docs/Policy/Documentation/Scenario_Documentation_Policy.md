@@ -18,7 +18,7 @@ Documenting our scenarios is an important part of the CSPI onboarding and mainte
 
 ## How to Document a Scenario
 
-Each scenario written by CSPI within OpenShift CI should have a `README.md` file associated with it in the same folder as the scenario's configuration file. For example the MTR scenario's documentation can be found at `ci-operator/config/windup/windup_integration_test/README.md` along with the configuration YAML file. Documentation should be written in Markdown. If you are unfamiliar with Markdown, please use [this list of resources](Markdown_Resources.md) to familiarize yourself with it.
+Each scenario written by CSPI within OpenShift CI should have a `README.md` file associated with it in the same folder as the scenario's configuration file. For example the MTR scenario's documentation can be found at `ci-operator/config/windup/windup-ui-tests/README.md` along with the configuration YAML file. Documentation should be written in Markdown. If you are unfamiliar with Markdown, please use [this list of resources](Markdown_Resources.md) to familiarize yourself with it.
 
 ### Getting Started
 
@@ -26,7 +26,7 @@ Each scenario written by CSPI within OpenShift CI should have a `README.md` file
    - **Note:** This file should be in the `ci-operator/config/{test-org}/{test-repo}/` directory within the [openshift/release](https://github.com/openshift/release) repository.
 2. Add a level-1 header to the top of the file with the name of the scenario
    - **Note:** Please add `<!-- omit from toc -->` to the end of the header to avoid adding it to the Table of Contents.
-   - **Example:** `# windup-windup_integration_test-main<!-- omit from toc -->`
+   - **Example:** `# windup-windup-ui-tests-main<!-- omit from toc -->`
 3. Add a level-2 header below the first header with the text "Table of Contents"
    - **Example:** `## Table of Contents <!-- omit from toc -->`
 4. Add the Table of Contents
@@ -44,7 +44,7 @@ The outline of these documents should generally follow this structure:
 - Purpose
 - Process
   - Cluster Provisioning and Deprovisioning
-  - Orchestrate, Execute, and Report
+  - Test Setup, Execution, and Reporting Results
 - Custom Images
 
 If you'd like to expand on this structure, please feel free to. But, this structure should be the minimum for each new scenario created.
@@ -61,13 +61,14 @@ Please feel free to add any additional information or links that may be helpful 
 
 **Example:**
 
-`ci-operator/config/windup/windup_integration_test/README.md`
+`ci-operator/config/windup/windup-ui-tests/README.md`
 
 ```markdown
 ## General Information
-- **Repository**: [windup/windup_integration_test](https://github.com/windup/windup_integration_test.git)
+
+- **Repository**: [windup/windup-ui-tests](https://github.com/windup/windup-ui-tests)
 - **Operator Tested**: [MTR (Migration Toolkit for Runtimes)](https://developers.redhat.com/products/mtr/overview)
-- **Maintainers**: CSPI QE
+- **Maintainers**: Interop QE
 ```
 
 #### Purpose
@@ -76,11 +77,12 @@ This section of the documentation should outline the purpose of this scenario. W
 
 This section can be as short as a sentence or two:
 
-`ci-operator/config/windup/windup_integration_test/README.md`
+`ci-operator/config/windup/windup-ui-tests/README.md`
 
 ```markdown
 ## Purpose
-To provision the necessary infrastructure and use that infrastructure to execute MTR interop tests on pre-release OCP builds. The results of theses tests will be reported to the appropriate sources following execution.
+
+To provision the necessary infrastructure and using that infrastructure to execute MTR interop tests. The results of these tests will be reported to the appropriate sources following execution.
 ```
 
 #### Process
@@ -93,24 +95,31 @@ Under the "Process" header of your documentation be sure to include how and wher
 
 This could be as simple as linking to a workflow being utilized to do this work as the workflow (and its documentation) may not be maintained by CSPI or PQE:
 
-`ci-operator/config/windup/windup_integration_test/README.md`
+`ci-operator/config/windup/windup-ui-tests/README.md`
 
 ```markdown
 ### Cluster Provisioning and Deprovisioning: `ipi-aws`
-Please see the [`ipi-aws`](https://steps.ci.openshift.org/workflow/ipi-aws) documentation for more information on this workflow. This workflow is not maintained by the CSPI QE team.
+
+Please see the [`ipi-aws`](https://steps.ci.openshift.org/workflow/ipi-aws) documentation for more information on this workflow. This workflow is not maintained by the Interop QE team.
 ```
 
-##### Orchestrate, Execute, and Report<!-- omit from toc -->
+##### Test Setup, Execution, and Reporting Results<!-- omit from toc -->
 
-Scenario documentation should also document how the scenario preforms it's orchestration, test execution, and reporting. This part of the documentation may be short as we prefer to use a chain for each scenario that handle's most of this work. In that case, you may just be able to link to the chain created for this scenario.
+This section of the scenario documentation should document how the scenario preforms it's setup, test execution, and reporting following the test cluster being provisioned. This section may be as simple as listing the steps utilized and linking to their `README.md` files.
 
 **Example:**
 
-`ci-operator/config/windup/windup_integration_test/README.md`
+`ci-operator/config/windup/windup-ui-tests/README.md`
 
 ```markdown
-### Orchestrate, Execute, and Report - `mtr-scenario`
-All of the orchestration, test execution, and reporting for the interop MTR scenario is taken care of the by the [`interop-mtr`](../../../step-registry/interop/mtr/README.md) chain. All of the environment variables needed to execute this chain are passed to the chain using the `env` stanza. For more in-depth information on how the [`interop-mtr`](../../../step-registry/interop/mtr/README.md) chain and how it's components work, please see the README that is hyperlinked in this paragraph.
+## Test Setup, Execution, and Reporting Results - `mtr-interop-aws`
+
+Following the test cluster being provisioned, the following steps are executed in this order:
+
+1. [`mtr-install-chain`](../../../step-registry/mtr/install/README.md)
+2. [`mtr-deploy-windup-ref`](../../../step-registry/mtr/deploy-windup/README.md)
+3. [`mtr-execute-interop-ui-tests-chain`](../../../step-registry/mtr/execute-interop-ui-tests/README.md)
+4. [`lp-interop-tooling-archive-results-ref`](../../../step-registry/lp-interop-tooling/archive-results/README.md)
 ```
 
 #### Custom Images
@@ -119,15 +128,16 @@ This section of the documentation should outline any custom container images use
 
 **Example:**
 
-`ci-operator/config/windup/windup_integration_test/README.md`
+`ci-operator/config/windup/windup-ui-tests/README.md`
 
 ```markdown
-
 ## Custom Images
 
 ### `mtr-runner`
 
-The `mtr-runner` image is a Python base image with all required packages for test execution installed along with the [windup/windup_integration_test](https://github.com/windup/windup_integration_test.git) repository copied into the `/tmp/integration_tests` directory. The image is used to execute the MTR interop tests.
+- [Dockerfile](https://github.com/windup/windup-ui-tests/blob/main/dockerfiles/interop/Dockerfile)
+
+The custom image for this step uses the [`cypress/base`](https://hub.docker.com/r/cypress/base) image as it's base. The image should have all of the required dependencies installed and the [windup/windup-ui-tests repository](https://github.com/windup/windup-ui-tests) copied into `/tmp/windup-ui-tests`.
 ```
 
 ## Conclusion
