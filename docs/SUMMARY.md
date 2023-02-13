@@ -13,7 +13,6 @@
 
 ## Tutorials
 
-- [Scenario Development](OCP_CI_Tutorials/Scenario_Development/Scenario_Development_Guide.md)
 - [Containers](OCP_CI_Tutorials/Containers/Container_Creation_Guide.md)
 - [Secrets](OCP_CI_Tutorials/Secrets/Secrets_Guide.md)
 - [Step Registry](OCP_CI_Tutorials/Step_Registry/Step_Registry_Guide.md)
