@@ -14,6 +14,8 @@
   - [Ephemeral Cluster Guide](#ephemeral-cluster-guide)
     - [How does this work?](#how-does-this-work)
     - [Important Workflows](#important-workflows)
+  - [Multiple private repo environment (Images)](#multiple-private-repo-environment-images)
+    - [So How do we solve this?](#so-how-do-we-solve-this)
   - [Scenario and Step Registry Documentation](#scenario-and-step-registry-documentation)
 - [Developer's Guide](#developers-guide)
   - [Pull Request Process](#pull-request-process)
@@ -219,19 +221,34 @@ This workflow is going to serve as the base installation mechanism for our self-
 
 As many other OCP install workflows it will place the kubeconfig file and other information about the cluster in the $SHARED_DIR available to all containers.
 
-##### `cucushift-installer-rehearse-aws-ipi-spot`<!-- omit from toc -->
+We have the option to set an env variable in the config to use AWS spot instances to save costs in development.
 
-step-registry doc: [cucushift-installer-rehearse-aws-ipi-spot](https://steps.ci.openshift.org/workflow/cucushift-installer-rehearse-aws-ipi-spot)
-
-This workflow will serve as our development workflow when installing a self-managed cluster on AWS. This workflow uses AWS spot instances which can significantly decrease our cloud costs.
+```yaml
+    env:
+      SPOT_INSTANCES: "true"
+```
 
 > **IMPORTANT:**
 > 
-> This workflow is not to be used in production.
+> Spot instances are not to be used in production.
 
 ##### Important Workflow.Next<!-- omit from toc -->
 
 As this level of testing expands to different flavors of OCP installations we will cover future important workflows here for reference.
+
+### Multiple private repo environment (Images)
+
+You may run into a situation where PQE needs many different test environments to execute all of their tests. This becomes difficult when the images (read Dockerfiles) are stored in private github repos. We are not able to build all of these images from a single config file through the private repo access being offered by OpenShift CI. This is because the only private repo that we will have access to is the "src" repo (the repo that is associated with the directory naming convention). We also cannot just store all of the Dockerfiles into this one "src" repo and hope to git clone the files from the other private repos because this would require a personal access token (PAT) to clone these files. This PAT can only be implemented in the commands.sh script run against the container rather than at build time of the image itself where we would want to use it.
+
+#### So How do we solve this?
+
+We can promote images to the registry: `registry.ci.openshift.org`. Doing this makes the image available to be used as a base_image within OpenShift CI.
+
+We do this by creating a [config file](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333) for each private test repo. We [specify the Dockerfile](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333R7) from that repo that we need to build an image from, then we [promote the image](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333R9) to registry.ci.openshift.org. The example here will be available at registry.ci.openshift.org/acm-qe/clc-ui-e2e:release-2.7. This allows us to use this image as a base_image in our scenario's config file (same as how any other base_image is being used). 
+
+One major benefit that we get from doing this is that we know this image will have been pre-built and tested on any PR submitted by the PQE team. Setting up this promotion process automatically sets up a CI system for the image build in the test repo. If the image is failing to build, they will not be able to merge their code without explicitly skipping the automated check. Here's an [example PR](https://github.com/stolostron/clc-ui-e2e/pull/461) that triggered a [pre-submit job](https://prow.ci.openshift.org/view/gs/origin-ci-test/pr-logs/pull/stolostron_clc-ui-e2e/461/pull-ci-stolostron-clc-ui-e2e-release-2.7-images/1631327055738048512) to ensure that the image was built successfully. Once merged the post-submit job will run and promote the tested image to the registry where we can then make use of it.
+
+Since these images will contain code from within a private repo, we need to make sure that unauthenticated users do not have access to these images. We prevent this by adding an [RBAC file](https://github.com/openshift/release/pull/36522/files#diff-e129896e392bc9ced499cb19ddf549b361784048825b25670755fc432f87f542) to only allow authenticated users to pull from the target registry namespace.
 
 ### Scenario and Step Registry Documentation
 
