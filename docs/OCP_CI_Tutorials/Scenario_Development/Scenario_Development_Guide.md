@@ -242,7 +242,7 @@ You may run into a situation where PQE needs many different test environments to
 
 #### So How do we solve this?
 
-We can promote images to the registry: `registry.ci.openshift.org`. Doing this makes the image available to be used as a base_image within OpenShift CI.
+We can promote images to the registry, `registry.ci.openshift.org`. Doing this makes the image available to be used as a base_image within OpenShift CI.
 
 We do this by creating a [config file](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333) for each private test repo. We [specify the Dockerfile](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333R7) from that repo that we need to build an image from, then we [promote the image](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333R9) to registry.ci.openshift.org. The example here will be available at registry.ci.openshift.org/acm-qe/clc-ui-e2e:release-2.7. This allows us to use this image as a base_image in our scenario's config file (same as how any other base_image is being used). 
 
