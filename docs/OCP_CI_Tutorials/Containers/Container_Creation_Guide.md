@@ -10,6 +10,8 @@
   - [Executing Containerized Tests in OpenShift CI](#executing-containerized-tests-in-openshift-ci)
     - [Define the Container](#define-the-container)
     - [Execute in the Container](#execute-in-the-container)
+  - [Miscellaneous Container Tutorials](#miscellaneous-container-tutorials)
+    - [Copying Files From One Image to Another](#copying-files-from-one-image-to-another)
 
 ## Introduction
 
@@ -31,6 +33,7 @@ The flowchart above illustrates that there are actually two clusters being utili
    - The `kubeconfig` in the Prow Cluster is configured to target this cluster. So when an `oc` (or other OpenShift interface) command is run in a step, it is run from the Prow Cluster targeting the Test cluster.
 
 > **IMPORTANT:** 
+> 
 > This guide is going to walk you through the creation of a container that runs in the _Prow Cluster_. This means that if you are trying to execute anything against your layered product, it will need to target the product that will be installed in the _Test Cluster_.
 
 ## Container Creation and Usage
@@ -58,6 +61,7 @@ def testEquality():
 When creating your tests, there shouldn't be much of a change outside of keeping in mind that you will need to target a cluster from outside of the _Prow Cluster_. Another thing to keep in mind is that resources located behind Red Hat's firewalls will not be accessible as both the _Prow Cluster_ and the _Test Cluster_ will be running outside of Red Hat's network..
 
 > **IMPORTANT:**
+> 
 > If your tests require any variables prior to executing the tests, please tell the CSPI team which variables are needed and (if possible) how to retrieve those variables. It is possible to get a variable (e.g. the web address of the test cluster) during a previous container's execution and that variable can be placed in a file in the `SHARED_DIR` for usage in other containers.
 
 #### The Container
@@ -194,3 +198,35 @@ pytest /tmp/tests/test_mock_tests.py -vv --junitxml=${SHARED_DIR}/junit_output.x
 ```
 
 The shell script above utilizes `pytest` to execute the tests that were copied into the container in the [Creating Containerized Tests](#creating-containerized-tests) section of this guide. The JUnit results will be placed in the `SHARED_DIR` where they can be reported in later steps or other containers.
+
+### Miscellaneous Container Tutorials
+
+#### Copying Files From One Image to Another
+
+In some scenarios, you may need to use multiple images and you may need to copy files from one image to another. For example, the OADP scenario requires multiple private repositories. Rather than cloning the repositories (which would include maintaining a service account and personal access token) into one image, we have decided to [promote an image for each repository](../Scenario_Development/Scenario_Development_Guide.md#multiple-private-repo-environment-images) and copy the files we need into one image.
+
+1. Define base images in your configuration file
+   - For this example, we will only define the `cli` image, but you can define as many as you'd like.
+
+```yaml
+base_images:
+  cli:
+    name: "4.13"
+    namespace: ocp
+    tag: cli
+```
+
+2. Define an image that copies a file from one of your base images. In this case, `some-image-name` is the image that will store the `/user/bin/oc` file.
+   - This example copies the oc client into the current directory of `some-image-name`
+
+```yaml
+images:
+- context_dir: .
+  dockerfile_path: Dockerfile
+  inputs:
+    cli: # Base image to copy files from
+      paths:
+      - destination_dir: . # Destination of file being copied in the new image
+        source_path: /usr/bin/oc # File to copy from base image
+  to: some-image-name
+```
