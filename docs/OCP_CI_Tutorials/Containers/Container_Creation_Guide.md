@@ -216,7 +216,7 @@ base_images:
     tag: cli
 ```
 
-2. Define an image that copies a file from one of your base images. In this case, `some-image-name` is the image that will store the `/user/bin/oc` file.
+2. Define an image that copies a file from one of your base images. In this case, `some-image-name` is the image that will store the `/usr/bin/oc` file.
    - This example copies the oc client into the current directory of `some-image-name`
 
 ```yaml
