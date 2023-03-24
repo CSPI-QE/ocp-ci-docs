@@ -27,6 +27,9 @@
     - [Hive](#hive)
     - [Quicklabs](#quicklabs)
     - [OpenShift CI Native Debugging](#openshift-ci-native-debugging)
+  - [Accessing the Test Cluster](#accessing-the-test-cluster)
+    - [Access the API (`oc`)](#access-the-api-oc)
+    - [Access the Console](#access-the-console)
 
 ## Scenario Development Guide
 
@@ -351,3 +354,53 @@ Deploy clusters using [quicklabs](https://quicklab.upshift.redhat.com/). Same us
 #### OpenShift CI Native Debugging
 
 Testing prow job specifics secrets, vars, and things like that can be done through a PR to the release repo, but a cluster deployment is not needed. So if you need to test that a secret that you are using is going to show up properly you can submit a PR strictly for debugging purposes to run the prow job and discover the necessary things that you need to do. Once you've solved for that small problem you can then integrate the solution back into the larger PR for your scenario.
+
+### Accessing the Test Cluster
+
+If your scenario provisions a test cluster using a workflow like `ipi-aws`, follow these steps to access the test cluster:
+
+#### Access the API (`oc`)
+
+1. Start a rehearsal job using `/pj-rehearse`.
+2. Open the rehearsal job's logs and find the build cluster URL under the "Build Logs" header and click on it to access the build cluster.
+   - The URL typically looks like the message below and is typically within the first 10 lines of the logs.
+     - `INFO[2023-03-21T15:08:05Z] Using namespace https://console-openshift-console.apps.build03.ky4t.p1.openshiftapps.com/k8s/cluster/projects/ci-op-w4n1s3p5`
+3. In the build cluster's console, navigate to Workloads -> Pods.
+4. Find a running pod and open it's terminal.
+
+> **IMPORTANT:**
+>
+> Make sure the pod that has `ipi-install-install` in it's name has completed successfully before doing this. If you do it prior to the pod completing, the cluster will not exist yet. Also, the pod you choose will need `oc` installed on it. Most pods with `ipi-aws` in the title will have it installed.
+
+5. In the pod's terminal, execute the following commands to access the cluster's API URL:
+   1. `/bin/bash`
+   2. `oc whoami --show-server`
+6. In the pod's terminal, execute the following commands to access the `kubeadmin` password:
+   1. `/bin/bash`
+   2. `cat $SHARED_DIR/kubeadmin-password`
+7. In you local terminal, execute the following to login to the cluster via `oc`
+   1. `oc login -u kubeadmin -p {{ KUBEADMIN PASSWORD }} {{ CLUSTER API URL }}`
+
+
+#### Access the Console
+
+1. Start a rehearsal job using `/pj-rehearse`.
+2. Open the rehearsal job's logs and find the build cluster URL under the "Build Logs" header and click on it to access the build cluster.
+   - The URL typically looks like the message below and is typically within the first 10 lines of the logs.
+     - `INFO[2023-03-21T15:08:05Z] Using namespace https://console-openshift-console.apps.build03.ky4t.p1.openshiftapps.com/k8s/cluster/projects/ci-op-w4n1s3p5`
+3. In the build cluster's console, navigate to Workloads -> Pods.
+4. Find a running pod and open it's terminal.
+
+> **IMPORTANT:**
+>
+> Make sure the pod that has `ipi-install-install` in it's name has completed successfully before doing this. If you do it prior to the pod completing, the cluster will not exist yet. Also, the pod you choose will need `oc` installed on it. Most pods with `ipi-aws` in the title will have it installed.
+
+5. In the pod's terminal, execute the following commands to access the test cluster's console URL:
+   1. `/bin/bash`
+   2. `oc whoami --show-console` OR `cat $SHARED_DIR/console.url`
+
+6. In the pod's terminal, execute the following commands to access the `kubeadmin` password:
+   1. `/bin/bash`
+   2. `cat $SHARED_DIR/kubeadmin-password`
+
+7.  Open the test clusters tab and use `kubeadmin` as the username and the password you copied as the password to login.
