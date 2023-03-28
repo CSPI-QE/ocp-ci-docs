@@ -15,6 +15,7 @@
 - [Tutorial - Create and Use Secrets in OpenShift CI](#tutorial---create-and-use-secrets-in-openshift-ci)
   - [Create a New Secret](#create-a-new-secret)
   - [Use Secret During OpenShift CI Execution](#use-secret-during-openshift-ci-execution)
+  - [Rollback Secret to Previous Version](#rollback-secret-to-previous-version)
 
 ## Overview
 
@@ -135,3 +136,72 @@ ref:
           - `password`: `CleverPassword`
         - In this example, there would be two files found in `tmp/secrets/test` - one file named `username` and one file named `password`. Each file would hold a single clear-text line - the value ("`SomeUser`" and "`CleverPassword`")
    2. Using these values can be as easy as setting the contents of each file to a variable: `USERNAME=$(cat /tmp/secrets/test/username)`
+
+### Rollback Secret to Previous Version
+
+```shell
+➜  export VAULT_ADDR=https://vault.ci.openshift.org
+
+➜  vault login -method=oidc
+
+# List vault secrets that you have access to
+➜  vault kv list kv/selfservice
+Keys
+----
+/3scale-test-image/
+/acm-qe/
+/aws-managed-cspi-qe/
+/cspi-qe/
+/oadp-qe/
+/sbo-qe/
+
+# Get secrets
+➜  vault kv get kv/selfservice/cspi-qe/cluster-secrets
+```
+
+In the metadata section we see the version of the secret
+
+```shell
+➜  vault kv get kv/selfservice/cspi-qe/cluster-secrets
+=============== Secret Path ===============
+kv/data/selfservice/cspi-qe/cluster-secrets
+
+====== Metadata ======
+Key              Value
+---              -----
+created_time     2023-03-06T12:39:47.702500423Z
+deletion_time    n/a
+destroyed        false
+version          19
+```
+
+This tells us that the secret version for cspi-qe/cluster-secrets is at version 19.
+We can get older versions of secrets like this
+
+```shell
+➜  vault kv get -version=12 kv/selfservice/cspi-qe/cluster-secrets
+=============== Secret Path ===============
+kv/data/selfservice/cspi-qe/cluster-secrets
+
+====== Metadata ======
+Key              Value
+---              -----
+created_time     2022-11-02T12:40:14.129461007Z
+deletion_time    n/a
+destroyed        false
+version          12
+```
+
+At this time we believe only the most recent 10 versions are saved.
+
+If we want to recover from an older version of a vault secret then we can do the following:
+
+> **IMPORTANT**
+> 
+> Please do not run this rollback command against any active secrets just for learning purposes (I purposely included a typo so this command should not work but just wanted to emphasize this, please do not fix this command and run just to experiment)!
+>
+> There is a cubbyhole (personal space) that you are given access to in vault that you can store secrets and experiment with them there.
+
+```shell
+➜  vault kv rollback -version=10 kv/selfservice/cspi-qe/clutser-secrets
+```
