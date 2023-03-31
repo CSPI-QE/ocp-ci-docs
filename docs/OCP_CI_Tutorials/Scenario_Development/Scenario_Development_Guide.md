@@ -16,6 +16,9 @@
     - [Important Workflows](#important-workflows)
   - [Multiple private repo environment (Images)](#multiple-private-repo-environment-images)
     - [So How do we solve this?](#so-how-do-we-solve-this)
+  - [Mirror Quay Images](#mirror-quay-images)
+    - [How to Mirror Public Image](#how-to-mirror-public-image)
+    - [How to Mirror Private Image](#how-to-mirror-private-image)
   - [Scenario and Step Registry Documentation](#scenario-and-step-registry-documentation)
 - [Developer's Guide](#developers-guide)
   - [Pull Request Process](#pull-request-process)
@@ -257,6 +260,60 @@ Here are the steps needed to do this:
 One major benefit that we get from doing this is that we know the building of this image will be tested on any PR submitted by the PQE team. Setting up this promotion process automatically sets up a CI system for the image build in the test repo. If the image is failing to build, they will not be able to merge their code without explicitly skipping the automated check. Here's an [example PR](https://github.com/stolostron/clc-ui-e2e/pull/461) that triggered a [pre-submit job](https://prow.ci.openshift.org/view/gs/origin-ci-test/pr-logs/pull/stolostron_clc-ui-e2e/461/pull-ci-stolostron-clc-ui-e2e-release-2.7-images/1631327055738048512) to ensure that the image was built successfully. Once merged the post-submit job will run and promote the tested image to the registry where we can then make use of it.
 
 Since these images will contain code from within a private repo, we need to make sure that unauthenticated users do not have access to these images. We prevent this by adding an [RBAC file](https://github.com/openshift/release/pull/36522/files#diff-e129896e392bc9ced499cb19ddf549b361784048825b25670755fc432f87f542) to only allow authenticated users to pull from the target registry namespace.
+
+### Mirror Quay Images
+
+There might be a case when we need to use the existing quay image in our scenario. The image can be in either public or private registry. For this purpose, Openshift CI allows to use external images by mirroring them into Openshift CI registry. Create separate pull request to mirror image in Openshift CI and get it merged before using that image in any job or pull request rehearsals. Once the image is mirrored in Openshift CI registry, use it as `base_image` in config file.
+
+#### How to Mirror Public Image
+
+If the image is public, we can mirror the image by adding a mapping in file `core-services/image-mirroring/supplemental-ci-images/mapping_supplemental_ci_images_ci` of [openshift/release](https://github.com/openshift/release/blob/master/core-services/image-mirroring/supplemental-ci-images/mapping_supplemental_ci_images_ci) repository like this:
+
+```yaml
+quay.io/QUAY_REPOSITORY/test-image:latest registry.ci.openshift.org/ci/test-image:latest
+```
+
+Example: For AMQ Streams scenario, container image for tests is in public quay repository. In order to run tests using this image, pull request [Mirror Strimzi/AMQ Streams test images to CI registries](https://github.com/openshift/release/pull/37512) is created.
+
+#### How to Mirror Private Image
+
+If image is in private registry, following are the steps required to mirror that image.
+
+1. Create a new sub folder in `core-services/image-mirroring` folder of [openshift/release](https://github.com/openshift/release/tree/master/core-services/image-mirroring) repository with a name something similar to your scenario name. 
+
+   Example: For 3scale scenario, folder name is `threescale-test`.
+
+2. Add `OWNERS` file and a file with name similar to `mapping_$FOLDER_NAME-*` for adding image mapping.
+
+    ```yaml
+    quay.io/QUAY_REPOSITORY/IMAGE_NAME:latest registry.ci.openshift.org/$FOLDER_NAME/IMAGE_NAME:latest
+    ```
+    
+    Example: For 3scale scenario, file name is `mapping_threescale-test-image`.
+
+3. Follow [Create a New Secret](../Secrets/Secrets_Guide.md#create-a-new-secret) Guide and add these secrets and config.json in your vault collection.
+
+    ```bash
+    secretsync/target-namespace: "ci"
+    secretsync/target-name: "registry-push-credentials-quay-io-$FOLDER_NAME"
+    secretsync/target-clusters: "app.ci"
+    config.json: "..."  # quay secret to pull the private image (without encoding the secret)
+    ```  
+
+4. Add [periodic job](https://github.com/openshift/release/pull/37565/files#diff-6cc7e3cbf8ec6dcd46c75a23de295cbb5c2cd324e633294c5f7b8c896005c498) in `ci-operator/jobs/infra-image-mirroring.yaml` file and replace some values with the name of your $FOLDER_NAME.
+
+```yaml
+- name: periodic-image-mirroring-$FOLDER_NAME
+  labels:
+    ci.openshift.io/area: $FOLDER_NAME
+    ci.openshift.io/role: image-mirroring
+  spec:
+    # rest of the Pod config here ...
+    volumes:
+    - name: push
+      secret:
+        secretName: registry-push-credentials-quay-io-$FOLDER_NAME # this matches the secretsync/target-name
+```
 
 ### Scenario and Step Registry Documentation
 
