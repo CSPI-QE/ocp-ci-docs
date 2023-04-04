@@ -281,7 +281,7 @@ If image is in private registry, following are the steps required to mirror that
 
 1. Create a new sub folder in `core-services/image-mirroring` folder of [openshift/release](https://github.com/openshift/release/tree/master/core-services/image-mirroring) repository with a name something similar to your scenario name. 
 
-   Example: For 3scale scenario, folder name is `threescale-test`.
+   Example: For 3scale scenario, folder name is `3scale-qe`.
 
 2. Add `OWNERS` file and a file with name similar to `mapping_$FOLDER_NAME-*` for adding image mapping.
 
@@ -289,7 +289,7 @@ If image is in private registry, following are the steps required to mirror that
     quay.io/QUAY_REPOSITORY/IMAGE_NAME:latest registry.ci.openshift.org/$FOLDER_NAME/IMAGE_NAME:latest
     ```
     
-    Example: For 3scale scenario, file name is `mapping_threescale-test-image`.
+    Example: For 3scale scenario, file name is `mapping_3scale-qe-test-image`.
 
 3. Follow [Create a New Secret](../Secrets/Secrets_Guide.md#create-a-new-secret) Guide and add these secrets and config.json in your vault collection.
 
@@ -302,18 +302,20 @@ If image is in private registry, following are the steps required to mirror that
 
 4. Add [periodic job](https://github.com/openshift/release/pull/37565/files#diff-6cc7e3cbf8ec6dcd46c75a23de295cbb5c2cd324e633294c5f7b8c896005c498) in `ci-operator/jobs/infra-image-mirroring.yaml` file and replace some values with the name of your $FOLDER_NAME.
 
-```yaml
-- name: periodic-image-mirroring-$FOLDER_NAME
-  labels:
-    ci.openshift.io/area: $FOLDER_NAME
-    ci.openshift.io/role: image-mirroring
-  spec:
-    # rest of the Pod config here ...
-    volumes:
-    - name: push
-      secret:
-        secretName: registry-push-credentials-quay-io-$FOLDER_NAME # this matches the secretsync/target-name
-```
+    ```yaml
+    - name: periodic-image-mirroring-$FOLDER_NAME
+      labels:
+        ci.openshift.io/area: $FOLDER_NAME
+        ci.openshift.io/role: image-mirroring
+      spec:
+        # rest of the Pod config here ...
+        volumes:
+        - name: push
+          secret:
+            secretName: registry-push-credentials-quay-io-$FOLDER_NAME # this matches the secretsync/target-name
+    ```
+
+5. Add [RBAC file](https://github.com/openshift/release/pull/37565/files#diff-a31539fcd303f26034d22ff9b3e07ce536e4683aa85c3e2c08bb753d3ae38626) in `release/clusters/app.ci/registry-access` folder to allow only authenticated users to pull the image from Openshift CI registry.
 
 ### Scenario and Step Registry Documentation
 
