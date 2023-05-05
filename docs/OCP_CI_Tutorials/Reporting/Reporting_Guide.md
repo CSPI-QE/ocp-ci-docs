@@ -2,18 +2,12 @@
 
 ## Table of Contents<!-- omit from toc -->
 
-- [Introduction](#introduction)
 - [TestGrid](#testgrid)
   - [What is TestGrid?](#what-is-testgrid)
   - [How do I Report Jobs to TestGrid?](#how-do-i-report-jobs-to-testgrid)
   - [TestGrid Dashboard Creation and Modification Automation](#testgrid-dashboard-creation-and-modification-automation)
-- [Report Portal](#report-portal)
 - [Slack](#slack)
-
-
-## Introduction
-
-<!--TODO: WRITE THIS WHEN A DECISION IS MADE ON REPORT PORTAL AND SLACK-->
+  - [How to Setup Slack Alerts for a Scenario](#how-to-setup-slack-alerts-for-a-scenario)
 
 ## TestGrid
 
@@ -50,13 +44,37 @@ To add support for automatically detecting layered product interoperability jobs
 >
 > The only Prow jobs that will be automatically reported in TestGrid are the jobs in the `main` branch of the [openshift/release](https://github.com/openshift/release).
 
-## Report Portal
-
-TBD
-
 ## Slack
 
-TBD
+[OpenShift CI allows to set up Slack alerts](https://docs.ci.openshift.org/docs/how-tos/notification/) for our scenarios. The CSPI Interop team has decided that we should set up this Slack integration for each of our scenarios. Each scenario should alert to the Slack channel that product QE decides. The channel must be public and in redhat-internal.slack.com .
+
+### How to Setup Slack Alerts for a Scenario
+
+1. In the [openshift/release](https://github.com/openshift/release) repository, after you have created a configuration file for your scenario in the `ci-operator/config/...` directory and ran the `make update` or `make jobs` command, you should be able to find a `job` file for your config generated under `ci-operator/jobs/....`. Find the job file that ends in `-periodics.yaml` and open it.
+2. This file may contain multiple periodic jobs for the same repository, so find the periodic job that matches the config you'd like alerts for. If you are working with layered product interop testing, the name should include `-lp-interop`. In this example, the job's name is `periodic-ci-windup-windup-ui-tests-v1.0-mtr-ocp4.13-lp-interop-mtr-interop-aws`.
+3. Add a reporter_config stanza, replace the `channel:` value with the channel you're PQE team would like to use and update the `report_template:` with a different message (if you'd like to, this one is very generic and will work in most cases):
+
+```yaml
+  name: periodic-ci-windup-windup-ui-tests-v1.0-mtr-ocp4.13-lp-interop-mtr-interop-aws
+  reporter_config:
+    slack:
+      channel: '#mtr-interop'
+      job_states_to_report:
+      - success
+      - failure
+      - error
+      report_template: '{{if eq .Status.State "success"}} :slack-green: Job *{{.Spec.Job}}*
+        ended with *{{.Status.State}}*. <{{.Status.URL}}|View logs> {{else}} :failed:
+        Job *{{.Spec.Job}}* ended with *{{.Status.State}}*. <{{.Status.URL}}|View
+        logs> {{end}}'
+```
+
+4. Commit your changes and open a Pull Request
+
+> **IMPORTANT**
+>
+> Please see the [official documentation](https://docs.ci.openshift.org/docs/how-tos/notification/) for more information about how to configure Slack alerts further.
+
 
 [testgrid-config-generator]: https://github.com/openshift/ci-tools/tree/master/cmd/testgrid-config-generator
 [kubernetes-test-infra]: https://github.com/kubernetes/test-infra

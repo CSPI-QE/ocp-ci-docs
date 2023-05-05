@@ -9,7 +9,6 @@
     - [Build a Container Image to Execute Tests](#build-a-container-image-to-execute-tests)
   - [Reporting](#reporting)
     - [TestGrid](#testgrid)
-    - [Report Portal](#report-portal)
     - [Slack](#slack)
   - [Ephemeral Cluster Guide](#ephemeral-cluster-guide)
     - [How does this work?](#how-does-this-work)
@@ -193,13 +192,9 @@ Each scenario should have at least one container image to execute the tests with
 
 The majority (from what we can tell) of reporting in OpenShift CI is done through TestGrid. Luckily, the only thing we need to do to ensure this happens properly for our scenarios is include `-lp-interop` in the name of our configuration files (see step 3 of the [Getting Started](#getting-started) section above). This is covered for in depth in the [TestGrid section of the Reporting Guide](../Reporting/Reporting_Guide.md#testgrid)
 
-#### Report Portal
-
-<!--TODO: WRITE THIS WHEN A DECISION IS MADE ON REPORT PORTAL AND SLACK-->
-
 #### Slack
 
-<!--TODO: WRITE THIS WHEN A DECISION IS MADE ON REPORT PORTAL AND SLACK-->
+[OpenShift CI allows to set up Slack alerts](https://docs.ci.openshift.org/docs/how-tos/notification/) for our scenarios. The CSPI Interop team has decided that we should set up this Slack integration for each of our scenarios. Each scenario should alert to the Slack channel that product QE decides. The channel must be public and in redhat-internal.slack.com . Please see the [Reporting Guide](../Reporting/Reporting_Guide.md#slack) for guide on how to add these alerts to your scenario.
 
 ### Ephemeral Cluster Guide
 
