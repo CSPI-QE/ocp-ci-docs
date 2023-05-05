@@ -110,7 +110,7 @@ There is now functionality in OpenShift CI for jobs to be manually triggered usi
 
 4. To check the status of a job, execute the following command prompt, replacing the values below appropriately:
    - `**TOKEN**` = The token value found in step 2
-   - `**RUN_ID**`: The value of the `id` key in the API response above.
+   - `**RUN_ID**` = The value of the `id` key in the API response above.
 
    ```bash
    curl -X GET -H "Authorization: Bearer **TOKEN**" https://gangway-ci.apps.ci.l2s4.p1.openshiftapps.com/v1/executions/**RUN_ID**
