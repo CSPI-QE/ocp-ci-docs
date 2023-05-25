@@ -88,8 +88,8 @@ To add support for automatically detecting layered product interoperability jobs
 
 Failures are reported to Jira using the [firewatch tool](https://github.com/CSPI-QE/firewatch). This tool is used to react to failures in OpenShift CI jobs. This tool uses a configuration defined for each scenario to help it determine how it should report certain bugs. For a more technical understanding of how to use the tool and build the configuration properly, please see the documentation below:
 
-- [How to build the configuration](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration)
-- [README](https://github.com/CSPI-QE/firewatch/blob/main/README.md)
+- [Getting started](https://github.com/CSPI-QE/firewatch/blob/main/README.md)
+- [How to define the configuration](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration)
 
 For the purposes of how this automation works, here is a fairly simple example:
 
