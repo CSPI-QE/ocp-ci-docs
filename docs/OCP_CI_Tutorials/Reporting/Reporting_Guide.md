@@ -148,7 +148,7 @@ flowchart TD
 2. Modify the scenario to use the `firewatch-ipi-aws` workflow instead of the `ipi-aws` workflow
 3. Add the required environment variables:
    - `FIREWATCH_DEFAULT_JIRA_PROJECT`: This is the Jira project you'd like tickets to be filed to if the failure found does not match any rules. For Interop QE, this will probably be set to `LPTOCPCI`
-   - `FIREWATCH_CONFIG`: Where we define the rules for which tickets get filed where. Please see the []"Defining the Configuration" section of the Firewatch documentation](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration) for help defining this variable.
+   - `FIREWATCH_CONFIG`: Where we define the rules for which tickets get filed where. Please see the [How to define the configuration] (https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration) section of the Firewatch documentation for help defining this variable.
    - `FIREWATCH_JIRA_SERVER`: `https://issues.redhat.com`
      - This value always defaults to the stage server to avoid unwanted bugs.
 
