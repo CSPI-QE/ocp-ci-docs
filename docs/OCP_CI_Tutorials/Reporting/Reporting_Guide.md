@@ -10,6 +10,7 @@
   - [How to Setup Slack Alerts for a Scenario](#how-to-setup-slack-alerts-for-a-scenario)
 - [Failure Handling (Jira)](#failure-handling-jira)
   - [How Failures Are Reported to Jira](#how-failures-are-reported-to-jira)
+    - [Example](#example)
   - [How To Add Jira Reporting to a Scenario](#how-to-add-jira-reporting-to-a-scenario)
 
 ## TestGrid
@@ -91,9 +92,11 @@ Failures are reported to Jira using the [firewatch tool](https://github.com/CSPI
 - [Getting started](https://github.com/CSPI-QE/firewatch/blob/main/README.md)
 - [How to define the configuration](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration)
 
+#### Example
+
 For the purposes of how this automation works, here is a fairly simple example:
 
-Each job/scenario in OpenShift CI consists of different steps, for this example we will say our scenario has three steps: `setup`, `test`, and `teardown`. In each of these steps, as far as the automation is concerned, there are two types of faiures: `pod_failure` which means the step's script exited with a non-zero exit code and `test_failure` which means the step generated a JUnit XML file and a failure in the XML was found.
+Each job/scenario in OpenShift CI consists of different steps, for this example we will say our scenario has three steps: `setup`, `test`, and `teardown`. In each of these steps, as far as the automation is concerned, there are two types of failures: `pod_failure` which means the step's script exited with a non-zero exit code and `test_failure` which means the step generated a JUnit XML file and a failure in the XML was found.
 
 For this example, lets set some plain-english rules to make it a little easier to understand:
 
@@ -142,7 +145,7 @@ flowchart TD
 **If you currently use the ipi-aws workflow:**
 
 1. Ask your PQE contact which Jira project they would like test failures to be reported to
-2. Modify the scenario to use the firewatch-ipi-aws workflow instead of the ipi-aws workflow
+2. Modify the scenario to use the `firewatch-ipi-aws` workflow instead of the `ipi-aws` workflow
 3. Add the required environment variables:
    - `FIREWATCH_DEFAULT_JIRA_PROJECT`: This is the Jira project you'd like tickets to be filed to if the failure found does not match any rules. For Interop QE, this will probably be set to `LPTOCPCI`
    - `FIREWATCH_CONFIG`: Where we define the rules for which tickets get filed where. Please see the []"Defining the Configuration" section of the Firewatch documentation](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration) for help defining this variable.
