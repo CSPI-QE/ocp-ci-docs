@@ -10,6 +10,7 @@
   - [Reporting](#reporting)
     - [TestGrid](#testgrid)
     - [Slack](#slack)
+    - [Failure Handling (Jira Reporting)](#failure-handling-jira-reporting)
   - [Ephemeral Cluster Guide](#ephemeral-cluster-guide)
     - [How does this work?](#how-does-this-work)
     - [Important Workflows](#important-workflows)
@@ -195,6 +196,10 @@ The majority (from what we can tell) of reporting in OpenShift CI is done throug
 #### Slack
 
 [OpenShift CI allows to set up Slack alerts](https://docs.ci.openshift.org/docs/how-tos/notification/) for our scenarios. The CSPI Interop team has decided that we should set up this Slack integration for each of our scenarios. Each scenario should alert to the Slack channel that product QE decides. The channel must be public and in redhat-internal.slack.com . Please see the [Reporting Guide](../Reporting/Reporting_Guide.md#slack) for guide on how to add these alerts to your scenario.
+
+#### Failure Handling (Jira Reporting)
+
+Scenario failures are to be reported as bugs in Jira. The automation used to create the tickets for failures is smart enough to fairly-accurately determine why the failure happened and where to report it. For information on how to add this functionality and how it works, please see the [Reporting Guide](../Reporting/Reporting_Guide.md#failure-handling-jira).
 
 ### Ephemeral Cluster Guide
 

@@ -8,6 +8,9 @@
   - [TestGrid Dashboard Creation and Modification Automation](#testgrid-dashboard-creation-and-modification-automation)
 - [Slack](#slack)
   - [How to Setup Slack Alerts for a Scenario](#how-to-setup-slack-alerts-for-a-scenario)
+- [Failure Handling (Jira)](#failure-handling-jira)
+  - [How Failures Are Reported to Jira](#how-failures-are-reported-to-jira)
+  - [How To Add Jira Reporting to a Scenario](#how-to-add-jira-reporting-to-a-scenario)
 
 ## TestGrid
 
@@ -78,3 +81,86 @@ To add support for automatically detecting layered product interoperability jobs
 
 [testgrid-config-generator]: https://github.com/openshift/ci-tools/tree/master/cmd/testgrid-config-generator
 [kubernetes-test-infra]: https://github.com/kubernetes/test-infra
+
+## Failure Handling (Jira)
+
+### How Failures Are Reported to Jira
+
+Failures are reported to Jira using the [firewatch tool](https://github.com/CSPI-QE/firewatch). This tool is used to react to failures in OpenShift CI jobs. This tool uses a configuration defined for each scenario to help it determine how it should report certain bugs. For a more technical understanding of how to use the tool and build the configuration properly, please see the documentation below:
+
+- [How to build the configuration](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration)
+- [README](https://github.com/CSPI-QE/firewatch/blob/main/README.md)
+
+For the purposes of how this automation works, here is a fairly simple example:
+
+Each job/scenario in OpenShift CI consists of different steps, for this example we will say our scenario has three steps: `setup`, `test`, and `teardown`. In each of these steps, as far as the automation is concerned, there are two types of faiures: `pod_failure` which means the step's script exited with a non-zero exit code and `test_failure` which means the step generated a JUnit XML file and a failure in the XML was found.
+
+For this example, lets set some plain-english rules to make it a little easier to understand:
+
+- If there is any type of failure in the `setup` step, report it to Interop QE (INTEROP Jira project)
+- If there is any type of failure in the `teardown` step, report it to Interop QE (INTEROP Jira project)
+- If there is a `pod_failure` found in the `test` step, report it to Interop QE (INTEROP Jira project)
+- If there is a `test_failure` found in the `test` step, report it to Product QE (PQE Jira project)
+
+Using the logic outlined above, we can generate a firewatch config that will result in bugs being filed to the right teams with as much information as possible to help the engineer looking at the bug. The configuration for this logic would look something like this:
+
+```json
+[
+  {"step": "setup", "failure_type": "all", "classification": "Lorem Ipsum", "jira_project": "INTEROP"},
+  {"step": "test", "failure_type": "pod_failure", "classification":  "Lorem Ipsum", "jira_project": "INTEROP"},
+  {"step": "test", "failure_type": "test_failure", "classification":  "Lorem Ipsum", "jira_project": "PQE"},
+  {"step": "teardown", "failure_type": "all", "classification": "Lorem Ipsum", "jira_project": "INTEROP"}
+]
+```
+
+For the sake of this documentation, we will not go very deep into this configuration (again, see the documentation linked above) but this configuration will result in the plain-english rules we outlined earlier. Here is a highly-simplified flowchart of how this works:
+
+```mermaid
+
+flowchart TD
+  failure[Test failure in setup step]
+  type(Failure type determination)
+  rule(Does the step and failure type combo match a rule?)
+  matches(Yes)
+  no_match(No)
+  file_bug(File a bug in the Jira project defined in the rule)
+  file_generic_bug(File a bug in the default Jira project)
+  comment(Comment on duplicate bug with failure information)
+
+  failure --> type
+  type --> 
+  rule --> matches & no_match
+  matches --> a(Does a duplicate bug exist?) --> d(No) & c(Yes)
+  no_match --> b(Does a duplicate bug exist?) --> f(No) & c
+  d --> file_bug
+  f --> file_generic_bug
+  c  --> comment
+```
+
+### How To Add Jira Reporting to a Scenario
+
+**If you currently use the ipi-aws workflow:**
+
+1. Ask your PQE contact which Jira project they would like test failures to be reported to
+2. Modify the scenario to use the firewatch-ipi-aws workflow instead of the ipi-aws workflow
+3. Add the required environment variables:
+   - `FIREWATCH_DEFAULT_JIRA_PROJECT`: This is the Jira project you'd like tickets to be filed to if the failure found does not match any rules. For Interop QE, this will probably be set to `LPTOCPCI`
+   - `FIREWATCH_CONFIG`: Where we define the rules for which tickets get filed where. Please see the []"Defining the Configuration" section of the Firewatch documentation](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration) for help defining this variable.
+   - `FIREWATCH_JIRA_SERVER`: `https://issues.redhat.com`
+     - This value always defaults to the stage server to avoid unwanted bugs.
+
+**If you currently use a custom workflow:**
+
+1. Add the `firewatch-report-issues` ref to the end of the post steps in your workflow
+2. Ask your PQE contact which Jira project they would like test failures to be reported to
+3. Add the required environment variables:
+   - `FIREWATCH_DEFAULT_JIRA_PROJECT`: This is the Jira project you'd like tickets to be filed to if the failure found does not match any rules. For Interop QE, this will probably be set to `LPTOCPCI`
+   - `FIREWATCH_CONFIG`: Where we define the rules for which tickets get filed where. Please see the []"Defining the Configuration" section of the Firewatch documentation](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration) for help defining this variable.
+   - `FIREWATCH_JIRA_SERVER`: `https://issues.redhat.com`
+     - This value always defaults to the stage server to avoid unwanted bugs.
+
+Please see [this PR](https://github.com/openshift/release/pull/39700/files) as an example of how to add these values to your scenario.
+
+> **IMPORTANT**
+>
+> When defining the `FIREWATCH_CONFIG` variable, please try to cover every step that is executed during your scenario, you can view the steps that are run by going to a recent run of your scenario and viewing the artifacts. Each step should have a folder for it's artifacts and logs that you can use to build your config. If you happen to miss one of the steps and a failure occurs in that step, it will cause the failure to not match any of the rules in the config. In that case, a generic bug for the failure will be filed in the `FIREWATCH_DEFAULT_JIRA_PROJECT` project.
