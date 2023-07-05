@@ -252,10 +252,17 @@ We can promote images to the registry, `registry.ci.openshift.org`. Doing this m
 
 Here are the steps needed to do this:
 
-1. Creating a [config file](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333) for each private test repo. 
-2. We [specify the Dockerfile](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333R7) from that repo which is used to build an image
-3. Then we [promote the image](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333R9) to registry.ci.openshift.org.
-4. The image is available at registry.ci.openshift.org/. This allows us to use this image as a base_image in our scenario's config file (same as how any other base_image is being used). 
+1. Creating a [config file](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333) for each private test repo.
+2. Create a file named `.config.prowgen` at the same directory level as your config file. Populate this file with the following. This will allow for the private GitHub repo to be cloned allowing us to access the Dockerfile that we want to build.
+
+```shell
+private: true
+expose: true
+```
+
+3. We [specify the Dockerfile](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333R7) from that repo which is used to build an image
+4. Then we [promote the image](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333R9) to registry.ci.openshift.org.
+5. The image is available at registry.ci.openshift.org/. This allows us to use this image as a base_image in our scenario's config file (same as how any other base_image is being used). 
 
 One major benefit that we get from doing this is that we know the building of this image will be tested on any PR submitted by the PQE team. Setting up this promotion process automatically sets up a CI system for the image build in the test repo. If the image is failing to build, they will not be able to merge their code without explicitly skipping the automated check. Here's an [example PR](https://github.com/stolostron/clc-ui-e2e/pull/461) that triggered a [pre-submit job](https://prow.ci.openshift.org/view/gs/origin-ci-test/pr-logs/pull/stolostron_clc-ui-e2e/461/pull-ci-stolostron-clc-ui-e2e-release-2.7-images/1631327055738048512) to ensure that the image was built successfully. Once merged the post-submit job will run and promote the tested image to the registry where we can then make use of it.
 
