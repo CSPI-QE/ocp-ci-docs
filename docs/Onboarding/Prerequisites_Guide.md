@@ -102,9 +102,9 @@ See the [Container Creation Guide](../OCP_CI_Tutorials/Containers/Container_Crea
 ## Valid Test Output
 
 - Produce JUnit XMLs in a valid format for each test that is executed.
-  - This will be needed for reporting. 
+  - This will be needed for reporting.
 
-See [Report Guide](../OCP_CI_Tutorials/Scenarios/Reporting_Guide.md) for more information.
+See [Report Guide](../OCP_CI_Tutorials/Reporting/Reporting_Guide.md) for more information.
 
 ## Documented Tests
 
@@ -115,4 +115,4 @@ See [Report Guide](../OCP_CI_Tutorials/Scenarios/Reporting_Guide.md) for more in
 We define completion of your teams prerequisites as:
 
 > **All components of the prerequisite Jira ticket being complete and most importantly reviewed, verified, and approved by all parties.** Once the prerequisites are met we expect that the scenario can be implemented without any blockers. This allows us to plan the implementation appropriately as we attempt to do this for 30+ layered products.
-> 
+>

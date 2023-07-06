@@ -62,6 +62,7 @@ We can either run everything publicly like OpenShift CI was built to do or we ca
 
 ## Discuss RACI Chart
 
+There is a shared responsibility for the maintenance of these OpenShift CI scenarios. See the [RACI Chart](RACI_Chart.md) to understand the roles & responsibilities for this onboarding.
 
 ## Discuss timelines
 
