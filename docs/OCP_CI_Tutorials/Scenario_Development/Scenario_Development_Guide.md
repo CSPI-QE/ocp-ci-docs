@@ -28,7 +28,7 @@
   - [Local Development](#local-development)
     - [OpenShift Local (CRC)](#openshift-local-crc)
     - [Hive](#hive)
-    - [Quicklabs](#quicklabs)
+    - [QuickCluster](#quickcluster)
     - [OpenShift CI Native Debugging](#openshift-ci-native-debugging)
   - [Accessing the Test Cluster](#accessing-the-test-cluster)
     - [Access the API (`oc`)](#access-the-api-oc)
@@ -373,9 +373,9 @@ This will save:
 
 Deploy Openshift cluster using [Hive](https://gitlab.cee.redhat.com/-/snippets/5832) (saves cloud costs and can stay up for long periods of time). We can use this when we need to test product QE's stuff on a cluster that has multinode backing it.
 
-#### Quicklabs
+#### QuickCluster
 
-Deploy clusters using [quicklabs](https://quicklab.upshift.redhat.com/). Same use case as above just not using our openstack as env, limited scale.
+Deploy clusters using [quickcluster](https://resourcehub.redhat.com/resources/quickcluster/clusters). Same use case as above just not using our openstack as env, limited scale.
 
 #### OpenShift CI Native Debugging
 
