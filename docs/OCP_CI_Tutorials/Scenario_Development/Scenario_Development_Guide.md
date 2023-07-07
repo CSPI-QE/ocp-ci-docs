@@ -33,6 +33,8 @@
   - [Accessing the Test Cluster](#accessing-the-test-cluster)
     - [Access the API (`oc`)](#access-the-api-oc)
     - [Access the Console](#access-the-console)
+    - [Access the ROSA Hypershift cluster from cli](#access-the-rosa-hypershift-cluster-from-cli)
+    - [Access the ROSA Hypershift cluster from the console](#access-the-rosa-hypershift-cluster-from-the-console)
 
 ## Scenario Development Guide
 
@@ -219,11 +221,11 @@ Reading through the steps of the workflow to understand what it does and underst
 
 Below we'll list and provide some details about the usage of some workflows that we intend on using heavily.
 
-##### `ipi-aws`<!-- omit from toc -->
+##### `firewatch-ipi-aws`<!-- omit from toc -->
 
-step-registry doc: [ipi-aws](https://steps.ci.openshift.org/workflow/ipi-aws)
+step-registry doc: [firewatch-ipi-aws](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws)
 
-This workflow is going to serve as the base installation mechanism for our self-manage OpenShift installation. AWS is the first cloud provider that we are building out this testing on. As you can see in the link above this workflow is equipped with steps for deprovisioning which include must-gather that we get for free simply just by using this.
+This workflow is going to serve as the base installation mechanism for our self-manage OpenShift installation. AWS is the first cloud provider that we are building out this testing on. As you can see in the link above this workflow is equipped with steps for deprovisioning which include must-gather that we get for free simply just by using this. This also is complete with the [firewatch-report-issues ref](https://steps.ci.openshift.org/reference/firewatch-report-issues) which can be used to create Jira issues based on failures.
 
 As many other OCP install workflows it will place the kubeconfig file and other information about the cluster in the $SHARED_DIR available to all containers.
 
@@ -238,9 +240,59 @@ We have the option to set an env variable in the config to use AWS spot instance
 > 
 > Spot instances are not to be used in production.
 
-##### Important Workflow.Next<!-- omit from toc -->
+##### `firewatch-rosa-aws-sts-hypershift`<!-- omit from toc -->
 
-As this level of testing expands to different flavors of OCP installations we will cover future important workflows here for reference.
+step-registry doc: [firewatch-rosa-aws-sts-hypershift](https://steps.ci.openshift.org/workflow/firewatch-rosa-aws-sts-hypershift)
+
+This workflow is going to serve as the base installation mechanism for our ROSA Hypershift OpenShift installation. This workflow can be used in a very similar way to how we use ipi-aws.
+
+Requirements:
+
+ - An AWS account that is setup to deploy ROSA on [staging env](https://qaprodauth.console.redhat.com/).
+
+AWS setup done by workflow:
+
+ - For a ROSA deployment we need things like a VPC, subnets, and roles created. This workflow does everything we need for the deployment for us so there is no need to create and manage anything prior to running this workflow. ([Pre steps](https://steps.ci.openshift.org/workflow/firewatch-rosa-aws-sts-hypershift#pre)).
+
+AWS cleanup done by workflow:
+
+ - This workflow also has a post section that will cleanup all AWS resources that were created as part of the workflows pre section ([Post steps](https://steps.ci.openshift.org/workflow/firewatch-rosa-aws-sts-hypershift#post)).
+
+Usage:
+
+ - There are many ways to use this workflow, so just to show a simple example we will show requirements to test ROSA Hypershift staging. (Please see the [Environment](https://steps.ci.openshift.org/workflow/rosa-aws-sts-hypershift#environment) section of the workflow to learn about these vars and more).
+
+###### Files created in the $SHARED_DIR<!-- omit from toc -->
+
+ - The api.login file holds the username and password to login to the ROSA hypershift cluster.
+
+![Alt text](../../../resources/screenshots/Screenshot%20from%202023-06-29%2010-00-38.png "Files Created in the $SHARED_DIR after cluster provision")
+
+```yaml
+ tests:
+- as: aws-rosa-hypershift-lp-interop-example
+  steps:
+    cluster_profile: aws-cspi-qe
+    env:
+      FIREWATCH_CONFIG: |
+        [
+          {"step": "aws-*", "failure_type": "all", "classification": "Infrastructure AWS", "jira_project": "LPTOCPCI"},
+          {"step": "gather-*", "failure_type": "all", "classification": "Other", "jira_project": "LPTOCPCI"},
+          {"step": "osd-*", "failure_type": "all", "classification": "User Setup", "jira_project": "LPTOCPCI"},
+          {"step": "rosa-", "failure_type": "all", "classification":  "Cluster Creation", "jira_project": "LPTOCPCI"}
+        ]
+      FIREWATCH_DEFAULT_JIRA_PROJECT: LPTOCPCI
+      FIREWATCH_JIRA_SERVER: https://issues.redhat.com
+      OCM_LOGIN_ENV: staging
+      OPENSHIFT_VERSION: "4.13"
+      REGION: us-west-2
+      ROSA_LOGIN_ENV: staging
+    workflow: firewatch-rosa-aws-sts-hypershift
+```
+
+As you can see in the link above this workflow is equipped with steps for deprovisioning which include must-gather that we get for free simply just by using this. This also is complete with the [firewatch-report-issues ref](https://steps.ci.openshift.org/reference/firewatch-report-issues) which can be used to create Jira issues based on failures.
+
+____________________________________________
 
 ### Multiple private repo environment (Images)
 
@@ -430,3 +482,24 @@ If your scenario provisions a test cluster using a workflow like `ipi-aws`, foll
    2. `cat $SHARED_DIR/kubeadmin-password`
 
 7.  Open the test clusters tab and use `kubeadmin` as the username and the password you copied as the password to login.
+
+If your scenario provisions a test cluster using the workflow [firewatch-rosa-aws-sts-hypershift](https://steps.ci.openshift.org/workflow/firewatch-rosa-aws-sts-hypershift), follow these steps to access the test cluster:
+
+#### Access the ROSA Hypershift cluster from cli
+
+1. Start a rehearsal job using `/pj-rehearse`.
+2. Open the rehearsal job's logs and find the build cluster URL under the "Build Logs" header and click on it to access the build cluster.
+   - The URL typically looks like the message below and is typically within the first 10 lines of the logs.
+     - `INFO[2023-03-21T15:08:05Z] Using namespace https://console-openshift-console.apps.build03.ky4t.p1.openshiftapps.com/k8s/cluster/projects/ci-op-w4n1s3p5`
+3. In the build cluster's console, navigate to Workloads -> Pods.
+4. Find a running pod and open it's terminal.
+5. From here you can use the $SHARED_DIR [see here](#files-created-in-the-shared_dir) to find the kubeconfig file to access the cluster from the cli
+
+#### Access the ROSA Hypershift cluster from the console
+ 
+ - We are using the staging to deploy these ROSA clusters this means that you can access [https://qaprodauth.console.redhat.com/](https://qaprodauth.console.redhat.com/) to view the cluster that you are creating. 
+
+1. Login to [https://qaprodauth.console.redhat.com/](https://qaprodauth.console.redhat.com/) using an incognito window. If you are a member of CSPI reach out to someone on the team to get the login credentials for the automation account.
+2. From here navigate to OpenShift -> Clusters and if your job has already deployed the ROSA hypershift cluster you will find a cluster there. 
+3. From there you can track the completion of deployment and once done click a button to access the web console.
+4. The login information to access the cluster can be found in the api.login file that is placed in the $SHARED_DIR of a pod on the build cluster (See details in step 5 above).
