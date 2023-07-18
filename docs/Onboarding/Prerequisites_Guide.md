@@ -79,7 +79,7 @@ There are two paths for onboarding your layered product scenario into OpenShift 
 
 Everything that runs within OpenShift CI runs as a pod on an OpenShift cluster, therefore if you have installation automation that you need to run, you need to first create a container image capable of running your test suite that we can use to create a container within a pod on the [OpenShift CI build clusters](https://docs.ci.openshift.org/docs/getting-started/useful-links/#clusters).
 
-If your product is and operator and does not require any special installatin steps then we can use the existing cli container image and the [install-operators ref](https://steps.ci.openshift.org/reference/install-operators).
+If your product is an operator and does not require any special installation steps, then we can use the existing cli container image and the [install-operators ref](https://steps.ci.openshift.org/reference/install-operators).
 
 - The product can be installed via the operator hub (for GA'd layered products).
 - A method to install the operator from the operator hub within a container image.
