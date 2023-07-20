@@ -21,9 +21,9 @@
 
 This doc is meant to be used by Product QE teams to prepare themselves and their testing repositories to run within OpenShift CI.
 
-You will be working through and updating the following information in the prerequisite Jira ticket that you will be assigned when starting this prerequisite process.
+There are many things a team needs to prepare for when using OpenShift CI, we'll try to cover everything below.
 
->Please reach out to us on the Slack channel [#forum-qe-cspi-ocp-ci](https://coreos.slack.com/archives/C047Y0DPEJU) to let us know that you want to start the prerequisite process so that we can get you started with a prerequisite ticket.
+>Please reach out to us on the Slack channel [#forum-qe-layered-product](https://redhat-internal.slack.com/archives/C04QDE5TK1C) to ask questions, brainstorm specific solutions, ..etc.
 
 ## Prerequisites at a Glance
 
@@ -77,16 +77,22 @@ There are two paths for onboarding your layered product scenario into OpenShift 
 
 ## Containerized Product Deployment
 
+Everything that runs within OpenShift CI runs as a pod on an OpenShift cluster, therefore if you have installation automation that you need to run, you need to first create a container image capable of running your test suite that we can use to create a container within a pod on the [OpenShift CI build clusters](https://docs.ci.openshift.org/docs/getting-started/useful-links/#clusters).
+
+If your product is an operator and does not require any special installation steps, then we can use the existing cli container image and the [install-operators ref](https://steps.ci.openshift.org/reference/install-operators).
+
 - The product can be installed via the operator hub (for GA'd layered products).
 - A method to install the operator from the operator hub within a container image.
   - If your product is able to be installed using the steps existing in the  [operatorhub-subscribe ref](https://github.com/openshift/release/tree/master/ci-operator/step-registry/operatorhub/subscribe) than we can make use of that instead.
-- Product install configuration (anything that needs to be done post operator install) executed within a container (maintained by the product QE team in upstream repo or reachable registry).
+- Product install configuration (anything that needs to be done post operator install) executed within a container (maintained by the product QE team in an upstream repo or reachable registry).
 - Identify all environment variables and secrets needed for install.
 - All containerization must also be proven to work within an OpenShift cluster, not just proven in a local or special team based container environment.
 
 See the [Container Creation Guide](../OCP_CI_Tutorials/Containers/Container_Creation_Guide.md) for general guidance when creating your layered product deployment image(s).
 
 ## Containerized Tests
+
+Again since everything runs as a pod on OpenShift we need a container image for your test suite that can be used to create a container on the OpenShift CI build cluster. 
 
 - Product test environment setup executed within a container image (maintained by product QE team in test repo or reachable registry).
 - A script or command that can be run against the test container to trigger and generate an XML for the tests.
@@ -98,21 +104,23 @@ See the [Container Creation Guide](../OCP_CI_Tutorials/Containers/Container_Crea
 ## Resolve Internal Dependencies
 
 - Confirmation that the containerized deployment and testing can be run outside of the company firewall and doesn't rely on internal dependencies.
+  - Any dependencies on internal resources will be a blocker.
 
 ## Valid Test Output
 
 - Produce JUnit XMLs in a valid format for each test that is executed.
-  - This will be needed for reporting.
+  - This will be needed for reporting results via TestGrid.
+  - The string `junit_` must prepend the xml filename (i.e. `junit_test_results1.xml`)
 
 See [Report Guide](../OCP_CI_Tutorials/Reporting/Reporting_Guide.md) for more information.
 
 ## Documented Tests
 
-- Helpful documentation for tests that are being run that can be linked to in the [scenarios README.md](../Policy/Documentation/Scenario_Documentation_Policy.md)
+- Helpful documentation for tests that can be linked in the [scenarios README.md](../Policy/Documentation/Scenario_Documentation_Policy.md)
 
 ## Completion
 
 We define completion of your teams prerequisites as:
 
-> **All components of the prerequisite Jira ticket being complete and most importantly reviewed, verified, and approved by all parties.** Once the prerequisites are met we expect that the scenario can be implemented without any blockers. This allows us to plan the implementation appropriately as we attempt to do this for 30+ layered products.
+> **All components of the prerequisite guide being complete and most importantly reviewed, verified, and approved by all parties.** Once the prerequisites are met we expect that the scenario can be implemented without any blockers. This allows us to plan the implementation appropriately as we attempt to do this for 30+ layered products.
 >
