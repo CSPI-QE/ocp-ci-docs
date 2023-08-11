@@ -54,31 +54,9 @@ There is now functionality in OpenShift CI for jobs to be manually triggered usi
 
 ### How to Add Gangway API Triggering to a Scenario
 
-1. Open the configuration file for the scenario you'd like to add this functionality to. It can be found in the [openshift/release](https://github.com/openshift/release) repository under `ci-operator/config/....`
-2. For each test stanza in the `tests:` stanza, add `remote_api: true`. Example:
+The Gangway API functionality is now built into all jobs automatically in OpenShift CI so we no longer have to add specific code to our configs and jobs.
 
-   ```yaml
-   tests:
-   - as: mtr-interop-aws
-     cron: 0 6 * * 1
-     remote_api: true
-     steps:
-       cluster_profile: aws-cspi-qe
-       env:
-         BASE_DOMAIN: cspilp.interop.ccitredhat.com
-         MTR_TESTS_UI_SCOPE: interop
-         OPERATORS: |
-           [
-               {"name": "mtr-operator", "source": "redhat-operators", "channel": "alpha", "install_namespace": "mtr", "operator_group":"mtr-operator-group", "target_namespaces": "mtr"}
-           ]
-       test:
-       - ref: install-operators
-       - ref: mtr-deploy-windup
-       - ref: mtr-tests-ui
-       workflow: ipi-aws
-   ```
-
-3. Execute the `make update` command
+[Here is the PR](https://github.com/openshift/release/pull/40928) that was used to remove what was previously needed by jobs to support the API.
 
 ### How to Trigger a Job Manually
 
