@@ -47,7 +47,7 @@ For updates and history tracking please communicate over the JIRA tickets that w
 
 ## Discuss Private vs Public
 
-**OpenShift CI runs upstream, this means any artifact, log, error, console output, ..etc will be maid public.**
+### 1. Run tests directly on test cluster: OpenShift CI runs upstream, this means any artifact, log, error, console output, ..etc will be made public.
 
 With this in mind you need to discuss what is right for the scenario being tested.
 
@@ -57,6 +57,8 @@ With this in mind you need to discuss what is right for the scenario being teste
 If this product cannot be tested upstream we need to discuss the exact reason why. Then we must document this reason in the Kick-off Jira ticket. This will be referenced when building the scenario foundation to determine which path to follow.
 
 We can either run everything publicly like OpenShift CI was built to do or we can navigate the path of running and storing output privately.
+
+### 2. Run tests through a pod on test cluster: logs and console output are kept in private, artifacts only show error message.
 
 **The CSPI QE team reccommends the public testing approach.**
 
