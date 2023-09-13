@@ -103,6 +103,7 @@ Again since everything runs as a pod on OpenShift we need a container image for 
 See the [Container Creation Guide](../OCP_CI_Tutorials/Containers/Container_Creation_Guide.md) for general guidance when creating your scenarios test image(s).
 
 ## Containerized Product Deployment and Tests
+
 For organizations that do not want to expose their integrated testing to the public, we have a solution. Instead of installing operators and running tests separately, We build test image which includes all the dependencies, push them in a private registry, and then run the tests by starting a pod in a test cluster. 
 
 - The logs reside in a temporary pod which gets destroyed when the test is done. Therefore the logs will not be exposed to the public. 

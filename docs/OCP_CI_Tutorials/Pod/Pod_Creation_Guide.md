@@ -14,10 +14,15 @@ Before we start, we want to make sure private test image is built and push into 
 ## Creating Pod
 
 There are several important parameters we need to define on a pod spec:
+
 1. Containers image: this is the quay.io registry image along with tag.
+
 2. Containers command and args: this is the command you want to run inside the container.
+
 3. Containers env: multiple environmental variables could be used in a pod. One of the them is KUBECONFIG, which defines where is cluster kubeconfig located.
+
 4. volumeMount: defines the mount path for kubeconfig.
+
 5. imagePullSecrets: defines the secret name to access private registry.
 
 ## Running Pod
