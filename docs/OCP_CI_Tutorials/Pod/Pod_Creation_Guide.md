@@ -26,9 +26,11 @@ There are several important parameters we need to define on a pod spec:
 5. imagePullSecrets: defines the secret name to access private registry.
 
 ## Running Pod
+
 A pod is started with a bash command by 'oc create -f ..'. It automatically pulls test images and runs the tests command with kubeconfig and environemtal variables configred. Once the tests finish, the artifacts are saved before the pod is deleted.
 
 ## Pod Example
+
 Below is a pod we are using to run our tests:
 
 `Pod`
