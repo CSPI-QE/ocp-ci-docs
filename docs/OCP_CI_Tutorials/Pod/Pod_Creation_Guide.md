@@ -6,7 +6,6 @@
 - [Pod Example](#pod-example)
   
 ## Introduction
-
 Before we start, we want to make sure private test image is built and push into a private registry. The image includes installation of the product and test operators, test framework and other dependencies.
 
 ## Creating Pod
