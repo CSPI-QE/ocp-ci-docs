@@ -1,7 +1,5 @@
 # OpenShift CI Pod Creation Guide<!-- omit from toc -->
 
-## Table of Contents<!-- omit from toc -->
-
 - [Introduction](#introduction)
 - [Creating Pod](#creating-pod)
 - [Running Pod](#running-pod)
