@@ -62,6 +62,7 @@ There are two paths for onboarding your layered product scenario into OpenShift 
 - A GitHub organization that can be used for testing within OpenShift CI.
 - Layered product deployment automation in private GitHub repositories within that org (mirrored from your downstream source).
 - Layered product testing automation in private GitHub repositories repo within that org (mirrored from your downstream source).
+- Products prefer to keep all the repositories and images private. GitLab or GitHub repositories are not mirrored. 
 
 > **IMPORTANT:**
 >
@@ -100,6 +101,15 @@ Again since everything runs as a pod on OpenShift we need a container image for 
 - All containerization must also be proven to work within an OpenShift cluster, not just proven in a local or special team based container environment.
 
 See the [Container Creation Guide](../OCP_CI_Tutorials/Containers/Container_Creation_Guide.md) for general guidance when creating your scenarios test image(s).
+
+## Containerized Product Deployment and Tests
+
+For organizations that do not want to expose their integrated testing to the public, we have a solution. Instead of installing operators and running tests separately, We build test image which includes all the dependencies, push them in a private registry, and then run the tests by starting a pod in a test cluster. 
+
+- The logs reside in a temporary pod which gets destroyed when the test is done. Therefore the logs will not be exposed to the public. 
+- The team can decide which information should be included in the output artifacts so that they won’t contain sensitive information to the public. The typical xml file for test results include test name, class name, run time, pass/fail numbers, and error messages for failed test cases. 
+
+See the [Pod Creation Guide](../OCP_CI_Tutorials/Pod/Pod_Creation_Guide.md) for general guidance when creating pod for your scenarios.
 
 ## Resolve Internal Dependencies
 
