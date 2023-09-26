@@ -5,6 +5,7 @@
 - [Overview](#overview)
 - [Cadence](#cadence)
 - [OpenShift Build](#openshift-build)
+- [Weekly Trigger Job](#weekly-trigger-job)
 - [Cron Config](#cron-config)
 - [Gangway API](#gangway-api)
   - [How to Add Gangway API Triggering to a Scenario](#how-to-add-gangway-api-triggering-to-a-scenario)
@@ -16,37 +17,48 @@ This guide is meant to cover the expected triggering cadence that will be used t
 
 ## Cadence
 
-We will trigger on a weekly cadence. Specifically 1:00am on Mondays.
+We will trigger on a weekly cadence. Specifically 6:00UTC on Mondays for self-managed OCP pre-GA testing. Rosa-sts-hypershift testing runs at 10:00 UTC on Mondays.
 
 ## OpenShift Build
 
-We will be testing using nightly OpenShift pre-GA. Within the config files we specify the version of OCP by doing the following.
+We will be testing using nightly OpenShift pre-GA builds. Within the config files we specify the version of OCP by doing the following.
 
 ```yaml
 releases:
-  initial:
-    candidate:
-      product: ocp
-      stream: nightly
-      version: "4.13"
   latest:
     candidate:
       product: ocp
       stream: nightly
-      version: "4.13"
+      version: "4.14"
 ```
+
+## Weekly Trigger Job
+
+In order to allow the interop program to manage which scenarios are active/inactive on a weekly basis we needed to go beyond trigging each scenario using its cron value in the config.
+
+Our trigger mechanism is now an independent job that will read a file from vault and trigger only those jobs which are set to `active: true` using the gangway API. 
+
+- [trigger-jobs ref](https://github.com/openshift/release/tree/master/ci-operator/step-registry/trigger-jobs) holds the logic to read the jobs list from vault, check the gangway api and one by one trigger each scenario. (See README).
+- [weekly trigger config](https://github.com/openshift/release/blob/master/ci-operator/config/rhpit/interop-tests/rhpit-interop-tests-main__weekly_trigger.yaml) is responsible for using the ref to create a prowjob meant to trigger at the time each specific testing is supposed to run.
+  - The cron value here is the one that will determine when this testing runs.
+- [Example job result](https://prow.ci.openshift.org/view/gs/origin-ci-test/logs/periodic-ci-rhpit-interop-tests-main-weekly_trigger-ocp-self-managed-layered-product-interop/1706186938068766720) - the [build-log.txt](https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/origin-ci-test/logs/periodic-ci-rhpit-interop-tests-main-weekly_trigger-ocp-self-managed-layered-product-interop/1706186938068766720/artifacts/ocp-self-managed-layered-product-interop/trigger-jobs/build-log.txt) file here shows what the job read and the actions it took.
+- [Example slack notification of job result](https://redhat-internal.slack.com/archives/C04PK4QPSR1/p1695621977083089)
+
 
 ## Cron Config
 
-We use the cron option under the ci-operator test stanza to configure the jobs that make up this layered product testing to run on this weekly cadence.
+Now that we control when to run the scenario with the weekly trigger above, we needed to stop using the cron in the scenario config to trigger the weekly testing.
+
+- We cannot simply remove the cron as that would make the job a pre-submit job rather then a periodic.
+- We cannot just set the cron value to a date that doesn't exist or far into the future.
+- We have settled on setting the cron to run once per year during company shutdown.
+  - So each scenarios cron value should be as you see below.
 
 ```yaml
 tests:
 - as: {layered_product}-interop-aws
-  cron: 0 1 * * 1
+  cron: 0 6 25 12 *
 ```
-
-We see here the cron is set to Monday at 1am to trigger this specific test. Once a config holding this code is merged into the release repo the cron becomes active.
 
 ## Gangway API
 
