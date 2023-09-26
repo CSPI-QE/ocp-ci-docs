@@ -91,7 +91,7 @@ releases:
       version: "4.13"
 tests:
 - as: mock-scenario-aws
-  cron: 0 1 * * 1
+  cron: 0 6 25 12 *
   steps:
     cluster_profile: aws-cspi-qe
     env:
@@ -114,7 +114,7 @@ tests:
 - `releases` : Releases maps semantic release payload identifiers to the names that they will be exposed under. For instance, an 'initial' name will be exposed as $RELEASE_IMAGE_INITIAL. The 'latest' key is special and cannot co-exist with 'tag_specification', as they result in the same output. See the [official OpenShift CI documentation](https://steps.ci.openshift.org/ci-operator-reference) for more information.
 - `tests` : A list of tests to execute.
   - `as` : The name of a test.
-  - `cron` : The schedule this test should run on. For CSPI purposes, it should be set to `0 1 * * 1`.
+  - `cron` : The schedule this test should run on. For CSPI purposes, it should be set to `0 6 25 12 *`.
   - `steps` : A list of steps in this test object.
     - `cluster_profile` : Used during test cluster provisioning. The CSPI cluster profile for an AWS cluster would be `aws-cspi-qe`. Please don't use the profile if you are not in the CSPI organization as it will charge our organization for your cluster provisioning.
     - `env` : A list of environment variables needed for your tests to run. For each variable, use the following format: `{ENV_VAR_NAME}: {ENV_VAR_VALUE}`.
@@ -396,7 +396,7 @@ For example while we are developing a scenario we can use this workflow like we 
 ```yaml
 tests:
 - as: mock-scenario
-  cron: 0 1 * * 1
+  cron: 0 6 25 12 *
   steps:
     cluster_profile: aws-cspi-qe
     env:
