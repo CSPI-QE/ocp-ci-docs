@@ -9,9 +9,12 @@
   - [1. Public GitHub repositories (preferred)](#1-public-github-repositories-preferred)
   - [2. Private GitHub repositories](#2-private-github-repositories)
 - [GitHub Org Requirements](#github-org-requirements)
+  - [Invite `openshift-ci-robot` and `openshift-merge-robot` to Organization](#invite-openshift-ci-robot-and-openshift-merge-robot-to-organization)
+  - [Add the `OpenShift CI` GitHub App to the Organization](#add-the-openshift-ci-github-app-to-the-organization)
 - [GitHub User Readiness](#github-user-readiness)
 - [Containerized Product Deployment](#containerized-product-deployment)
 - [Containerized Tests](#containerized-tests)
+- [Containerized Product Deployment and Tests](#containerized-product-deployment-and-tests)
 - [Resolve Internal Dependencies](#resolve-internal-dependencies)
 - [Valid Test Output](#valid-test-output)
 - [Documented Tests](#documented-tests)
@@ -70,7 +73,30 @@ There are two paths for onboarding your layered product scenario into OpenShift 
 
 ## GitHub Org Requirements
 
-- [Add Openshift-ci-robot & openshift-merge-robot](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#granting-robots-privileges-and-installing-the-github-app) to your Github organization.
+### Invite `openshift-ci-robot` and `openshift-merge-robot` to Organization
+
+1. If you are an owner of the organization, navigate to the organization in GitHub.
+2. Click the "People" header towards the top of the page.
+3. Click the "Invite member" button in the upper right-hand corner.
+4. Search both `openshift-ci-robot` and `openshift-merge-robot` and invite them.
+5. The invitations will be accepted within 4 hours via the following jobs:
+   - `periodic-openshift-release-master-accept-invitations-ci-robot`
+   - `periodic-openshift-release-master-accept-invitations-merge-robot`
+
+### Add the `OpenShift CI` GitHub App to the Organization
+
+1. Navigate to the application: [**follow this link**](https://github.com/apps/openshift-ci).
+2. Click the "Configure" button in the upper right-hand corner.
+3. Select the GitHub organization to add the application to.
+4. Ensure "All repositories" is selected.
+5. Click the "Install & Authorize" button towards the bottom of the page.
+
+> **NOTE:** 
+> This application is going to replace the `openshift-ci-robot` and `openshift-merge-robot` eventually.
+
+
+> **NOTE:** 
+> Documentation from the DPTP (OpenShift CI maintainers) can be found [here](https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#granting-robots-privileges-and-installing-the-github-app).
 
 ## GitHub User Readiness
 
