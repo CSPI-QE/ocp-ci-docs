@@ -15,7 +15,7 @@
     - [How does this work?](#how-does-this-work)
     - [Important Workflows](#important-workflows)
   - [Multiple private repo environment (Images)](#multiple-private-repo-environment-images)
-    - [So How do we solve this?](#so-how-do-we-solve-this)
+    - [How to promote images to the registry](#how-to-promote-images-to-the-registry)
   - [Mirror Quay Images](#mirror-quay-images)
     - [How to Mirror Public Image](#how-to-mirror-public-image)
     - [How to Mirror Private Image](#how-to-mirror-private-image)
@@ -298,7 +298,7 @@ ____________________________________________
 
 You may run into a situation where PQE needs many different test environments to execute all of their tests. This becomes difficult when the images (read Dockerfiles) are stored in private github repos. We are not able to build all of these images from a single config file through the private repo access being offered by OpenShift CI. This is because the only private repo that we will have access to is the "src" repo (the repo that is associated with the directory naming convention). We also cannot just store all of the Dockerfiles into this one "src" repo and hope to git clone the files from the other private repos because a personal access token (PAT) would be required. If we tried using the [secrets functionality built into OpenShift CI](../Secrets/Secrets_Guide.md), the PAT would only be accessable during the execution of a ref, not during the image's build-process.
 
-#### So How do we solve this?
+#### How to promote images to the registry
 
 We can promote images to the registry, `registry.ci.openshift.org`. Doing this makes the image available to be used as a base_image within OpenShift CI.
 

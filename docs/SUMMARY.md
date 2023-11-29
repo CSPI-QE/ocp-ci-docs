@@ -14,6 +14,7 @@
 ## Tutorials
 
 - [Containers](OCP_CI_Tutorials/Containers/Container_Creation_Guide.md)
+- [Pod](OCP_CI_Tutorials/Pod/Pod_Creation_Guide.md)
 - [Secrets](OCP_CI_Tutorials/Secrets/Secrets_Guide.md)
 - [Step Registry](OCP_CI_Tutorials/Step_Registry/Step_Registry_Guide.md)
   - [Step Registry - Ref Guide](OCP_CI_Tutorials/Step_Registry/Step_Registry_Ref_Guide.md)
