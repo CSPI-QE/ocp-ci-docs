@@ -114,7 +114,7 @@ tests:
 - `releases` : Releases maps semantic release payload identifiers to the names that they will be exposed under. For instance, an 'initial' name will be exposed as $RELEASE_IMAGE_INITIAL. The 'latest' key is special and cannot co-exist with 'tag_specification', as they result in the same output. See the [official OpenShift CI documentation](https://steps.ci.openshift.org/ci-operator-reference) for more information.
 - `tests` : A list of tests to execute.
   - `as` : The name of a test.
-  - `cron` : The schedule this test should run on. For CSPI purposes, it should be set to `0 6 25 12 *`.
+  - `cron` : The schedule this test should run on. For CSPI purposes, it should be set to `0 6 25 10 *`.
   - `steps` : A list of steps in this test object.
     - `cluster_profile` : Used during test cluster provisioning. The CSPI cluster profile for an AWS cluster would be `aws-cspi-qe`. Please don't use the profile if you are not in the CSPI organization as it will charge our organization for your cluster provisioning.
     - `env` : A list of environment variables needed for your tests to run. For each variable, use the following format: `{ENV_VAR_NAME}: {ENV_VAR_VALUE}`.
@@ -221,7 +221,7 @@ Reading through the steps of the workflow to understand what it does and underst
 
 Below we'll list and provide some details about the usage of some workflows that we intend on using heavily.
 
-##### `firewatch-ipi-aws`<!-- omit from toc -->
+### `firewatch-ipi-aws`<!-- omit from toc -->
 
 step-registry doc: [firewatch-ipi-aws](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws)
 
@@ -240,7 +240,15 @@ We have the option to set an env variable in the config to use AWS spot instance
 > 
 > Spot instances are not to be used in production.
 
-##### `firewatch-rosa-aws-sts-hypershift`<!-- omit from toc -->
+We add AWS user tags to name aws resources by scenario, set the USER_TAGS env var with <scenario_short_name>.
+
+```yaml
+    env:
+      USER_TAGS: |
+        scenario mtr
+```
+
+### `firewatch-rosa-aws-sts-hypershift`<!-- omit from toc -->
 
 step-registry doc: [firewatch-rosa-aws-sts-hypershift](https://steps.ci.openshift.org/workflow/firewatch-rosa-aws-sts-hypershift)
 
