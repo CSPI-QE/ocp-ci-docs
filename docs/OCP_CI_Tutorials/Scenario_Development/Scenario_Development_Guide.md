@@ -270,7 +270,7 @@ Usage:
 
  - There are many ways to use this workflow, so just to show a simple example we will show requirements to test ROSA Hypershift staging. (Please see the [Environment](https://steps.ci.openshift.org/workflow/rosa-aws-sts-hypershift#environment) section of the workflow to learn about these vars and more).
 
-###### Files created in the $SHARED_DIR<!-- omit from toc -->
+#### Files created in the $SHARED_DIR<!-- omit from toc -->
 
  - The api.login file holds the username and password to login to the ROSA hypershift cluster.
 
