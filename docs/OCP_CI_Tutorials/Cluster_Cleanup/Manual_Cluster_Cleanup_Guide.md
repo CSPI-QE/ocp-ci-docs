@@ -7,7 +7,7 @@
 
 ## Introduction
 
-Sometimes, a scenario can fail before a cluster is fully deprovisioned in a cloud-provider (at the time of writing this, we only use AWS). If that occurs, the Interop team is responsible for cleaning that cluster up in the cloud-provider account to avoid any unwanted cost. This document will serve as a guide to how to manually cleanup a cluster in the cloud-provider platforms we use.
+Sometimes, a scenario can fail before a cluster is fully deprovisioned leaving stale resources in a cloud-provider (at the time of writing this, we only use AWS). If that occurs, the Interop team is responsible for cleaning that cluster up in the cloud-provider account to avoid any unwanted cost. This document will serve as a guide to how to manually cleanup a cluster in the cloud-provider platforms we use.
 
 ## AWS
 
