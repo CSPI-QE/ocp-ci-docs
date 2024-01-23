@@ -28,7 +28,7 @@ In order to cleanup an OCP cluster provisioned through OpenShift CI in AWS, foll
      - Example: `Name:ci-op-gff2wbn0-3eb6d`
    - Select all of the EC2 instances from the resulting search
    - Click the "Instance State" dropdown and choose "Terminate instance"
-   - Click "Terminate" in the dialog box and wait a minute or two to veriy the instances terminate
+   - Click "Terminate" in the dialog box and wait a minute or two to verify the instances terminate
 4. Delete NAT Gateways
    - Open the VPC page
    - On the left side of the screen, under "Virtual private cloud", select "NAT gateways"
