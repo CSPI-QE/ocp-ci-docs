@@ -24,6 +24,7 @@
 - [Reporting](OCP_CI_Tutorials/Reporting/Reporting_Guide.md)
 - [TestGrid](OCP_CI_Tutorials/TestGrid/TestGrid.md)
   - [Manual Dashboard Creation and Modification Guide](OCP_CI_Tutorials/TestGrid/TestGrid_Dashboard_Creation_and_Modification_Guide.md)
+- [Manual Cluster Cleanup](OCP_CI_Tutorials/Cluster_Cleanup/Manual_Cluster_Cleanup_Guide.md)
 
 ## Policy
 
