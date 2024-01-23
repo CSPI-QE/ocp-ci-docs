@@ -11,7 +11,7 @@ Sometimes, a scenario can fail before a cluster is fully deprovisioned leaving s
 
 ## AWS
 
-In order to cleanup a cluster in AWS, follow these steps:
+In order to cleanup an OCP cluster provisioned through OpenShift CI in AWS, follow these steps:
 
 1. Find the "name" of the cluster. Every cluster provisioned using OpenShift CI should have a unique name associated with it. This is how we know which AWS resources came from which Prow job.
    - Navigate to the job's logs. For example: https://prow.ci.openshift.org/view/gs/test-platform-results/pr-logs/pull/openshift_release/47923/rehearse-47923-periodic-ci-konveyor-tackle-ui-tests-mta_6.1.1-mta-ocp4.14-lp-interop-mta-interop-aws/1749831891013341184
