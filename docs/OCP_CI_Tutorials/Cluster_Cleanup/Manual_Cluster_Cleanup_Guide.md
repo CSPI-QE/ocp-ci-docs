@@ -18,7 +18,7 @@ In order to cleanup a cluster in AWS, follow these steps:
    - Click on "artifacts"
    - Navigate to `artifacts/job-name/ipi-install-install/build-log.txt`. The job name for the link provided above is "mta-interop-aws", for example.
    - The "name" of the cluster can be found under metadata -> name at the top of the file. In the example, the name is `ci-op-gff2wbn0-3eb6d`. ![cluster-name-example](img/cluster-name.png)
-2. Login to the [AWS console](https://aws.amazon.com/console/) and set your region to "us-east-2".
+2. Login to the [AWS console](https://aws.amazon.com/console/) and navigate to the correct region that your cluster was created.
    - Our self managed clusters are created in either "us-east-1" or "us-east-2". Our managed cluster creation is using "us-west-2". For self managed clusters you can confirm that region by looking at the zones in the `artifacts/job-name/ipi-install-install/build-log.txt` file used in step 1. ![aws-zones-example](img/aws-zones.png). For managed clusters you can find the region in the file `artifacts/job-name/rosa-cluster-provision/build-log.txt`
 3. Terminate EC2 instances.
    - Open the EC2 page
