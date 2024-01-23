@@ -66,7 +66,7 @@ In order to cleanup a cluster in AWS, follow these steps:
 8. Delete the VPC
    - Open the VPC page again
    - On the left side of the screen, under "Virtual private cloud" select "Your VPCs"
-   - Find the VPC that is associated with the cluster by using the `Name:CLUSTER-NAME` search.
+   - Find the VPC that is associated with the cluster by using the `Name:CLUSTER-NAME` search. Each cluster should only have a single VPC
    - Select the VPC
    - Under the "Actions" dropdown select the "Delete VPC"
    - Complete the verification task (type "delete" in the textbox) and click the "Delete" button
