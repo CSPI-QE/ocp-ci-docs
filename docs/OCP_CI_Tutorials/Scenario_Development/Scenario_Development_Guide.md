@@ -295,6 +295,24 @@ Usage:
     workflow: firewatch-rosa-aws-sts-hypershift
 ```
 
+- To access and the ROSA cli as our workflows does, we need to use the dynamic image tags of both rosa and ocm cli:
+
+```yaml
+base_images:
+  cli:
+    name: "4.16"
+    namespace: ocp
+    tag: cli
+  cli-ocm:
+    name: cli-ocm
+    namespace: ci
+    tag: latest
+  rosa-aws-cli:
+    name: rosa-aws-cli
+    namespace: ci
+    tag: latest
+```
+
 #### Files created in the $SHARED_DIR<!-- omit from toc -->
 
  - The api.login file holds the username and password to login to the ROSA classic/hypershift cluster.
