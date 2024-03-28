@@ -33,8 +33,8 @@
   - [Accessing the Test Cluster](#accessing-the-test-cluster)
     - [Access the API (`oc`)](#access-the-api-oc)
     - [Access the Console](#access-the-console)
-    - [Access the ROSA Hypershift cluster from cli](#access-the-rosa-hypershift-cluster-from-cli)
-    - [Access the ROSA Hypershift cluster from the console](#access-the-rosa-hypershift-cluster-from-the-console)
+    - [Access the ROSA cluster from cli](#access-the-rosa-cluster-from-cli)
+    - [Access the ROSA cluster from the console](#access-the-rosa-cluster-from-the-console)
 
 ## Scenario Development Guide
 
@@ -247,6 +247,7 @@ We add AWS user tags to name aws resources by scenario, set the USER_TAGS env va
       USER_TAGS: |
         scenario mtr
 ```
+
 ### `firewatch-rosa-aws-sts` & `firewatch-rosa-aws-sts-hypershift` <!-- omit from toc -->
 
 step-registry doc (ROSA Classic): [firewatch-rosa-aws-sts](https://steps.ci.openshift.org/workflow/firewatch-rosa-aws-sts)
@@ -495,7 +496,7 @@ If your scenario provisions a test cluster using a workflow like `ipi-aws`, foll
 
 If your scenario provisions a test cluster using a ROSA workflow, follow these steps to access the test cluster:
 
-#### Access the ROSA Classic/Hypershift cluster from cli
+#### Access the ROSA cluster from cli
 
 1. Start a rehearsal job using `/pj-rehearse`.
 2. Open the rehearsal job's logs and find the build cluster URL under the "Build Logs" header and click on it to access the build cluster.
@@ -505,7 +506,7 @@ If your scenario provisions a test cluster using a ROSA workflow, follow these s
 4. Find a running pod and open it's terminal.
 5. From here you can use the $SHARED_DIR [see here](#files-created-in-the-shared_dir) to find the kubeconfig file to access the cluster from the cli
 
-#### Access the ROSA Classic/Hypershift cluster from the console
+#### Access the ROSA cluster from the console
  
  - We are using the staging to deploy these ROSA clusters this means that you can access [https://qaprodauth.console.redhat.com/](https://qaprodauth.console.redhat.com/) to view the cluster that you are creating. 
 
