@@ -257,7 +257,7 @@ step-registry doc (ROSA Hypershift): [firewatch-rosa-aws-sts-hypershift](https:/
 These workflows are going to serve as the base installation mechanism for our ROSA Classic/Hypershift OpenShift installation, 
 and can be used in a very similar way to how we use ipi-aws.
 
-As you can see in the link above this workflow is equipped with steps for deprovisioning which include must-gather that we get for free simply just by using this. This also is complete with the [firewatch-report-issues ref](https://steps.ci.openshift.org/reference/firewatch-report-issues) which can be used to create Jira issues based on failures.
+These workflows equipped with steps for deprovisioning including `must-gather`. It also includes the [firewatch-report-issues ref](https://steps.ci.openshift.org/reference/firewatch-report-issues) which can be used to create Jira issues based on failures.
 
 Requirements:
 
