@@ -297,7 +297,7 @@ Usage:
     workflow: firewatch-rosa-aws-sts-hypershift
 ```
 
-- To access and the ROSA cli as our workflows does, we need to use the dynamic image tags of both rosa and ocm cli:
+- To access the ROSA cli in a similar way as the above workflows, we need to use the dynamic image tags of both rosa and ocm cli:
 
 ```yaml
 base_images:
