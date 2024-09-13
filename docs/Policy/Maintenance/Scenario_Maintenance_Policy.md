@@ -13,6 +13,7 @@
 - [Triggering Cadence](#triggering-cadence)
 - [Reporting Tests](#reporting-tests)
 - [Skipping Scenarios](#skipping-scenarios)
+- [Escalation Policy for Failing Scenarios](#escalation-policy-for-failing-scenarios)
 
 ## Overview
 
@@ -31,6 +32,7 @@ Scenario maintenance tasks include:
 6. Triggering Cadence (CSPI-QE)
 7. Reporting Tests (CSPI-QE)
 8. Skipping Scenarios (CSPI-QE)
+9. Escalation Policy (CSPI-QE)
 
 ## Scenario Expansions
 
@@ -221,3 +223,17 @@ With the introduction of a trigger job we now are able to skip scenario's easily
 This file holds a list of all job names for our program and a value `active` which will be either true or false. When we need to skip a scenario for whatever reason we just need to edit the file in vault to turn `active: true` to `active: false`.
 
 This action is restricted to only a handful of people in the CSPI-QE org.
+
+## Escalation Policy for Failing Scenarios
+
+All the scenarios should be passing unless there is a known bug associated with the product or platform.
+
+An escalation policy is followed for scenarios that fail w/o an associated product/platform issues that are left running multiple weeks without an update.
+This means the product team was tagged on ticket for a failed scenario and took no action to resolve the issue for multiple cycles.
+
+The escalation policy will be followed as described here:
+
+* Interop QE will notify the Interop manager to escalate the blocked scenario
+* From here, the product QE manager will be notified
+* The isssue will be reflected on the OpenShift program calls until action is taken to resolve the issue.
+* The final step would be to disable the scenario until action is taken by the PQE team to get the scenario passing successfully or log an bug associated with the failure.
