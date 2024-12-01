@@ -17,7 +17,7 @@ This guide is meant to cover the expected triggering cadence that will be used t
 
 ## Cadence
 
-We will trigger on a weekly cadence. Specifically 6:00UTC on Mondays for self-managed OCP pre-GA testing. Rosa-sts-hypershift testing runs at 10:00 UTC on Mondays.
+We will trigger on a weekly cadence. Specifically 6:00UTC on Mondays for self-managed OCP pre-GA testing. Rosa-sts-hypershift/classic testing runs at 10:00 UTC on Mondays.
 
 ## OpenShift Build
 
