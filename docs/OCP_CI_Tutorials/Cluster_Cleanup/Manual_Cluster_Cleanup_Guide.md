@@ -4,12 +4,44 @@
 
 - [Introduction](#introduction)
 - [AWS](#aws)
+  - [General cleanup dos and don'ts!](#general-cleanup-dos-and-donts)
+    - [VPCs](#vpcs)
+    - [Hosted zones](#route-53-hosted-zones)
+    - [S3 Buckets](#s3-buckets)
+  - [Cleanup resources by cluster identified](#cleanup-resources-by-cluster-identified)
 
 ## Introduction
 
 Sometimes, a scenario can fail before a cluster is fully deprovisioned leaving stale resources in a cloud-provider (at the time of writing this, we only use AWS). If that occurs, the Interop team is responsible for cleaning that cluster up in the cloud-provider account to avoid any unwanted cost. This document will serve as a guide to how to manually cleanup a cluster in the cloud-provider platforms we use.
 
 ## AWS
+
+### General cleanup dos and don'ts!
+
+This section provides additional cleanup instructions for each resource type
+
+It is generally safe to delete any resource whose name has one of the following prefixes:
+
+* `ci-op-*`
+* `ci-rosa-*`
+* `mtc-*` (The MTC scenario has a unique prefix since it's deployed by the ocp-cli-installer)
+
+#### VPCs
+
+* In any AWS region: **_Don't_** delete any VPC whose `Default VPC` value is `Yes`
+
+![default-vpc.png](img/default-vpc.png)
+
+#### Route 53: Hosted zones
+
+* **_Do_** ONLY delete A records safely inside available hosted zones
+* **_Don't_** delete any hosted zone which doesn't have the interop testing prefix mentioned above (there may be reserved resources for internal use)
+
+#### S3 Buckets
+
+* Similarly, **_don't_** delete any S3 buckets which doesn't have the interop testing prefix mentioned above (there may be reserved resources for internal use)
+
+### Cleanup resources by cluster identified
 
 In order to cleanup an OCP cluster provisioned through OpenShift CI in AWS, follow these steps:
 
