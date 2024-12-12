@@ -4,7 +4,7 @@
 
 - [Introduction](#introduction)
 - [AWS](#aws)
-  - [General cleanup dos and don'ts!](#general-cleanup-dos-and-donts)
+  - [General cleanup dos and don'ts](#general-cleanup-dos-and-donts)
     - [VPCs](#vpcs)
     - [Hosted zones](#route-53-hosted-zones)
     - [S3 Buckets](#s3-buckets)
@@ -16,7 +16,7 @@ Sometimes, a scenario can fail before a cluster is fully deprovisioned leaving s
 
 ## AWS
 
-### General cleanup dos and don'ts!
+### General cleanup dos and don'ts
 
 This section provides additional cleanup instructions for each resource type
 
