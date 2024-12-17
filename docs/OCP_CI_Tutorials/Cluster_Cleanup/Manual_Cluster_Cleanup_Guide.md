@@ -12,7 +12,7 @@
 
 ## Introduction
 
-Sometimes, a scenario can fail before a cluster is fully deprovisioned leaving stale resources in a cloud-provider (at the time of writing this, we only use AWS). If that occurs, the Interop team is responsible for cleaning that cluster up in the cloud-provider account to avoid any unwanted cost. This document will serve as a guide to how to manually cleanup a cluster in the cloud-provider platforms we use.
+Sometimes, a scenario can fail before a cluster is fully deprovisioned leaving stale resources in a cloud-provider (at the time of writing this, we only use AWS). If that occurs, the Interop team is responsible for cleaning up that cluster in the cloud-provider account to avoid any unwanted cost. This document serves as a guide on how to manually clean up a cluster in the cloud-provider platforms we use.
 
 ## AWS
 
@@ -39,7 +39,7 @@ It is generally safe to delete any resource whose name has one of the following 
 
 #### S3 Buckets
 
-* Similarly, **_don't_** delete any S3 buckets which doesn't have the interop testing prefix mentioned above (there may be reserved resources for internal use)
+* Similarly, **_don't_** delete any S3 bucket which doesn't have the interop testing prefix mentioned above (there may be reserved resources for internal use)
 
 ### Cleanup resources by cluster identified
 
