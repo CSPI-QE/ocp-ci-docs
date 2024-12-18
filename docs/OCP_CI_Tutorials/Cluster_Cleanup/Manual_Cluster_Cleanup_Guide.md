@@ -4,6 +4,7 @@
 
 - [Introduction](#introduction)
 - [AWS](#aws)
+  - [Prerequisites](#prerequisites)
   - [General cleanup dos and don'ts](#general-cleanup-dos-and-donts)
     - [VPCs](#vpcs)
     - [Hosted zones](#route-53-hosted-zones)
@@ -15,6 +16,10 @@
 Sometimes, a scenario can fail before a cluster is fully deprovisioned leaving stale resources in a cloud-provider (at the time of writing this, we only use AWS). If that occurs, the Interop team is responsible for cleaning up that cluster in the cloud-provider account to avoid any unwanted cost. This document serves as a guide on how to manually clean up a cluster in the cloud-provider platforms we use.
 
 ## AWS
+
+### Prerequisites
+
+In order to perform manual cleanup and be able to delete resources in the cloud-provider account, users must belong to the watchers group, which subscribes to the EC2-delete policy and necessary permissions.
 
 ### General cleanup dos and don'ts
 
@@ -34,7 +39,7 @@ It is generally safe to delete any resource whose name has one of the following 
 
 #### Route 53: Hosted zones
 
-* **_Do_** ONLY delete A records safely inside available hosted zones
+* **_Do_** ONLY delete `A Records` safely inside available hosted zones
 * **_Don't_** delete any hosted zone which doesn't have the interop testing prefix mentioned above (there may be reserved resources for internal use)
 
 #### S3 Buckets
