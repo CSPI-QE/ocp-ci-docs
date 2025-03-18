@@ -10,6 +10,10 @@
 - [Gangway API](#gangway-api)
   - [How to Add Gangway API Triggering to a Scenario](#how-to-add-gangway-api-triggering-to-a-scenario)
   - [How to Trigger a Job Manually](#how-to-trigger-a-job-manually)
+- [Job-re-trigger](#job-re-trigger)
+  - [How to Set Up a Job Re-triggering app in AWS Lightsail](#how-to-set-up-a-job-re-triggering-app-in-aws-lightsail)
+  - [Verify the running app](#verify-the-running-app)
+
 
 ## Overview
 
@@ -117,3 +121,64 @@ The Gangway API functionality is now built into all jobs automatically in OpenSh
     "gcs_path": ""
    }
    ```
+
+## Job Re-trigger
+
+As part of our workflows, we have integrated the [RedHatQE/openshift-ci-job-trigger](https://github.com/RedHatQE/openshift-ci-job-trigger) tool to handle the automation for re-triggering and reporting.
+
+The [job-re-trigger](https://steps.ci.openshift.org/reference/job-re-trigger) phase is based on this tool, which essentially wraps `gangway-api` requests for jobs that fails within a set of rules.
+
+### How to Set Up a Job Re-triggering app in AWS Lightsail
+
+In practice, the application currently served in the Openshift-Ci env is configured as an [AWS Lightsail](https://aws.amazon.com/lightsail/) instance, running continuously. 
+
+Since the tool is based on the Flask framework, it is natural to deploy a Lightsail container and the configuration is quite easy, with respect to the tool's current configuration options.
+
+Step by step deployment:
+
+1. Sign in to your AWS account, go to the Lightsail control panel, and then go to `Containers`
+2. Press `create container service` on the top right button
+3. Inside the `Create Container Service` page, make sure the available region is automatically selected (usually the region closest to the user)
+4. Choose a `Micro` power and a one node scale (can be changed later if necessary)
+5. Name the container. We currently use `mpiit-ci-jobs-trigger`
+6. Press `Create container service`. It will probably take a few minutes.
+7. Once you can see the onboarded container in the Lightsail containers dashboard, go to it's `Deployments` section
+8. Create a new deployment with the following configuration:
+
+```commandline
+Container name: ci-jobs-trigger
+Image: quay.io/redhat_msi/ci-jobs-trigger
+```
+
+Add the following environment variables:
+
+```commandline
+[Key]:[Value]
+FLASK_DEBUG: 1
+CI_JOBS_TRIGGER_LISTEN_IP: 0.0.0.0
+```
+
+Open ports:
+
+```commandline
+[Port]:[Protocol]
+5000: HTTP
+```
+
+9. Add a public endpoint corresponded to the container name, and change the Health check path to: `/healthcheck`
+10. Hit `Save and deploy` and once the deployment is active, you're set to go!
+
+For a further information-
+See a doc about deploy [Flask apps on AWS Lightsail](https://aws.amazon.com/tutorials/serve-a-flask-app/).
+
+### Verify the running app
+
+For verify the app is working, make sure you:
+
+- Set the server url path in Vault to the containers domain, should be something similar to:
+
+```commandline
+https://mpiit-ci-jobs-trigger.<identifier>.<aws-zone>.cs.amazonlightsail.com/openshift-ci-re-trigger
+```
+
+- Manually trigger the job `periodic-ci-rhpit-interop-tests-main-retrigger-poc-failure-test` using the gangway api. The job will send a Slack verification of the working app.
