@@ -355,7 +355,7 @@ There might be a case when we need to use the existing quay image in our scenari
 
 #### How to Mirror Public Image
 
-If the image is public, we can mirror the image by adding a mapping in file `core-services/image-mirroring/supplemental-ci-images/mapping_supplemental_ci_images_ci` of [openshift/release](https://github.com/openshift/release/blob/master/core-services/image-mirroring/supplemental-ci-images/mapping_supplemental_ci_images_ci) repository. The format of adding image mapping is:
+If the image is public, we can mirror the image by adding a mapping in file `core-services/image-mirroring/_config.yaml` of [openshift/release](https://github.com/openshift/release/blob/master/core-services/image-mirroring/_config.yaml) repository. The format of adding image mapping is:
 
 ```yaml
 quay.io/QUAY_REPOSITORY/test-image:latest registry.ci.openshift.org/ci/test-image:latest
