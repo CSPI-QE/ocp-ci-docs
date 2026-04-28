@@ -7,7 +7,9 @@
     - [Getting Started](#getting-started)
     - [Write the Scenario](#write-the-scenario)
     - [Build a Container Image to Execute Tests](#build-a-container-image-to-execute-tests)
+    - [Make a Job CR-Compliant](#make-a-job-cr-compliant)
   - [Reporting](#reporting)
+    - [Component Readiness](#component-readiness)
     - [TestGrid](#testgrid)
     - [Slack](#slack)
     - [Failure Handling (Jira Reporting)](#failure-handling-jira-reporting)
@@ -190,7 +192,109 @@ Please see the folder structure below as an example of the step registry folder 
 
 Each scenario should have at least one container image to execute the tests within the test repository. Please follow the [Container Creation Guide](../Containers/Container_Creation_Guide.md) for help. Please keep in mind, the `Dockerfile` for this image should live inside the test repository. Please see the [MTR scenario's Dockerfile](https://github.com/windup/windup-ui-tests/blob/main/dockerfiles/interop/Dockerfile) as an example.
 
+#### Make a Job CR-Compliant
+
+To make a job Component Readiness (CR)-compliant, ensure the following in your scenario configuration and test output:
+
+##### References
+
+- Current CR view (`OCP 4.22`): [4.22-LP-Interop](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.22-LP-Interop)
+- Example config: [RedHatQE-interop-testing-master__cnv-odf-ocp-4.21-lp-interop-cr.yaml](https://github.com/openshift/release/blob/main/ci-operator/config/RedHatQE/interop-testing/RedHatQE-interop-testing-master__cnv-odf-ocp-4.21-lp-interop-cr.yaml)
+- Step-registry workflow: [`Firewatch-ipi-aws-cr`](https://github.com/openshift/release/tree/main/ci-operator/step-registry/firewatch/ipi/aws/cr)
+- Step-registry data router: [`mpiit/data-router-reporter`](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter)
+
+##### Job Configuration
+
+1. **Name conventions**
+   - Use `-ocp-<release>` in the filename and job variant (instead of `-ocp4.2x`).
+   - Include `-cr` in the periodic naming. The periodic job name must contain the `-lp-interop-cr` substring, using the following pattern: `<product>-ocp-4.21-lp-interop-cr`.
+
+2. **Set release environment**
+   - Set `OCP_VERSION` to the correct release value.
+
+3. **Increase data sampling**
+   - Schedule the job to run twice a day with `cron: 0 3,15 * * *`.
+
+4. **Use the `Firewatch-ipi-aws-cr` workflow**
+   - This is currently compliant only for regular AWS IPI jobs already migrated to CR.
+   - The workflow adds the `mpiit-data-router-reporter` post step and sets `REPORT_TO_DR=true` by default.
+
+5. **Enable test mapping**
+   - Set `MAP_TESTS` to `true` in the config ref.
+   - Set `REPORTPORTAL_CMP` to the correct `lp-interop-<lp-product>` value, for example `lp-interop-MyProduct`.
+
+##### Map the Junit tests output
+
+This setion guides how to modify a test container commands files in `Openshift-Ci/step-registry`, so tests are reported under a mapped suite identifier.
+
+Let’s examine the CNV use case. 
+The tests are sitting under a test suite named pytests:
+
+```xml
+<testsuites>
+<testsuite name="pytest" errors="0" failures="0" skipped="5" tests="27" time="3460.961" timestamp="2025-06-16T07:33:33.658831" hostname="cnv-odf-tests-aws-ipi-ocp419-interop-tests-ocs-tests">
+...
+</testsuite>
+</testsuites>
+```
+
+References:
+
+- JUnit sample: [file url](https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/test-platform-results/logs/periodic-ci-RedHatQE-interop-testing-cnv-4.18-cnv-odf-ocp4.19-lp-interop-cnv-odf-tests-aws-ipi-ocp419/1934493757156102144/artifacts/cnv-odf-tests-aws-ipi-ocp419/interop-tests-ocs-tests/artifacts/ocs-tests/junit.xml)
+- Test repository: [ocs-ci](https://github.com/red-hat-storage/ocs-ci/tree/master)
+
+Problems with this raw suite naming:
+
+- `pytest` is too generic.
+- Mapping tests by direct suite names is sensitive to source code changes in interop test repositories.
+
+To keep tracking stable in `Sippy`, map suite names uniformly with an `lp-interop-` identifier (using markers/grouping appropriate for the test framework: pytest, Go, Ginkgo, and so on).
+
+In this flow, use [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools) and the `ExitTrap--PostProcessPrep` mechanism as an exit trap at the end of each test-step script.
+
+Set the mapping value from `REPORTPORTAL_CMP`, export it into `LP_IO__ET_PPP__NEW_TS_NAME`, and keep `--%s` so the original suite name is preserved as a suffix.
+
+> By the end of `ExitTrap--PostProcessPrep` execution:
+>
+> - All JUnit files are merged into a single combined file.
+> - The merged file is copied into `SHARED_DIR` and picked up later by the data-router-reporter step.
+> - The original results are compressed into `junit-original.tgz`.
+
+Example:
+
+```bash
+#!/bin/bash
+set -euxo pipefail; shopt -s inherit_errexit
+
+# Archive results function
+function CleanupCollect() {
+    if [[ $MAP_TESTS == "true" ]]; then
+      # Map results by setting identifier prefix in tests suites names for reporting tools
+      # Merge original results into a single file and compress
+      # Send modified file to shared dir for Data Router Reporter step
+      export LP_IO__ET_PPP__NEW_TS_NAME="${REPORTPORTAL_CMP}--%s"
+      eval "$(
+          curl -fsSL \
+      https://raw.githubusercontent.com/RedHatQE/OpenShift-LP-QE--Tools/refs/heads/main/libs/bash/ci-operator/interop/common/ExitTrap--PostProcessPrep.sh
+      )"
+      ExitTrap--PostProcessPrep junit--<product__product-step-ref>.xml
+    fi
+    true
+}
+
+trap 'CleanupCollect' EXIT
+
+<TestScriptContent>
+```
+
+For more details, see [`ExitTrap--PostProcessPrep.sh`](https://github.com/RedHatQE/OpenShift-LP-QE--Tools/blob/main/libs/bash/ci-operator/interop/common/ExitTrap--PostProcessPrep.sh).
+
+
 ### Reporting
+
+#### Component Readiness
+
+For onboarding this job into the CR tools (Sippy and CI Test Mapping), follow the [Component Readiness section in the Reporting Guide](../Reporting/Reporting_Guide.md#component-readiness).
 
 #### TestGrid
 
