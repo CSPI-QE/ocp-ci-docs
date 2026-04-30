@@ -13,6 +13,7 @@
     - [Example](#example)
   - [How To Add Jira Reporting to a Scenario](#how-to-add-jira-reporting-to-a-scenario)
 - [Component Readiness](#component-readiness)
+  - [General Information](#general-informaion)
   - [Sippy](#sippy)
   - [CI Test Mapping](#ci-test-mapping)
 
@@ -180,7 +181,7 @@ Please see [this PR](https://github.com/openshift/release/pull/39700/files) as a
 
 This section outlines the action items required to onboard a layered product into the [Component Readiness](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main) tool.
 
-### General information:
+### General Information:
 
 - **Interop Component Readiness view:** the layered-product interop view is named `<OCPRelease>-LP-Interop`, where `<OCPRelease>` is the OpenShift minor release string Sippy uses for that view (for example `4.22` → view `4.22-LP-Interop`). 
   - Open Component Readiness with `?view=<OCPRelease>-LP-Interop` on the [Component Readiness](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main) page, or use a direct link such as [4.22-LP-Interop](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.22-LP-Interop) as an example for OCP 4.22.
@@ -200,7 +201,8 @@ This document is a **checklist for coding agents** (and humans) adding support i
 
 Within the `openshift/release` repository, under CI Configuration files (`ci-operator/config/**/*.yaml`), confirm:
 
-1. **Mapped `testSuites` component name** as it appears in imported test data (often `ProductName-lp-interop`, e.g. `OADP-lp-interop`). It must match **exactly** (case-sensitive) what you add to `testSuites`.
+1. **Mapped `testSuites` component name** as it appears in the imported mapped Junit files (tests results data) from prow. See [Map the Junit tests output](../Scenario_Development/Scenario_Development_Guide.md#map-the-junit-tests-output) in the Scenario Development Guide for learning on how that mapping is produced in CI.
+  - Often set to `lp-ocp-compat--<lpProductName>`, e.g. `lp-ocp-compat--OpenshiftPipelines`. It must match **exactly** (case-sensitive) what you add to `testSuites`.
 2. **Stable substring of periodic name**, e.g. `-lp-interop-cr- `. The variant registry matches **literal substrings** on the lowercased job name (first match wins).
 
   - If **multiple** patterns are required (e.g., `-lp-interop-cr-acs` and `-lp-interop-cr-acs-latest`), add **separate** rows, ensuring the **more specific patterns precede the more general ones**.
