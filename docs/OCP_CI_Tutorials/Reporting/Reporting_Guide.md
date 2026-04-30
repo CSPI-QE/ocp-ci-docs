@@ -180,9 +180,12 @@ Please see [this PR](https://github.com/openshift/release/pull/39700/files) as a
 
 This section outlines the action items required to onboard a layered product into the [Component Readiness](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main) tool.
 
-References:
+### General information:
 
-- Our `OCP 4.22` (current) Component Readiness view: [4.22-LP-Interop](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.22-LP-Interop)
+- **Interop Component Readiness view:** the layered-product interop view is named `<OCPRelease>-LP-Interop`, where `<OCPRelease>` is the OpenShift minor release string Sippy uses for that view (for example `4.22` → view `4.22-LP-Interop`). 
+  - Open Component Readiness with `?view=<OCPRelease>-LP-Interop` on the [Component Readiness](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main) page, or use a direct link such as [4.22-LP-Interop](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.22-LP-Interop) as an example for OCP 4.22.
+  - **Where the view is defined:** The list of releases and view names lives in Sippy’s [`config/views.yaml`](https://github.com/openshift/sippy/blob/main/config/views.yaml) (look for `component_readiness` entries named `<release>-LP-Interop`). That file is the source of truth when picking the correct `view=` value for a given OCP release.
+  - **Release rotation:** On each OpenShift release, Component Readiness rotates the default/current view automatically, and SHIP/TRT extend `views.yaml` with the new `<release>-LP-Interop` entry as part of the usual process. Layered-product teams do **not** need to onboard a new Component Readiness view for every OCP minor release.
 - This tool is maintained by the SHIP and TRT teams, which are available in the `#forum-ocp-release-oversight` Slack channel.
 
 For job-level CR compliance requirements in scenario configuration, see [Make a Job CR-Compliant](../Scenario_Development/Scenario_Development_Guide.md#make-a-job-cr-compliant) in the Scenario Development Guide.
