@@ -230,7 +230,7 @@ Tests from suites **not** in this list are **not** imported into Sippy’s DB.
 **File:** `pkg/variantregistry/ocp.go`
 **Function:** `setLayeredProduct`
 
-Add an entry to `layeredProductPatterns`:
+In `setLayeredProduct`, append a row to the job-name substring → `LayeredProduct` mapping table:
 
 ```go
 {"-lp-interop-cr-my-cmp", "lp-interop-my-cmp"},
@@ -240,7 +240,11 @@ Add an entry to `layeredProductPatterns`:
 
 - **`product` value:** always use the **`lp-interop-…`** form (lowercase, hyphenated), e.g. `lp-interop-my-cmp`. This is what Component Readiness views filter on.
 - **`substring`:** must appear in real periodic job names after lowercasing. Align with CI naming (often `-lp-interop-cr- `).
-- **Order matters:** the slice is scanned **top to bottom**; the **first** match wins. Place **narrow** patterns (e.g. product-specific) **above** broad patterns like `{"-virt", "virt"}` so lp-interop jobs are not misclassified.
+- **Order matters:** the slice is scanned **top to bottom**; the **first** match wins. Place **narrow** patterns (e.g. product-specific) **above** broad patterns so lp-interop jobs are not misclassified.
+
+> **WARNING** (`pkg/variantregistry/ocp.go`, `setLayeredProduct`)
+>
+> That mapping table is evaluated in **slice order**: the **first** substring match wins, and later rows are ignored for that job. Do **not** append an LP-specific row **below** a broader row that can still match the same periodic name, for example `{"-virt", "virt"}` vs. `{"-lp-interop-cnv", "virt"}` and similar catch-alls. Misordering silently misclassifies jobs in Component Readiness. Keep narrow lp-interop rows **above** generic mappings.
 
 **Optional (IBM / on-prem style job names):** If jobs include `-ibm` / `-ibmcloud` and you want them bucketed with bare metal for platform filtering, confirm `setPlatform` includes the `{"-ibm", "metal"}` mapping (or add it if your branch does not). That is **independent** of lp-interop onboarding but affects which **Platform** filter includes those jobs.
 
