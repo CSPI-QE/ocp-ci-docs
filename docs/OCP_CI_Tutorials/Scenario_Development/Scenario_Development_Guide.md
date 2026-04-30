@@ -194,7 +194,7 @@ Each scenario should have at least one container image to execute the tests with
 
 #### Make a Job CR-Compliant
 
-To make a job Component Readiness (CR)-compliant, ensure the following in your scenario configuration and test output:
+To make a job Component Readiness (CR)-compliant, you must standardize your configuration and JUnit output so the data can be ingested by Sippy and mapped to specific Jira components. Follow these requirements for your scenario and test scripts:
 
 ##### References
 
@@ -207,7 +207,7 @@ To make a job Component Readiness (CR)-compliant, ensure the following in your s
 
 1. **Name conventions**
    - Use `-ocp-<release>` in the filename and job variant (instead of `-ocp4.2x`).
-   - Include `-cr` in the periodic naming. The periodic job name must contain the `-lp-interop-cr` substring, using the following pattern: `<product>-ocp-4.21-lp-interop-cr`.
+   - Include `-cr` in the periodic naming. The periodic job name must contain the `-lp-interop-cr` substring, using the following pattern: `<product>-<ocp-release>-lp-interop-cr`.
 
 2. **Set release environment**
    - Set `OCP_VERSION` to the correct release value.
@@ -225,7 +225,7 @@ To make a job Component Readiness (CR)-compliant, ensure the following in your s
 
 ##### Map the Junit tests output
 
-This setion guides how to modify a test container commands files in `Openshift-Ci/step-registry`, so tests are reported under a mapped suite identifier.
+This section explains how to modify test command files in `openshift-ci/step-registry` so that results are reported under a stable, mapped suite identifier.
 
 Let’s examine the CNV use case. 
 The tests are sitting under a test suite named pytests:
