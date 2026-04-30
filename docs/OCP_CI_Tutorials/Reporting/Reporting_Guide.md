@@ -319,13 +319,13 @@ which rewrites `pkg/variantregistry/snapshot.yaml`.
 
 #### Summary checklist
 
-| Step | Location | Action |
-|------|----------|--------|
-| 1 | `pkg/db/suites.go` | Add JUnit suite `MyProduct-lp-interop` to `testSuites` |
-| 2 | `pkg/variantregistry/ocp.go` | Add `setLayeredProduct` pattern → `lp-interop-my-cmp` |
-| 3 | `config/views.yaml` | Add `lp-interop-my-cmp` to `*-LP-Interop` views’ `LayeredProduct` |
-| 4 | `pkg/variantregistry/ocp_test.go` | Add `TestVariantSyncer` case (recommended) |
-| 5 | Maintainer | Run **`make update-variants`** after variant changes |
+| Step | Location                          | Action                                                            |
+|------|-----------------------------------|-------------------------------------------------------------------|
+| 1    | `pkg/db/suites.go`                | Add JUnit suite `MyProduct-lp-interop` to `testSuites`            |
+| 2    | `pkg/variantregistry/ocp.go`      | Add `setLayeredProduct` pattern → `lp-interop-my-cmp`             |
+| 3    | `config/views.yaml`               | Add `lp-interop-my-cmp` to `*-LP-Interop` views’ `LayeredProduct` |
+| 4    | `pkg/variantregistry/ocp_test.go` | Add `TestVariantSyncer` case (recommended)                        |
+| 5    | Maintainer                        | Run **`make update-variants`** after variant changes              |
 
 Replace `my-cmp` / `MyProduct` with your actual product slug and suite name throughout.
 
@@ -443,11 +443,12 @@ The string passed to `Register` is the **component name** used in mappings; it s
 
 #### Quick checklist
 
-| Step | Location | Action |
-|------|----------|--------|
-| 1 | `config/openshift-eng.yaml` | Add suite to `includeSuites` (alphabetically with other `*-lp-interop` entries) |
-| 2 | `pkg/components/ /component.go` | Component with matcher `Suite: "MyProduct-lp-interop"` |
-| 3 | `pkg/components/ /capabilities.go` | `identifyCapabilities` + `util.DefaultCapabilities` (see [myproductlpinterop/capabilities.go](../../pkg/components/myproductlpinterop/capabilities.go)) |
-| 4 | `pkg/registry/registry.go` | Import package + `r.Register(...)` |
-| 5 | Jira / verification | `DefaultJiraComponent` exists; `./ci-test-mapping jira-verify` clean |
-| 6 | Maintainer | Run **`make mapping`** (required before merge) |
+| Step | Location                                            | Action                                                                                                                                                  |
+|------|-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1    | `config/openshift-eng.yaml`                         | Add suite to `includeSuites` (alphabetically with other `*-lp-interop` entries)                                                                         |
+| 2    | `pkg/components/myproductlpinterop/component.go`    | Component with matcher `Suite: "MyProduct-lp-interop"`                                                                                                  |
+| 3    | `pkg/components/myproductlpinterop/capabilities.go` | `identifyCapabilities` + `util.DefaultCapabilities` (see [myproductlpinterop/capabilities.go](../../pkg/components/myproductlpinterop/capabilities.go)) |
+| 4    | `pkg/registry/registry.go`                          | Import package + `r.Register(...)`                                                                                                                      |
+| 5    | Jira / verification                                 | `DefaultJiraComponent` exists; `./ci-test-mapping jira-verify` clean                                                                                    |
+| 6    | Maintainer                                          | Run **`make mapping`** (required before merge)                                                                                                          |
+
