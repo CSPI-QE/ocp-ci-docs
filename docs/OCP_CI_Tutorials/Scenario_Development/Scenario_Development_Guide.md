@@ -221,7 +221,7 @@ To make a job Component Readiness (CR)-compliant, you must standardize your conf
 
 5. **Enable test mapping**
    - Set `MAP_TESTS` to `true` in the config ref.
-   - Set `REPORTPORTAL_CMP` to the correct `lp-interop-<lp-product>` value, for example `lp-interop-MyProduct`.
+   - Set `REPORTPORTAL_CMP` to the correct `lp-ocp-compat--<lpProductName>` value, for example `lp-ocp-compat--MyProduct` (this becomes the mapped JUnit suite prefix.
 
 ##### Map the Junit tests output
 
@@ -248,7 +248,7 @@ Problems with this raw suite naming:
 - `pytest` is too generic.
 - Mapping tests by direct suite names is sensitive to source code changes in interop test repositories.
 
-To keep tracking stable in `Sippy`, map suite names uniformly with an `lp-interop-` identifier (using markers/grouping appropriate for the test framework: pytest, Go, Ginkgo, and so on).
+To keep tracking stable in `Sippy`, map suite names uniformly to the `lp-ocp-compat--<lpProductName>` style from `REPORTPORTAL_CMP` (using markers/grouping appropriate for the test framework: pytest, Go, Ginkgo, and so on).
 
 In this flow, use [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools) and the `ExitTrap--PostProcessPrep` mechanism as an exit trap at the end of each test-step script.
 
@@ -266,23 +266,18 @@ Example:
 #!/bin/bash
 set -euxo pipefail; shopt -s inherit_errexit
 
-# Archive results function
-function CleanupCollect() {
-    if [[ $MAP_TESTS == "true" ]]; then
-      # Map results by setting identifier prefix in tests suites names for reporting tools
-      # Merge original results into a single file and compress
-      # Send modified file to shared dir for Data Router Reporter step
-      export LP_IO__ET_PPP__NEW_TS_NAME="${REPORTPORTAL_CMP}--%s"
-      eval "$(
-          curl -fsSL \
-      https://raw.githubusercontent.com/RedHatQE/OpenShift-LP-QE--Tools/refs/heads/main/libs/bash/ci-operator/interop/common/ExitTrap--PostProcessPrep.sh
-      )"
-      ExitTrap--PostProcessPrep junit--<product__product-step-ref>.xml
-    fi
-    true
-}
-
-trap 'CleanupCollect' EXIT
+# Map results by setting identifier prefix in tests suites names for reporting tools
+# Merge original results into a single file and compress
+# Send modified file to shared dir for Data Router Reporter step
+if [ "${MAP_TESTS}" = "true" ]; then
+    eval "$(
+        curl -fsSL \
+https://raw.githubusercontent.com/RedHatQE/OpenShift-LP-QE--Tools/refs/heads/main/libs/bash/ci-operator/interop/common/ExitTrap--PostProcessPrep.sh
+    )"; trap '
+        LP_IO__ET_PPP__NEW_TS_NAME="${REPORTPORTAL_CMP}--%s" \
+            ExitTrap--PostProcessPrep junit--<lp-name>__<step-registry-repository>__<step-name>.xml
+    ' EXIT
+fi
 
 <TestScriptContent>
 ```
