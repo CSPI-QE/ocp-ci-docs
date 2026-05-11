@@ -235,8 +235,9 @@ Your job must stay compliant with the [mpiit-data-router-reporter](https://githu
 
 This section explains how to modify test command files in `openshift-ci/step-registry` so that results are reported under a stable, mapped suite identifier.
 
-Let’s examine the CNV use case. 
-The tests are sitting under a test suite named pytests:
+###### The Problem: Generic suite names
+
+Using CNV use case as an example, tests often run under a generic suite name such as `pytest`:
 
 ```xml
 <testsuites>
@@ -246,19 +247,20 @@ The tests are sitting under a test suite named pytests:
 </testsuites>
 ```
 
+**Why generic naming is problematic:**
+
+- **Lack of context:** Names like `pytest` or `ginkgo` show up across many products, so they do not identify which layered product or scenario produced the results—cross-product reporting and Component Readiness mapping suffer.
+- **Fragility:** Mapping tests by raw suite names breaks when upstream interop test repositories rename folders, reorganize suites, or otherwise change how frameworks label tests.
+
 References:
 
 - JUnit sample: [file url](https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/test-platform-results/logs/periodic-ci-RedHatQE-interop-testing-cnv-4.18-cnv-odf-ocp4.19-lp-interop-cnv-odf-tests-aws-ipi-ocp419/1934493757156102144/artifacts/cnv-odf-tests-aws-ipi-ocp419/interop-tests-ocs-tests/artifacts/ocs-tests/junit.xml)
 - Test repository: [ocs-ci](https://github.com/red-hat-storage/ocs-ci/tree/master)
 
-Problems with this raw suite naming:
+###### The Solution: Uniform `lp-ocp-compat--` identifiers
 
-- `pytest` is too generic.
-- Mapping tests by direct suite names is sensitive to source code changes in interop test repositories.
-
-To keep tracking stable in `Sippy`, map suite names uniformly to the `lp-ocp-compat--<lpProductName>` style from `DR__RP__CR_COMP_NAME` (using markers/grouping appropriate for the test framework: pytest, Go, Ginkgo, and so on).
-
-In this flow, use [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools) and the `ExitTrap--PostProcessPrep` mechanism as an exit trap at the end of each test-step script.
+To keep tracking stable in Sippy, map suite names uniformly to the `lp-ocp-compat--<lpProductName>` style from `DR__RP__CR_COMP_NAME` (using markers or grouping appropriate for your framework: pytest, Go, Ginkgo, and so on). 
+Implement that mapping with the `ExitTrap--PostProcessPrep` helper from [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools), registered as an exit trap at the end of each test-step script.
 
 ###### Implementation Steps
 
