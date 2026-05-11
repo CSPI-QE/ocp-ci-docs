@@ -69,14 +69,14 @@ Every full onboarding run should start from a **clean, reproducible** layout so 
    cd "$WORKDIR"
    ```
 
-   Perform **all** clones and git operations below inside this directory. Tear down the directory when the run is complete; see [Cleanup](#cleanup) below.
+   Perform **all** git operations below inside this directory (clone only repos that are not already present). Tear down the directory when the run is complete; see [Cleanup](#cleanup) below.
 
-2. **Clone each repository** (HTTPS or SSH per site policy):
+2. **Ensure each repository is present** (HTTPS or SSH per site policy). **Do not clone** a repo if its directory already exists under **`$WORKDIR`** (reuse existing clones when continuing work in the same workspace). Clone only what is missing:
 
    ```bash
-   git clone https://github.com/openshift/release.git
-   git clone https://github.com/openshift/sippy.git
-   git clone https://github.com/openshift-eng/ci-test-mapping.git
+   [ ! -d release ] && git clone https://github.com/openshift/release.git
+   [ ! -d sippy ] && git clone https://github.com/openshift/sippy.git
+   [ ! -d ci-test-mapping ] && git clone https://github.com/openshift-eng/ci-test-mapping.git
    ```
 
 3. **Reset each repo to `main`** (or the repo’s default branch name if not `main`):
