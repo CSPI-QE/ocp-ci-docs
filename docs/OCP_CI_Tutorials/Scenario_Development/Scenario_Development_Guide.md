@@ -220,11 +220,11 @@ To make a job Component Readiness (CR)-compliant, you must standardize your conf
 
 4. **Use the `Firewatch-ipi-aws-cr` workflow**
    - This is currently compliant only for regular AWS IPI jobs already migrated to CR.
-   - The workflow adds the `mpiit-data-router-reporter` post step and sets `REPORT_TO_DR=true` by default.
+   - The workflow adds the `mpiit-data-router-reporter` post step by default.
 
 5. **Enable test mapping**
    - Set `MAP_TESTS` to `true` in the config ref.
-   - Set `REPORTPORTAL_CMP` to the correct `lp-ocp-compat--<lpProductName>` value, for example `lp-ocp-compat--MyProduct` (this becomes the mapped JUnit suite prefix).
+   - Set `DR__RP__CR_COMP_NAME` to the correct `lp-ocp-compat--<lpProductName>` value, for example `lp-ocp-compat--MyProduct` (this becomes the mapped JUnit suite prefix).
 
 ##### Map the Junit tests output
 
@@ -251,11 +251,11 @@ Problems with this raw suite naming:
 - `pytest` is too generic.
 - Mapping tests by direct suite names is sensitive to source code changes in interop test repositories.
 
-To keep tracking stable in `Sippy`, map suite names uniformly to the `lp-ocp-compat--<lpProductName>` style from `REPORTPORTAL_CMP` (using markers/grouping appropriate for the test framework: pytest, Go, Ginkgo, and so on).
+To keep tracking stable in `Sippy`, map suite names uniformly to the `lp-ocp-compat--<lpProductName>` style from `DR__RP__CR_COMP_NAME` (using markers/grouping appropriate for the test framework: pytest, Go, Ginkgo, and so on).
 
 In this flow, use [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools) and the `ExitTrap--PostProcessPrep` mechanism as an exit trap at the end of each test-step script.
 
-Set the mapping value from `REPORTPORTAL_CMP`, export it into `LP_IO__ET_PPP__NEW_TS_NAME`, and keep `--%s` so the original suite name is preserved as a suffix.
+Set the mapping value from `DR__RP__CR_COMP_NAME`, export it into `LP_IO__ET_PPP__NEW_TS_NAME`, and keep `--%s` so the original suite name is preserved as a suffix.
 
 > By the end of `ExitTrap--PostProcessPrep` execution:
 >
@@ -277,7 +277,7 @@ if [ "${MAP_TESTS}" = "true" ]; then
         curl -fsSL \
 https://raw.githubusercontent.com/RedHatQE/OpenShift-LP-QE--Tools/refs/heads/main/libs/bash/ci-operator/interop/common/ExitTrap--PostProcessPrep.sh
     )"; trap '
-        LP_IO__ET_PPP__NEW_TS_NAME="${REPORTPORTAL_CMP}--%s" \
+        LP_IO__ET_PPP__NEW_TS_NAME="${DR__RP__CR_COMP_NAME}--%s" \
             ExitTrap--PostProcessPrep junit--<lp-name>__<step-registry-repository>__<step-name>.xml
     ' EXIT
 fi

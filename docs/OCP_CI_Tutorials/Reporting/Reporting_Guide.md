@@ -333,11 +333,11 @@ Replace `my-cmp` / `MyProduct` / `lp-ocp-compat--MyProduct` with your actual lay
 
 This checklist is written for **coding agents** (AI and automation assistants) and humans who implement onboarding in the [openshift-eng/ci-test-mapping](https://github.com/openshift-eng/ci-test-mapping) repository.
 
-The steps below add a new **layered product interop** component to that repository. Component Readiness maps each test to one **component** and optional **capabilities**. LP interop jobs publish JUnit with a dedicated mapped **test suite** name produced from `REPORTPORTAL_CMP`, for example `lp-ocp-compat--MyProduct` (pattern `lp-ocp-compat--<lpProductName>`).
+The steps below add a new **layered product interop** component to that repository. Component Readiness maps each test to one **component** and optional **capabilities**. LP interop jobs publish JUnit with a dedicated mapped **test suite** name produced from `DR__RP__CR_COMP_NAME`, for example `lp-ocp-compat--MyProduct` (pattern `lp-ocp-compat--<lpProductName>`).
 
 Replace placeholders below:
 
-- **`lp-ocp-compat--MyProduct`:** exact mapped JUnit **suite** string from CI (must match `REPORTPORTAL_CMP` / `includeSuitePatterns` / `Matchers` - see [Map the Junit tests output](../Scenario_Development/Scenario_Development_Guide.md#map-the-junit-tests-output)).
+- **`lp-ocp-compat--MyProduct`:** exact mapped JUnit **suite** string from CI (must match `DR__RP__CR_COMP_NAME` / `includeSuitePatterns` / `Matchers` - see [Map the Junit tests output](../Scenario_Development/Scenario_Development_Guide.md#map-the-junit-tests-output)).
 - **`myproductlpinterop`:** Go **package** / directory name: lower case, no hyphens (typical 
 pattern: strip `-lp-interop` and join words).
 - **`MyProductLpInteropComponent`:** exported Go **variable** for your component singleton (used with `r.Register`).
@@ -346,7 +346,7 @@ pattern: strip `-lp-interop` and join words).
 
 #### Prerequisites
 
-1. **Mapped suite string is stable** and appears on every relevant JUnit result as the suite attribute (same value you set with `REPORTPORTAL_CMP`, for example `lp-ocp-compat--MyProduct`).
+1. **Mapped suite string is stable** and appears on every relevant JUnit result as the suite attribute (same value you set with `DR__RP__CR_COMP_NAME`, for example `lp-ocp-compat--MyProduct`).
 2. **Registered `OCPBUGS` component name**: `DefaultJiraComponent` must correspond to a real Jira component the team owns.
 
    - Verify components with `./ci-test-mapping jira-verify` as described in the root [README.md](../../README.md#updating-jira-components).
