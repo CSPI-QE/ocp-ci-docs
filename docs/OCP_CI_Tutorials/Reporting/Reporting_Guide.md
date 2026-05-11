@@ -181,6 +181,8 @@ Please see [this PR](https://github.com/openshift/release/pull/39700/files) as a
 
 This section explains how layered-product results appear in **[Component Readiness](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main)** — the Sippy UI where LP interop health is tracked by OpenShift release and product.
 
+For an **end-to-end, multi-repository workflow** (sanitized clones, branch discipline, maintainer hand-offs), see the [**LP Interop CR agent playbook**](LP_Interop_CR_Agent_Playbook.md).
+
 ### General information
 
 - **Interop Component Readiness view:** The layered-product interop view is named `<OCPRelease>-LP-Interop`, where `<OCPRelease>` is the OpenShift minor version label Sippy expects for that stream (for example `4.22` → `4.22-LP-Interop`).

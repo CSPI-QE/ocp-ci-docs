@@ -307,7 +307,9 @@ For more details, see [ExitTrap--PostProcessPrep.sh](https://github.com/RedHatQE
 
 #### Component Readiness
 
-For onboarding into CR tooling (Sippy and CI Test Mapping), follow the [Component Readiness section in the Reporting Guide](../Reporting/Reporting_Guide.md#component-readiness).
+For onboarding into CR tooling (Sippy and CI Test Mapping), follow the [Component Readiness section in the Reporting Guide](../Reporting/Reporting_Guide.md#component-readiness). 
+
+For a multi-repository agent workflow (workspace setup, repo order, maintainer steps), see the [LP Interop CR agent playbook](../Reporting/LP_Interop_CR_Agent_Playbook.md).
 
 #### TestGrid
 
