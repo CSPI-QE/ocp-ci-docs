@@ -51,7 +51,7 @@ Deliverables: precise PR description text for each modified repo (ready to paste
 1. **[openshift/release](https://github.com/openshift/release)**
    - **a.** **CI configuration** — `ci-operator/config/**`, periodic job names, workflows (`Firewatch-ipi-aws-cr`), env vars (`DR__RP__CR_COMP_NAME`, `MAP_TESTS`, …).
    - **b.** **Step-registry changes** — apply test mapping in test scripts (commands/refs under `ci-operator/step-registry`).
-2. **[openshift/sippy](https://github.com/openshift/sippy)** — Import mapped JUnit suites (`pkg/db/suites.go`), variant / `LayeredProduct` mapping (`pkg/variantregistry/ocp.go`), LP-Interop views (`config/views.yaml`), tests.
+2. **[openshift/sippy](https://github.com/openshift/sippy)** — Suite import patterns (`pkg/db/suites.go` **`testSuitePatterns`** / `testSuites`), variant / `LayeredProduct` mapping (`pkg/variantregistry/ocp.go`), LP-Interop views (`config/views.yaml`), tests.
 3. **[openshift-eng/ci-test-mapping](https://github.com/openshift-eng/ci-test-mapping)** — Suite patterns, component packages, Jira component mapping (`config/openshift-eng.yaml`, `pkg/components/**`, `pkg/registry/registry.go`).
 
 Supporting libraries (for example [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools) for `ExitTrap--PostProcessPrep`) are consumed from CI scripts; they are **not** typically forked as part of this onboarding unless the scenario requires upstream changes there.
@@ -86,7 +86,7 @@ Every full onboarding run should start from a **clean, reproducible** layout so 
    cd ../ci-test-mapping && git fetch origin && git checkout main && git pull --ff-only
    ```
 
-4. **Create one feature branch per repo**, from that updated `main`, using a **consistent slug** (example: `onboarding-myproduct`):
+4. **Create one feature branch per repo**, from that updated `main`, using a **consistent slug** (examples **`onboarding-myproduct`** / **`myproduct`**):
 
    ```bash
    cd release && git checkout -b onboarding-myproduct
@@ -124,7 +124,7 @@ flowchart LR
 
 1. **`openshift/release`** — Implement [Make a Job CR-Compliant](../Scenario_Development/Scenario_Development_Guide.md#make-a-job-cr-compliant): `-lp-interop-cr` naming, cron, `Firewatch-ipi-aws-cr`, `mpiit-data-router-reporter`, `MAP_TESTS`, `DR__RP__CR_COMP_NAME`, and [Map the JUnit tests output](../Scenario_Development/Scenario_Development_Guide.md#map-the-junit-tests-output). Confirm **`lp-ocp-compat--<lpName>`** derived from Product display name matches CI and that **real** periodic job name fragments match what Sippy and variants expect.
 
-2. **`openshift/sippy`** — Follow [Reporting Guide → Sippy](Reporting_Guide.md#sippy): `pkg/db/suites.go`, `pkg/variantregistry/ocp.go` (`setLayeredProduct`), `config/views.yaml`, optional `pkg/variantregistry/ocp_test.go`. Respect substring **ordering** and LP-Interop view blocks.
+2. **`openshift/sippy`** — Follow [Reporting Guide → Sippy](Reporting_Guide.md#sippy): `pkg/db/suites.go` (**`testSuitePatterns`** / **`testSuites`**), `pkg/variantregistry/ocp.go` (`setLayeredProduct`), `config/views.yaml`, optional `pkg/variantregistry/ocp_test.go`. Respect substring **ordering** and LP-Interop view blocks.
 
 3. **`openshift-eng/ci-test-mapping`** — Follow [Reporting Guide → CI Test Mapping](Reporting_Guide.md#ci-test-mapping): `includeSuitePatterns`, new component package, `pkg/registry/registry.go`, capabilities.
 
@@ -144,7 +144,7 @@ Record these explicitly in each PR so the **user/requester** can finish CI:
 
 - [ ] Phase 0: fresh clones, `main` checked out and pulled, feature branches created with the same slug.
 - [ ] **release**: CR-compliant periodic job; mapped suite prefix equals `DR__RP__CR_COMP_NAME`; grace period / ExitTrap if mapping JUnit (Scenario Development Guide).
-- [ ] **sippy**: Suite listed; `setLayeredProduct` row ordered correctly; product added to relevant `*-LP-Interop` views in `config/views.yaml`.
+- [ ] **sippy**: **`testSuitePatterns`** covers your suite prefixes (add regex only for **new** prefixes); `setLayeredProduct` row ordered correctly; product added to relevant `*-LP-Interop` views in `config/views.yaml`.
 - [ ] **ci-test-mapping**: `includeSuitePatterns`; component + matchers; `DefaultJiraComponent` verified per repo README.
 - [ ] PR descriptions list **maintainer** commands (`make update-variants`, `make mapping`) and link related PRs across repos.
 - [ ] **PR descriptions:** Supply a **precise**, valid PR description for **every** modified repo (for example **openshift/release**, **openshift/sippy**, **openshift-eng/ci-test-mapping**, and **ocp-ci-docs** if changed). Each description should state what changed, why, identifiers used (`LayeredProduct`, mapped suite / `DR__RP__CR_COMP_NAME`, job fragments), links to related PRs, and maintainer-only `make` steps—ready to paste when opening the PR.
