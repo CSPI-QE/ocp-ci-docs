@@ -202,8 +202,8 @@ To make a job Component Readiness (CR)-compliant, you must standardize your conf
   - **LP Interop view:** Bookmarks and navigation usually land on
   `https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=<ocp-release>-LP-Interop`, where `<ocp-release>` is the short release label (for example `4.22` for `4.22-LP-Interop`). Only that segment is tied to a specific stream.
 - **Example configs:** [ci-operator/config/red-hat-storage/ocs-ci](https://github.com/openshift/release/tree/main/ci-operator/config/red-hat-storage/ocs-ci) — use the directory link so you pick up current files matching `*-ocp-<releaseValue>-lp-interop.yaml` without this guide tracking every filename and release.
-- Step-registry workflow: [`Firewatch-ipi-aws-cr`](https://github.com/openshift/release/tree/main/ci-operator/step-registry/firewatch/ipi/aws/cr)
-- Step-registry data router: [`mpiit/data-router-reporter`](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter)
+- Step-registry workflow: [Firewatch-ipi-aws-cr](https://github.com/openshift/release/tree/main/ci-operator/step-registry/firewatch/ipi/aws/cr)
+- Step-registry data router: [mpiit/data-router-reporter](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter)
 
 ##### Job Configuration
 
@@ -229,7 +229,7 @@ To make a job Component Readiness (CR)-compliant, you must standardize your conf
 
 ###### `mpiit-data-router-reporter` compliance
 
-Your job must stay compliant with the [`mpiit-data-router-reporter`](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter) step in `openshift/release`. Its requirements (environment variables, defaults and documentation) lives in the step ref file [`mpiit-data-router-reporter-ref.yaml`](https://github.com/openshift/release/blob/main/ci-operator/step-registry/mpiit/data-router-reporter/mpiit-data-router-reporter-ref.yaml); treat that file as the authoritative checklist when wiring your CI config. Requirements may change as the step is updated, so re-check the ref when troubleshooting reporting or after rebasing onto newer `openshift/release` content—this guide does not duplicate every ref field.
+Your job must stay compliant with the [mpiit-data-router-reporter](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter) step in `openshift/release`. Its requirements (environment variables, defaults and documentation) lives in the step ref file [mpiit-data-router-reporter-ref.yaml](https://github.com/openshift/release/blob/main/ci-operator/step-registry/mpiit/data-router-reporter/mpiit-data-router-reporter-ref.yaml); treat that file as the authoritative checklist when wiring your CI config. Requirements may change as the step is updated, so re-check the ref when troubleshooting reporting or after rebasing onto newer `openshift/release` content—this guide does not duplicate every ref field.
 
 ##### Map the Junit tests output
 
@@ -260,15 +260,16 @@ To keep tracking stable in `Sippy`, map suite names uniformly to the `lp-ocp-com
 
 In this flow, use [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools) and the `ExitTrap--PostProcessPrep` mechanism as an exit trap at the end of each test-step script.
 
-Set the mapping value from `DR__RP__CR_COMP_NAME`, export it into `LP_IO__ET_PPP__NEW_TS_NAME`, and keep `--%s` so the original suite name is preserved as a suffix.
+###### Implementation Steps
 
-> By the end of `ExitTrap--PostProcessPrep` execution:
->
-> - All JUnit files are merged into a single combined file.
-> - The merged file is copied into `SHARED_DIR` and picked up later by the data-router-reporter step.
-> - The original results are compressed into `junit-original.tgz`.
+- **Export the mapping variable:** Set `LP_IO__ET_PPP__NEW_TS_NAME` using the value from `DR__RP__CR_COMP_NAME`.
 
-Example:
+- **Preserve original names:** Use the `--%s` suffix. The `%s` acts as a placeholder that automatically appends the original suite name to your new prefix (see in the following example).
+
+- **Execute the exit trap:** Register `ExitTrap--PostProcessPrep` on `EXIT` at the end of the test-step so post-processing runs after your tests (see the example below).
+  - **Grace period:** In your step’s `*-ref.yaml`, set `grace_period: 10m` (add it if absent) so post-processing can finish before the step exits.
+
+**Example integration:**
 
 ```bash
 #!/bin/bash
@@ -290,7 +291,13 @@ fi
 <TestScriptContent>
 ```
 
-For more details, see [`ExitTrap--PostProcessPrep.sh`](https://github.com/RedHatQE/OpenShift-LP-QE--Tools/blob/main/libs/bash/ci-operator/interop/common/ExitTrap--PostProcessPrep.sh).
+> After `ExitTrap--PostProcessPrep` runs successfully (confirm on a real OpenShift CI job if needed):
+>
+> - All JUnit files are merged into a single combined file.
+> - The merged file is copied into `${SHARED_DIR}` and picked up later by the data-router-reporter step.
+> - The original results are compressed into `junit-original.tgz`.
+
+For more details, see [ExitTrap--PostProcessPrep.sh](https://github.com/RedHatQE/OpenShift-LP-QE--Tools/blob/main/libs/bash/ci-operator/interop/common/ExitTrap--PostProcessPrep.sh).
 
 
 ### Reporting
@@ -494,7 +501,7 @@ We should always create a personal fork of the repo that we are submitting a PR 
 2. Clone the forked repo using SSH (Do not use HTTP)
 3. Create a new branch
 4. Make your changes
-5. Run [`make update`](#make-update) from the root of release repo. You may need to use `sudo` is some situations.
+5. Run [make update](#make-update) from the root of release repo. You may need to use `sudo` is some situations.
 6. `git add` changed files
 7. `git commit -m 'commit message'`
 8. `git push origin {branch name}`
