@@ -225,6 +225,11 @@ To make a job Component Readiness (CR)-compliant, you must standardize your conf
 5. **Enable test mapping**
    - Set `MAP_TESTS` to `true` in the config ref.
    - Set `DR__RP__CR_COMP_NAME` to the correct `lp-ocp-compat--<lpProductName>` value, for example `lp-ocp-compat--MyProduct` (this becomes the mapped JUnit suite prefix).
+      - See the following note about the `mpiit-data-router-reporter` step, and ensure that using `DR__RP__CR_COMP_NAME` is correct.
+
+###### `mpiit-data-router-reporter` compliance
+
+Your job must stay compliant with the [`mpiit-data-router-reporter`](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter) step in `openshift/release`. Its requirements (environment variables, defaults and documentation) lives in the step ref file [`mpiit-data-router-reporter-ref.yaml`](https://github.com/openshift/release/blob/main/ci-operator/step-registry/mpiit/data-router-reporter/mpiit-data-router-reporter-ref.yaml); treat that file as the authoritative checklist when wiring your CI config. Requirements may change as the step is updated, so re-check the ref when troubleshooting reporting or after rebasing onto newer `openshift/release` content—this guide does not duplicate every ref field.
 
 ##### Map the Junit tests output
 
