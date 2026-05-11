@@ -194,14 +194,14 @@ Each scenario should have at least one container image to execute the tests with
 
 #### Make a Job CR-Compliant
 
-To make a job Component Readiness (CR)-compliant, you must standardize your configuration and JUnit output so the data can be ingested by Sippy and mapped to specific Jira components. Follow these requirements for your scenario and test scripts:
+Component Readiness (CR) compliance requires standardized configuration and JUnit output so Sippy can ingest results and map them to Jira components. Apply the following to the scenario configuration and test scripts:
 
 ##### References
 
-- **Sippy Component Readiness (main):** [Component Readiness](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main) — use this stable entry point.
-  - **LP Interop view:** Bookmarks and navigation usually land on
-  `https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=<ocp-release>-LP-Interop`, where `<ocp-release>` is the short release label (for example `4.22` for `4.22-LP-Interop`). Only that segment is tied to a specific stream.
-- **Example configs:** [ci-operator/config/red-hat-storage/ocs-ci](https://github.com/openshift/release/tree/main/ci-operator/config/red-hat-storage/ocs-ci) — use the directory link so you pick up current files matching `*-ocp-<releaseValue>-lp-interop.yaml` without this guide tracking every filename and release.
+- **Sippy Component Readiness (main):** [Component Readiness](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main) — stable entry point.
+  - **LP Interop view:** Bookmarks and navigation typically use  
+  `https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=<ocp-release>-LP-Interop`, where `<ocp-release>` is the short release label (for example `4.22` for `4.22-LP-Interop`). Only that segment varies by stream.
+- **Example configs:** [ci-operator/config/red-hat-storage/ocs-ci](https://github.com/openshift/release/tree/main/ci-operator/config/red-hat-storage/ocs-ci) — the directory link surfaces current files matching `*-ocp-<releaseValue>-lp-interop.yaml` without updating this guide for every filename and release.
 - Step-registry workflow: [Firewatch-ipi-aws-cr](https://github.com/openshift/release/tree/main/ci-operator/step-registry/firewatch/ipi/aws/cr)
 - Step-registry data router: [mpiit/data-router-reporter](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter)
 
@@ -229,15 +229,15 @@ To make a job Component Readiness (CR)-compliant, you must standardize your conf
 
 ###### `mpiit-data-router-reporter` compliance
 
-Your job must stay compliant with the [mpiit-data-router-reporter](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter) step in `openshift/release`. Its requirements (environment variables, defaults, and documentation) are documented in the step ref file [mpiit-data-router-reporter-ref.yaml](https://github.com/openshift/release/blob/main/ci-operator/step-registry/mpiit/data-router-reporter/mpiit-data-router-reporter-ref.yaml). Treat that file as the source of truth when wiring your CI config. The step changes over time, so re-read the ref when debugging uploads or after rebasing onto a newer `openshift/release`; this guide does not mirror every field.
+The job must remain compatible with the [mpiit-data-router-reporter](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter) step in `openshift/release`. Requirements (environment variables, defaults, and documentation) are listed in [mpiit-data-router-reporter-ref.yaml](https://github.com/openshift/release/blob/main/ci-operator/step-registry/mpiit/data-router-reporter/mpiit-data-router-reporter-ref.yaml). Treat that file as the source of truth when wiring CI configuration. The step evolves over time; re-read the ref when debugging uploads or after rebasing onto a newer `openshift/release`; this guide does not mirror every field.
 
 ##### Map the JUnit tests output
 
-This section explains how to modify test command files in `openshift-ci/step-registry` so that results are reported under a stable, mapped suite identifier.
+Configure test-command scripts under `ci-operator/step-registry` in [`openshift/release`](https://github.com/openshift/release) so JUnit results use a stable, mapped suite identifier.
 
 ###### The Problem: Generic suite names
 
-Using the CNV (Virt) use case as an example, tests often run under a generic suite name such as `pytest`:
+Using the CNV (Virt) example, tests often run under a generic suite name such as `pytest`:
 
 ```xml
 <testsuites>
@@ -250,8 +250,7 @@ Using the CNV (Virt) use case as an example, tests often run under a generic sui
 **Why generic naming is problematic:**
 
 - **Lack of context:** Labels such as `pytest` or `ginkgo` are reused across many products, so they do not say which layered product or scenario produced the output. That makes cross-product comparisons and Component Readiness mapping unreliable.
-- **Fragility:** Mapping tests by raw suite names breaks when upstream interop test repositories 
-rename folders, reorganize suites, or otherwise change how frameworks label tests.
+- **Fragility:** Mapping tests by raw suite names breaks when upstream interop repositories rename folders, reorganize suites, or otherwise change how frameworks label tests.
 
 References:
 
@@ -260,18 +259,18 @@ References:
 
 ###### The Solution: Uniform `lp-ocp-compat--` identifiers
 
-To keep tracking stable in Sippy, map every suite uniformly to the `lp-ocp-compat--<lpProductName>` pattern supplied by `DR__RP__CR_COMP_NAME`, using whatever hooks your test framework offers (pytest markers, Go/Ginkgo grouping, and so on).
+To keep tracking stable in Sippy, map every suite uniformly to the `lp-ocp-compat--<lpProductName>` pattern supplied by `DR__RP__CR_COMP_NAME`, using framework-specific hooks (pytest markers, Go/Ginkgo grouping, and so on).
 
-Wire that mapping through `ExitTrap--PostProcessPrep` from [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools): load it once, then register it on shell `EXIT` at the end of your test-step, so post-processing always runs.
+Load `ExitTrap--PostProcessPrep` from [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools), then register it on shell `EXIT` at the end of the test step so post-processing always runs.
 
 ###### Implementation Steps
 
 - **Export the mapping variable:** Set `LP_IO__ET_PPP__NEW_TS_NAME` using the value from `DR__RP__CR_COMP_NAME`.
 
-- **Preserve original names:** Use the `--%s` suffix in `LP_IO__ET_PPP__NEW_TS_NAME`. The `%s` placeholder keeps the original suite name after your new prefix (see the example below).
+- **Preserve original names:** Use the `--%s` suffix in `LP_IO__ET_PPP__NEW_TS_NAME`. The `%s` placeholder keeps the original suite name after the mapped prefix (see the example below).
 
-- **Execute the exit trap:** Register `ExitTrap--PostProcessPrep` on `EXIT` at the end of the test-step so post-processing runs after your tests (see the example below).
-  - **Grace period:** In your step’s `*-ref.yaml`, set `grace_period: 10m` (add it if absent) so post-processing can finish before the step exits.
+- **Execute the exit trap:** Register `ExitTrap--PostProcessPrep` on `EXIT` at the end of the test step so post-processing runs after the tests (see the example below).
+  - **Grace period:** In the step’s `*-ref.yaml`, set `grace_period: 10m` (add it if absent) so post-processing can finish before the step exits.
 
 **Example integration:**
 
@@ -308,7 +307,7 @@ For more details, see [ExitTrap--PostProcessPrep.sh](https://github.com/RedHatQE
 
 #### Component Readiness
 
-For onboarding this job into the CR tools (Sippy and CI Test Mapping), follow the [Component Readiness section in the Reporting Guide](../Reporting/Reporting_Guide.md#component-readiness).
+For onboarding into CR tooling (Sippy and CI Test Mapping), follow the [Component Readiness section in the Reporting Guide](../Reporting/Reporting_Guide.md#component-readiness).
 
 #### TestGrid
 
