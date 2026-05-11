@@ -225,19 +225,19 @@ To make a job Component Readiness (CR)-compliant, you must standardize your conf
 5. **Enable test mapping**
    - Set `MAP_TESTS` to `true` in the config ref.
    - Set `DR__RP__CR_COMP_NAME` to the correct `lp-ocp-compat--<lpProductName>` value, for example `lp-ocp-compat--MyProduct` (this becomes the mapped JUnit suite prefix).
-      - See the following note about the `mpiit-data-router-reporter` step, and ensure that using `DR__RP__CR_COMP_NAME` is correct.
+   - Cross-check `DR__RP__CR_COMP_NAME` against the `mpiit-data-router-reporter` step requirements (see the compliance subsection below).
 
 ###### `mpiit-data-router-reporter` compliance
 
-Your job must stay compliant with the [mpiit-data-router-reporter](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter) step in `openshift/release`. Its requirements (environment variables, defaults and documentation) lives in the step ref file [mpiit-data-router-reporter-ref.yaml](https://github.com/openshift/release/blob/main/ci-operator/step-registry/mpiit/data-router-reporter/mpiit-data-router-reporter-ref.yaml); treat that file as the authoritative checklist when wiring your CI config. Requirements may change as the step is updated, so re-check the ref when troubleshooting reporting or after rebasing onto newer `openshift/release` content—this guide does not duplicate every ref field.
+Your job must stay compliant with the [mpiit-data-router-reporter](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter) step in `openshift/release`. Its requirements (environment variables, defaults, and documentation) are documented in the step ref file [mpiit-data-router-reporter-ref.yaml](https://github.com/openshift/release/blob/main/ci-operator/step-registry/mpiit/data-router-reporter/mpiit-data-router-reporter-ref.yaml). Treat that file as the source of truth when wiring your CI config. The step changes over time, so re-read the ref when debugging uploads or after rebasing onto a newer `openshift/release`; this guide does not mirror every field.
 
-##### Map the Junit tests output
+##### Map the JUnit tests output
 
 This section explains how to modify test command files in `openshift-ci/step-registry` so that results are reported under a stable, mapped suite identifier.
 
 ###### The Problem: Generic suite names
 
-Using CNV use case as an example, tests often run under a generic suite name such as `pytest`:
+Using the CNV (Virt) use case as an example, tests often run under a generic suite name such as `pytest`:
 
 ```xml
 <testsuites>
@@ -249,24 +249,26 @@ Using CNV use case as an example, tests often run under a generic suite name suc
 
 **Why generic naming is problematic:**
 
-- **Lack of context:** Names like `pytest` or `ginkgo` show up across many products, so they do not identify which layered product or scenario produced the results—cross-product reporting and Component Readiness mapping suffer.
-- **Fragility:** Mapping tests by raw suite names breaks when upstream interop test repositories rename folders, reorganize suites, or otherwise change how frameworks label tests.
+- **Lack of context:** Labels such as `pytest` or `ginkgo` are reused across many products, so they do not say which layered product or scenario produced the output. That makes cross-product comparisons and Component Readiness mapping unreliable.
+- **Fragility:** Mapping tests by raw suite names breaks when upstream interop test repositories 
+rename folders, reorganize suites, or otherwise change how frameworks label tests.
 
 References:
 
-- JUnit sample: [file url](https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/test-platform-results/logs/periodic-ci-RedHatQE-interop-testing-cnv-4.18-cnv-odf-ocp4.19-lp-interop-cnv-odf-tests-aws-ipi-ocp419/1934493757156102144/artifacts/cnv-odf-tests-aws-ipi-ocp419/interop-tests-ocs-tests/artifacts/ocs-tests/junit.xml)
+- JUnit sample from the same style of periodic job: [junit.xml in CI artifacts](https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/test-platform-results/logs/periodic-ci-RedHatQE-interop-testing-cnv-4.18-cnv-odf-ocp4.19-lp-interop-cnv-odf-tests-aws-ipi-ocp419/1934493757156102144/artifacts/cnv-odf-tests-aws-ipi-ocp419/interop-tests-ocs-tests/artifacts/ocs-tests/junit.xml)
 - Test repository: [ocs-ci](https://github.com/red-hat-storage/ocs-ci/tree/master)
 
 ###### The Solution: Uniform `lp-ocp-compat--` identifiers
 
-To keep tracking stable in Sippy, map suite names uniformly to the `lp-ocp-compat--<lpProductName>` style from `DR__RP__CR_COMP_NAME` (using markers or grouping appropriate for your framework: pytest, Go, Ginkgo, and so on). 
-Implement that mapping with the `ExitTrap--PostProcessPrep` helper from [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools), registered as an exit trap at the end of each test-step script.
+To keep tracking stable in Sippy, map every suite uniformly to the `lp-ocp-compat--<lpProductName>` pattern supplied by `DR__RP__CR_COMP_NAME`, using whatever hooks your test framework offers (pytest markers, Go/Ginkgo grouping, and so on).
+
+Wire that mapping through `ExitTrap--PostProcessPrep` from [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools): load it once, then register it on shell `EXIT` at the end of your test-step, so post-processing always runs.
 
 ###### Implementation Steps
 
 - **Export the mapping variable:** Set `LP_IO__ET_PPP__NEW_TS_NAME` using the value from `DR__RP__CR_COMP_NAME`.
 
-- **Preserve original names:** Use the `--%s` suffix. The `%s` acts as a placeholder that automatically appends the original suite name to your new prefix (see in the following example).
+- **Preserve original names:** Use the `--%s` suffix in `LP_IO__ET_PPP__NEW_TS_NAME`. The `%s` placeholder keeps the original suite name after your new prefix (see the example below).
 
 - **Execute the exit trap:** Register `ExitTrap--PostProcessPrep` on `EXIT` at the end of the test-step so post-processing runs after your tests (see the example below).
   - **Grace period:** In your step’s `*-ref.yaml`, set `grace_period: 10m` (add it if absent) so post-processing can finish before the step exits.
@@ -277,7 +279,7 @@ Implement that mapping with the `ExitTrap--PostProcessPrep` helper from [RedHatQ
 #!/bin/bash
 set -euxo pipefail; shopt -s inherit_errexit
 
-# Map results by setting identifier prefix in tests suites names for reporting tools
+# Map results by setting an identifier prefix on test suite names for reporting tools
 # Merge original results into a single file and compress
 # Send modified file to shared dir for Data Router Reporter step
 if [ "${MAP_TESTS}" = "true" ]; then
