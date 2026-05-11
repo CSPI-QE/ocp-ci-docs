@@ -198,8 +198,10 @@ To make a job Component Readiness (CR)-compliant, you must standardize your conf
 
 ##### References
 
-- Current CR view (`OCP 4.22`): [4.22-LP-Interop](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.22-LP-Interop)
-- Example config: [RedHatQE-interop-testing-master__cnv-odf-ocp-4.21-lp-interop-cr.yaml](https://github.com/openshift/release/blob/main/ci-operator/config/RedHatQE/interop-testing/RedHatQE-interop-testing-master__cnv-odf-ocp-4.21-lp-interop-cr.yaml)
+- **Sippy Component Readiness (main):** [Component Readiness](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main) — use this stable entry point.
+  - **LP Interop view:** Bookmarks and navigation usually land on
+  `https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=<ocp-release>-LP-Interop`, where `<ocp-release>` is the short release label (for example `4.22` for `4.22-LP-Interop`). Only that segment is tied to a specific stream.
+- **Example configs:** [ci-operator/config/red-hat-storage/ocs-ci](https://github.com/openshift/release/tree/main/ci-operator/config/red-hat-storage/ocs-ci) — use the directory link so you pick up current files matching `*-ocp-<releaseValue>-lp-interop.yaml` without this guide tracking every filename and release.
 - Step-registry workflow: [`Firewatch-ipi-aws-cr`](https://github.com/openshift/release/tree/main/ci-operator/step-registry/firewatch/ipi/aws/cr)
 - Step-registry data router: [`mpiit/data-router-reporter`](https://github.com/openshift/release/tree/main/ci-operator/step-registry/mpiit/data-router-reporter)
 
@@ -222,7 +224,7 @@ To make a job Component Readiness (CR)-compliant, you must standardize your conf
 
 5. **Enable test mapping**
    - Set `MAP_TESTS` to `true` in the config ref.
-   - Set `REPORTPORTAL_CMP` to the correct `lp-ocp-compat--<lpProductName>` value, for example `lp-ocp-compat--MyProduct` (this becomes the mapped JUnit suite prefix.
+   - Set `REPORTPORTAL_CMP` to the correct `lp-ocp-compat--<lpProductName>` value, for example `lp-ocp-compat--MyProduct` (this becomes the mapped JUnit suite prefix).
 
 ##### Map the Junit tests output
 
