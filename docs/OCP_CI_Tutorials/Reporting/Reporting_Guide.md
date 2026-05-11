@@ -385,17 +385,30 @@ Create a new directory:
 
 Model it on [pkg/components/myproductlpinterop/component.go](../../pkg/components/myproductlpinterop/component.go):
 
-- Set `Name` to the same string as the mapped JUnit suite (e.g. `lp-ocp-compat--MyProduct`) so it matches `Register` and `Suite` matchers. Set `DefaultJiraComponent` to the **OCPBUGS** Jira component name owned by the team older naming styles (e.g. `MyProduct-lp-interop`) remain acceptable and does **not** need match the suite string.
-- Use a matcher that claims **all tests in that suite**:
+- Set `Name` to the same string as the mapped JUnit suite (e.g. `lp-ocp-compat--MyProduct`) so it matches `Register` and `Suite` matchers. Set `DefaultJiraComponent` to the **OCPBUGS** Jira component name owned by the team. Older naming styles (e.g. `MyProduct-lp-interop`) remain acceptable and do **not** need to match the suite string.
+- Use **`Matchers`** so this component owns the right tests:
+  - **`Suite`** — Use for an **exact** JUnit suite string. Many components still carry a **legacy** row such as `{Suite: "MyProduct-lp-interop"}` (component-style name); keep it when tests still report that suite—**do not drop it** when adding **`SuiteRegEx`**.
+  - **`SuiteRegEx`** — Use `regexp.MustCompile(...)` for **additional** suite prefixes or patterns (for example `^lp-ocp-compat--MyProduct--`, `^lp-interop--MyProduct--`, `^lp-chaos--MyProduct--`). Add `"regexp"` to the imports in `component.go`. Regex suite matching in **`ComponentMatcher`** is **newer** than plain **`Suite`**; it **extends** legacy **`Suite`** rows rather than replacing them.
 
   ```go
+  import (
+      "regexp"
+
+      "github.com/openshift-eng/ci-test-mapping/pkg/config"
+  )
+
   var MyProductLpInteropComponent = Component{
-	  Component: &config.Component{
-      Name:                 "MyProduct-lp-interop",
-      Operators:            []string{},
-      DefaultJiraComponent: "MyProduct",
-      Matchers: []config.ComponentMatcher{{Suite: "lp-ocp-compat--MyProduct"}},
-	  },
+      Component: &config.Component{
+          Name:                 "MyProduct-lp-interop",
+          Operators:            []string{},
+          DefaultJiraComponent: "MyProduct",
+          Matchers: []config.ComponentMatcher{
+              {Suite: "MyProduct-lp-interop"}, // legacy exact suite (keep when present)
+              {SuiteRegEx: regexp.MustCompile(`^lp-ocp-compat--MyProduct--`)},
+              {SuiteRegEx: regexp.MustCompile(`^lp-interop--MyProduct--`)},
+              {SuiteRegEx: regexp.MustCompile(`^lp-chaos--MyProduct--`)},
+          },
+      },
   }
   ```
 
@@ -451,7 +464,7 @@ The string passed to `Register` is the **component name** used in mappings; it m
 #### Quick checklist
 
 1. **`config/openshift-eng.yaml`:** Add a pattern for the mapped suite to `includeSuitePatterns` (alphabetically with other `lp-ocp-compat--…` entries).
-2. **`pkg/components/myproductlpinterop/component.go`:** Component with matcher `Suite: "lp-ocp-compat--MyProduct"`.
+2. **`pkg/components/myproductlpinterop/component.go`:** **`Matchers`** — keep any **legacy** `{Suite: "…-lp-interop"}` row; add **`SuiteRegEx`** (+ `"regexp"`) for mapped prefixes (`lp-ocp-compat--`, `lp-interop--`, …); list **`Suite`** before **`SuiteRegEx`**.
 3. **`pkg/components/myproductlpinterop/capabilities.go`:** `identifyCapabilities` + `util.DefaultCapabilities` (see [myproductlpinterop/capabilities.go](../../pkg/components/myproductlpinterop/capabilities.go)).
 4. **`pkg/registry/registry.go`:** Import package + `r.Register(...)`.
 5. **Jira / verification:** `DefaultJiraComponent` exists; `./ci-test-mapping jira-verify` clean.
