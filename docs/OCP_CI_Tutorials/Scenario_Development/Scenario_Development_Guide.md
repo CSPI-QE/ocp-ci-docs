@@ -214,6 +214,7 @@ To make a job Component Readiness (CR)-compliant, you must standardize your conf
 
 3. **Increase data sampling**
    - Schedule the job to run twice a day with `cron: 0 3,15 * * *`.
+   - This twice-daily cadence is required to satisfy Sippy's statistical confidence intervals.
 
 4. **Use the `Firewatch-ipi-aws-cr` workflow**
    - This is currently compliant only for regular AWS IPI jobs already migrated to CR.
