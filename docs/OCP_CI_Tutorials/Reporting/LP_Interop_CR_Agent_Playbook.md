@@ -8,7 +8,7 @@ This playbook is for **coding agents and automation** that drive **layered-produ
 2. **Implement in dependency order** — **release** → **sippy** → **ci-test-mapping**; prefer **release** merging first.
 3. **Do not run** `make` in **sippy** / **ci-test-mapping** unless `[MAKE_MAINTAINER]` is **agent** and policy allows; otherwise **record** maintainer commands in PR bodies.
 4. **Every commit message** must cite `**[ocp-ci-docs] LP_Interop_CR_Agent_Playbook**` **as the source** of the procedure used.
-5. **Deliverables** — Paste-ready PR descriptions per touched repo, PR URL list, remaining `make` steps, blockers; then **Cleanup** `WORKDIR`.
+5. **Deliverables** — Paste-ready PR descriptions per touched repo, PR URL list, remaining `make` steps, blockers; **[per-run log file and shell trace](#run-logging-agents)** (start/end times, correlated names; **never `git push` those artifacts to `origin`** unless the requester explicitly overrides); then **Cleanup** `WORKDIR`.
 
 ---
 
@@ -57,8 +57,9 @@ Instructions (execute in this order):
 7. Every commit message: cite **[ocp-ci-docs] LP_Interop_CR_Agent_Playbook** as the **source** (short trailer or footer line is 
 enough).
 8. End state: branches pushed, checklist satisfied, **Cleanup** removes `$WORKDIR`.
+9. Run logging: write the per-run Markdown log and correlated executable shell trace under `docs/OCP_CI_Tutorials/Reporting/` (see **Run logging** in the playbook): same `<slug>_<RUN_ID>` basename, log includes **start** and **end** times; **do not** commit or **`git push … origin`** those artifacts unless the requester explicitly says otherwise; if you cannot write to that repo, paste both artifacts in full for the requester.
 
-Deliverables: paste-ready PR description per modified repo; list of PR URLs; maintainer-only commands left; blockers.
+Deliverables: paste-ready PR description per modified repo; list of PR URLs; maintainer-only commands left; blockers; per-run log file and correlated shell trace (see Run logging; **do not `git push` those artifacts to `origin`** unless the requester explicitly overrides).
 ```
 
 ---
@@ -176,6 +177,53 @@ PRs may open in parallel once identifiers are fixed; **release** should merge **
 
 ---
 
+## Run logging (agents)
+
+Each playbook execution must leave **two correlated artifacts** in **`ocp-ci-docs`** (default directory: this folder, `docs/OCP_CI_Tutorials/Reporting/`), unless the **user/requester** names a different path in the prompt. Use the **same basename** for both files.
+
+**Never push these artifacts to `origin`.** Do not `git add`, commit, or **`git push … origin`** the run log (`*_log.md`) or shell trace (`*_commands.sh`) from an automated playbook run—on **openshift/release**, **openshift/sippy**, **openshift-eng/ci-test-mapping**, or **ocp-ci-docs**—unless the **user/requester** explicitly instructs otherwise. Default: keep them **local** or deliver them **in chat / attachments** only so fork branches and product PRs stay free of trace noise and accidental paths or tokens.
+
+### 1. Run log file (Markdown)
+
+Create **one log file per run** that records everything the agent produced for that execution (or a faithful summary if the chat tool cannot write the full transcript). The log **must** include:
+
+- **Start time** and **end time** — capture at the beginning of work (before or at Phase 0) and when deliverables are complete (before **Cleanup**). Use ISO 8601 (recommend **one line in local offset** and **one line in UTC**, e.g. `date -Iseconds` and `date -u +%Y-%m-%dT%H:%M:%SZ`).
+- **Prerequisites** as received (product name, slug, OCP minors, job substring, Jira component, fork owner, `make` policy, release paths if any).
+- **Phase 0** outcome (including **`git push --dry-run`** per repo) and any deviation from the default remote layout.
+- **What changed** repo by repo (files, identifiers, tests run).
+- **Deliverables** — PR blurbs, PR URLs when known, maintainer **`make`** lines, **blockers** (auth, missing forks, policy).
+- A **Related** line linking to the correlated shell trace file (see below).
+
+**Suggested filename** (replace `<slug>` with the product slug; `<RUN_ID>` with a UTC timestamp taken at **start** so both artifacts share it):
+
+`LP_Interop_CR_Agent_Run_<slug>_<RUN_ID>_log.md`  
+Example RUN_ID: `20260513T215811Z` from `date -u +%Y%m%dT%H%M%SZ`.
+
+**Example (PoC):** [LP_Interop_CR_Agent_Playbook_PoC_agent_log.md](LP_Interop_CR_Agent_Playbook_PoC_agent_log.md). #TODO: add poc
+
+### 2. Correlated shell trace (executable)
+
+Create **one Bash script per run** that lists **all terminal commands** executed in order (clone, remotes, fetch, branch, `git push` checks, `go test` / `gofmt` when used, and so on). Rules:
+
+- **`#!/usr/bin/env bash`** at the top; document **`GH_USER`**, **`FEATURE_BRANCH`**, and optional **`WORKDIR`** / **`RUN_VERIFY`** if the script supports replay.
+- Use **`#` comments** for steps that were **not** shell-driven (for example hand-edited files, or **`make`** left to the maintainer).
+- Prefer **`|| true`** only where the historical run **expected** a non-zero exit (for example failed auth on a dry-run used only to document environment limits); otherwise keep failures visible for replay debugging.
+- **`chmod +x`** on the script when the filesystem allows it.
+- The script’s basename must match the log file’s basename except for the suffix: **`_log.md`** vs **`_commands.sh`**.
+
+**Suggested filename:**
+
+`LP_Interop_CR_Agent_Run_<slug>_<RUN_ID>_commands.sh`  
+(same `<slug>` and `<RUN_ID>` as the log file for that run.)
+
+**Example (PoC):** [LP_Interop_CR_Agent_Playbook_PoC_commands.sh](LP_Interop_CR_Agent_Playbook_PoC_commands.sh). #TODO: add poc
+
+### 3. Checklist tie-in
+
+Treat the log and shell trace as part of **deliverables** alongside PR text. If the agent cannot write to **`ocp-ci-docs`**, state that in the log and give the **full pasted content** of both artifacts in the chat so the requester can save them locally with the correct names. In all cases, follow **[Never push these artifacts to `origin`](#run-logging-agents)** above.
+
+---
+
 ## Maintainer hand-offs (not automated)
 
 Put in **each** PR for the **user/requester**:
@@ -194,6 +242,8 @@ Put in **each** PR for the **user/requester**:
 - [ ] **sippy** — **`testSuitePatterns`** for prefixes; **`setLayeredProduct`** order; **`LayeredProduct`** in `*-LP-Interop` views.
 - [ ] **ci-test-mapping** — `includeSuitePatterns`; **`Matchers`**; **`DefaultJiraComponent`**; README / `jira-verify` as needed.
 - [ ] **PRs** — Maintainer **`make`** lines + cross-repo links + **paste-ready** per-repo descriptions (what / why / identifiers / related PRs).
+- [ ] **Run log** — Markdown file with **start** and **end** times, prerequisites, Phase 0 outcome, changes, deliverables, blockers; **Related** link to the shell trace; **not pushed to `origin`** unless the requester explicitly says otherwise.
+- [ ] **Shell trace** — Executable **`_commands.sh`** with the same **`<slug>_<RUN_ID>`** basename as the log; terminal commands in order; comments for non-shell steps; **not pushed to `origin`** unless the requester explicitly says otherwise.
 
 ---
 
