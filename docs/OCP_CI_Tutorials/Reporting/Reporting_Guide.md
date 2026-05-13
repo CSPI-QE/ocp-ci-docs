@@ -456,7 +456,7 @@ Edit [pkg/registry/registry.go](../../pkg/registry/registry.go):
    r.Register("lp-ocp-compat--MyProduct", &myproductlpinterop.MyProductLpInteropComponent)
    ```
 
-The string passed to `Register` is the **component name** used in mappings; it must match `Name` in the `config.Component` block and the mapped JUnit **suite** string (the **example** above uses **`lp-ocp-compat--MyProduct`**).
+The string passed to `Register` is the **component name** used in mappings; it must match `Name` in the `config.Component` block and the mapped JUnit **suite** string (the example above uses **`lp-ocp-compat--MyProduct`**).
 
 ---
 

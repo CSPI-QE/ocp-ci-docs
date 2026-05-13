@@ -1,25 +1,37 @@
 # Component Readiness — agent playbook
 
-This playbook is for **coding agents and automation** that need to drive **layered-product LP Interop jobs** through **Component Readiness (CR)** end to end. It ties together several GitHub repositories and maintainer steps completed by the **user/requester**. Detailed procedures remain in the [Scenario Development Guide](../Scenario_Development/Scenario_Development_Guide.md) and [Reporting Guide](Reporting_Guide.md).
+This playbook is for **coding agents and automation** that drive **layered-product LP Interop** work through **Component Readiness (CR)**. It coordinates **openshift/release**, **openshift/sippy**, and **openshift-eng/ci-test-mapping** (optional **ocp-ci-docs**). **User/requester** steps (for example `make`) stay in [Reporting Guide](Reporting_Guide.md) and [Scenario Development Guide](../Scenario_Development/Scenario_Development_Guide.md).
 
-## Before you start: prerequisites (requester fills in)
+## At a glance (agents)
 
-Provide these **once per onboarding** so the agent does not guess identifiers or paths. Paste them into the [prompt template](#prompt-template-for-agent-execution) below.
+1. **Phase 0 first** — `WORKDIR`, clones (skip if dirs exist), `main`, feature branches, then **derive** identifiers from **`openshift/release`** YAML before editing other repos.
+2. **Implement in dependency order** — **release** → **sippy** → **ci-test-mapping**; prefer **release** merging first.
+3. **Do not run** `make` in **sippy** / **ci-test-mapping** unless `[MAKE_MAINTAINER]` is **agent** and policy allows; otherwise **record** maintainer commands in PR bodies.
+4. **Every commit message** must cite `**[ocp-ci-docs] LP_Interop_CR_Agent_Playbook**` **as the source** of the procedure used.
+5. **Deliverables** — Paste-ready PR descriptions per touched repo, PR URL list, remaining `make` steps, blockers; then **Cleanup** `WORKDIR`.
 
-1. **Product display name** — Name used in CR. Example: `MyProduct`.
-2. **Product slug** — Lowercase, hyphenated; feeds `lp-interop-<slug>` and branch names. Example: `myproduct`.
-3. **Target OCP minor release(s)** — OpenShift version(s) jobs exercise. Example: `4.22` (repeat or list if several streams). The requester does **not** supply a separate view string. Derive it from the release(s) and confirm the view exists for that minor.
-4. **`openshift/release` config path(s)** — Existing or planned ci-operator config files. Example: `ci-operator/config/Org/repo/Org-repo-branch__variant.yaml`.
-5. **Periodic job name fragment** — Substring for `setLayeredProduct` (often contains `-lp-interop-cr-`). Example: `-lp-interop-cr-myproduct`.
-6. **OCPBUGS / mapping component** — For ci-test-mapping `DefaultJiraComponent` when known. Example: `MyProduct`.
-7. **Remote / fork policy** — Where branches are pushed (personal fork vs bot). Example: `git@github.com:<user>/release.git`.
-8. **Maintainer for `make`** — Who runs `make update`, `make update-variants`, `make mapping`. Example: **requester** or **agent**, per team policy.
+---
 
-Add links to **existing PRs**, **Prow jobs**, or **GCS artifacts** if this run extends prior work.
+## Before you start: prerequisites (user/requester fills in)
+
+Provide **once**; paste into the [prompt template](#prompt-template-for-agent-execution).
+
+1. **Product display name** — CR name; drives **`<lpProductName>`** in **`lp-ocp-compat--<lpProductName>`**. Example: `MyProduct`.
+2. **Product slug** — Lowercase, hyphenated; **`lp-interop-<slug>`** and branches. Example: `myproduct`.
+3. **Target OCP minor release(s)** — e.g. `4.22`. Agent derives Sippy **`view=`** from **`openshift/sippy`** `config/views.yaml` (**`<minor>-LP-Interop`**); no separate view string from the requester.
+4. **`openshift/release` config path(s)** — e.g. `ci-operator/config/Org/repo/Org-repo-branch__variant.yaml`.
+5. **Periodic job name fragment** — For **`setLayeredProduct`** (often **`-lp-interop-cr-…`**). Example: `-lp-interop-cr-myproduct`.
+6. **OCPBUGS / `DefaultJiraComponent`** — If known. Example: `MyProduct`.
+7. **Remote / fork policy** — e.g. `git@github.com:<user>/release.git`.
+8. **Maintainer for `make`** — **requester** or **agent**, per team policy.
+
+Optional: links to existing **PRs**, **Prow** jobs, or **GCS** artifacts.
+
+---
 
 ## Prompt template for agent execution
 
-Copy everything inside the fence into the agent chat (or automation payload). Replace bracketed placeholders with the **prerequisites** above.
+Copy the list below into the agent chat. Replace **`[PLACEHOLDERS]`** with prerequisites.
 
 ```text
 You are executing LP Interop Component Readiness onboarding.
@@ -34,44 +46,44 @@ Inputs (from the user/requester — use exactly; do not invent):
 - Git remote policy: [REMOTE_POLICY]
 - Maintainer for make (who runs `make update`, `make update-variants`, `make mapping`): [MAKE_MAINTAINER]
 
-Instructions:
-1. Follow the repository playbook at docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md in this repo (Phase 0 tmpdir, clone order, branches from main, Cleanup).
-2. **Commit messages:** In **every** commit message, state that the change was produced while following this playbook — name **`LP_Interop_CR_Agent_Playbook`** or include the path **`docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md`** (short trailer or footer line is enough).
-3. Use **Maintainer for make** from `[MAKE_MAINTAINER]` (**requester** or **agent**, per team policy). If **requester**, record those `make` commands in PR descriptions for them to run—do not execute them yourself. If **agent**, run only what team policy explicitly allows; otherwise record commands like requester. Follow the Reporting Guide where automation is forbidden for agents (default for openshift/sippy and openshift-eng/ci-test-mapping unless policy overrides).
-4. From OCP release(s), derive the correct Component Readiness Sippy `view=` name using openshift/sippy `config/views.yaml` (LP-Interop views for that minor—typically `<minor>-LP-Interop`). Do not ask the user/requester for a separate view string or invent one outside that mapping.
-5. From **Product display name**, set the mapped JUnit suite and `DR__RP__CR_COMP_NAME` to **`lp-ocp-compat--<lpProductName>`** where **`<lpProductName>`** is taken from that display name; keep it identical everywhere (openshift/release, sippy, ci-test-mapping). Do not ask the user/requester for a separate mapped-suite string.
-6. Open the **`openshift/release` ci-operator configs** at `[RELEASE_CONFIG_PATHS]` and inspect **`tests`** (job names, steps, workflow, commands, chain/ref, env) to determine **step-registry touchpoints** and the **`LayeredProduct`** value those jobs imply for Sippy—do not ask the user/requester to list those unless the YAML is incomplete or ambiguous.
-7. Work in recommended order: openshift/release → openshift/sippy → openshift-eng/ci-test-mapping; optionally ocp-ci-docs if docs change.
-8. End state: branches pushed, PRs opened with cross-links, playbook checklist satisfied, temporary WORKDIR removed per Cleanup section.
+Instructions (execute in this order):
+1. Follow Phase 0 in docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md (WORKDIR, clone-if-missing, reset `main`, feature branches, identifier capture from **release** YAML, no forbidden `make`, commit-message rule). Run **Cleanup** only after branches are pushed and local clones are no longer needed.
+2. With `[RELEASE_CONFIG_PATHS]` open: from **tests** (jobs, steps, workflow, commands, chain/ref, env), list **step-registry** paths to touch and confirm **`LayeredProduct`** implied for Sippy. Only ask the user/requester if YAML is incomplete.
+3. From **OCP release(s)** + `openshift/sippy/config/views.yaml`, derive **`view=`** (**`<minor>-LP-Interop`**). Do not invent a view outside that file.
+4. From **Product display name**, set **`DR__RP__CR_COMP_NAME`** / mapped suite to **`lp-ocp-compat--<lpProductName>`** (Scenario Development Guide for normalization). Same string in **release**, **sippy**, **ci-test-mapping**.
+5. Honor `[MAKE_MAINTAINER]` for `make update`, `make update-variants`, `make mapping`: **requester** → document in PRs, do not run yourself unless policy says **agent** may. Default: no `make` in **sippy** / **ci-test-mapping** for agents (Reporting Guide).
+6. Implement: **openshift/release** → **openshift/sippy** → **openshift-eng/ci-test-mapping**; Cross-link PRs. Prefer **release** merging first.
+7. Every commit message: cite **[ocp-ci-docs] LP_Interop_CR_Agent_Playbook** as the **source** (short trailer or footer line is 
+enough).
+8. End state: branches pushed, checklist satisfied, **Cleanup** removes `$WORKDIR`.
 
-Deliverables: precise PR description text for each modified repo (ready to paste); summary list of PR URLs; remaining maintainer-only commands; any blockers.
+Deliverables: paste-ready PR description per modified repo; list of PR URLs; maintainer-only commands left; blockers.
 ```
+
+---
 
 ## Repositories in scope
 
-1. **[openshift/release](https://github.com/openshift/release)**
-   - **a.** **CI configuration** — `ci-operator/config/**`, periodic job names, workflows (`Firewatch-ipi-aws-cr`), env vars (`DR__RP__CR_COMP_NAME`, `MAP_TESTS`, …).
-   - **b.** **Step-registry changes** — apply test mapping in test scripts (commands/refs under `ci-operator/step-registry`).
-2. **[openshift/sippy](https://github.com/openshift/sippy)** — Suite import patterns (`pkg/db/suites.go` **`testSuitePatterns`** / `testSuites`), variant / `LayeredProduct` mapping (`pkg/variantregistry/ocp.go`), LP-Interop views (`config/views.yaml`), tests.
-3. **[openshift-eng/ci-test-mapping](https://github.com/openshift-eng/ci-test-mapping)** — Suite patterns, component packages, Jira component mapping (`config/openshift-eng.yaml`, `pkg/components/**`, `pkg/registry/registry.go`).
+1. **[openshift/release](https://github.com/openshift/release)**:
+   **a.** **CI configuration** — `ci-operator/config/**`, periodic job names, workflows (`Firewatch-ipi-aws-cr`), env vars (`DR__RP__CR_COMP_NAME`, `MAP_TESTS`, …).
+   **b.** **Step-registry changes** — apply test mapping in test scripts (commands/refs under `ci-operator/step-registry`).
+2. **[openshift/sippy](https://github.com/openshift/sippy)**: **`testSuitePatterns`** in `pkg/db/suites.go` (add regex only for **new** suite prefixes; see Reporting Guide). `setLayeredProduct`, `config/views.yaml`, tests.
+3. **[openshift-eng/ci-test-mapping](https://github.com/openshift-eng/ci-test-mapping)**: `includeSuitePatterns`, **`Matchers`** (**`Suite`** / **`SuiteRegEx`**), component package, `pkg/registry/registry.go`, capabilities.
 
 Supporting libraries (for example [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools) for `ExitTrap--PostProcessPrep`) are consumed from CI scripts; they are **not** typically forked as part of this onboarding unless the scenario requires upstream changes there.
 
 ## Phase 0 — Sanitized workspace (mandatory before edits)
 
-Every full onboarding run should start from a **clean, reproducible** layout so branches do not pick up stale commits or wrong bases.
+Use one **`$WORKDIR`** for all git work; destroy it in [Cleanup](#cleanup).
 
-1. **Temporary working root**  
-   Create a fresh directory with `mktemp` (or equivalent) so nothing shares state with other worktrees—for example:
+1. **Working root**
 
    ```bash
    WORKDIR=$(mktemp -d -t cr-onboarding-XXXXXX)
    cd "$WORKDIR"
    ```
 
-   Perform **all** git operations below inside this directory (clone only repos that are not already present). Tear down the directory when the run is complete; see [Cleanup](#cleanup) below.
-
-2. **Ensure each repository is present** (HTTPS or SSH per site policy). **Do not clone** a repo if its directory already exists under **`$WORKDIR`** (reuse existing clones when continuing work in the same workspace). Clone only what is missing:
+2. **Repos** — Clone only missing dirs under **`$WORKDIR`** (reuse if continuing):
 
    ```bash
    [ ! -d release ] && git clone https://github.com/openshift/release.git
@@ -79,7 +91,9 @@ Every full onboarding run should start from a **clean, reproducible** layout so 
    [ ! -d ci-test-mapping ] && git clone https://github.com/openshift-eng/ci-test-mapping.git
    ```
 
-3. **Reset each repo to `main`** (or the repo’s default branch name if not `main`):
+   For a **full** re-clone, remove those dirs or pick a new **`$WORKDIR`**.
+
+3. **Sync `main`** (or default branch):
 
    ```bash
    cd release && git fetch origin && git checkout main && git pull --ff-only
@@ -87,7 +101,7 @@ Every full onboarding run should start from a **clean, reproducible** layout so 
    cd ../ci-test-mapping && git fetch origin && git checkout main && git pull --ff-only
    ```
 
-4. **Create one feature branch per repo**, from that updated `main`, using a **consistent slug** (examples **`onboarding-myproduct`** / **`myproduct`**):
+4. **Feature branches** — One slug across repos (examples **`onboarding-myproduct`** / **`myproduct`**):
 
    ```bash
    cd release && git checkout -b onboarding-myproduct
@@ -95,26 +109,24 @@ Every full onboarding run should start from a **clean, reproducible** layout so 
    cd ../ci-test-mapping && git checkout -b myproduct
    ```
 
-5. **Record identifiers once** and reuse everywhere: mapped JUnit suite / `DR__RP__CR_COMP_NAME` (`lp-ocp-compat--<lpProductName>` from Product display name), **`LayeredProduct`** (from the configured **tests** in release YAML, aligned with Sippy), periodic job name substring (`-lp-interop-cr-<slug>`). They must stay **case-consistent** across repos.
+5. **Identifiers** — After reading **`openshift/release`** configs from prerequisites, fix once: **`lp-ocp-compat--<lpProductName>`** / **`DR__RP__CR_COMP_NAME`**, **`LayeredProduct`**, periodic substring (**`-lp-interop-cr-<slug>`**). **Case-consistent** everywhere.
 
-6. **Do not run forbidden automation**: In **sippy** and **ci-test-mapping**, agents must **not** execute `make` targets on behalf of the requester (see the Reporting Guide). Record maintainer commands in PR descriptions instead.
+6. **No forbidden `make`** in **sippy** / **ci-test-mapping** for agents unless policy overrides — document **`make update-variants`** / **`make mapping`** in PRs ([Reporting Guide](Reporting_Guide.md)).
 
-7. **Commit messages:** Every commit message must note that the work was generated using this playbook — reference **`LP_Interop_CR_Agent_Playbook`** or **`docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md`** so reviewers can trace the workflow (one line in the body or as a trailer is sufficient).
+7. **Commit messages:** Every commit message must note that the work was generated using this playbook — reference **`[ocp-ci-docs] LP_Interop_CR_Agent_Playbook`** so reviewers can trace the workflow (one line in the body or as a trailer is sufficient).
 
 ### Cleanup
-
-After feature branches are pushed to the appropriate remotes and nothing further is required from the local working copies (commits, diffs, or tags), remove the temporary workspace so the next onboarding starts clean:
 
 ```bash
 cd /
 rm -rf "$WORKDIR"
 ```
 
-Use the same `WORKDIR` value created in step 1 (`mktemp`). Change out of `$WORKDIR` before deleting it (for example `cd /` as above). If anything must be retained (notes, patch files), copy it elsewhere **before** running `rm -rf`.
+Leave **`$WORKDIR`** first; copy anything to keep **before** `rm -rf`.
+
+---
 
 ## Recommended order of work
-
-Dependencies flow **from CI reality → ingestion → mapping**:
 
 ```mermaid
 flowchart LR
@@ -125,33 +137,35 @@ flowchart LR
   release --> ctm
 ```
 
-1. **`openshift/release`** — Implement [Make a Job CR-Compliant](../Scenario_Development/Scenario_Development_Guide.md#make-a-job-cr-compliant): `-lp-interop-cr` naming, cron, `Firewatch-ipi-aws-cr`, `mpiit-data-router-reporter`, `MAP_TESTS`, `DR__RP__CR_COMP_NAME`, and [Map the JUnit tests output](../Scenario_Development/Scenario_Development_Guide.md#map-the-junit-tests-output). Confirm **`lp-ocp-compat--<lpProductName>`** derived from Product display name matches CI and that **real** periodic job name fragments match what Sippy and variants expect.
+1. **`openshift/release`** — [Make a Job CR-Compliant](../Scenario_Development/Scenario_Development_Guide.md#make-a-job-cr-compliant); [Map the JUnit tests output](../Scenario_Development/Scenario_Development_Guide.md#map-the-junit-tests-output). **`lp-ocp-compat--<lpProductName>`** and periodic fragments match what **sippy** will ingest.
+2. **`openshift/sippy`** — [Reporting Guide → Sippy](Reporting_Guide.md#sippy): **`testSuitePatterns`**, `setLayeredProduct`, `config/views.yaml`, tests. Substring **order** matters.
+3. **`openshift-eng/ci-test-mapping`** — [Reporting Guide → CI Test Mapping](Reporting_Guide.md#ci-test-mapping): `includeSuitePatterns`, **`Matchers`**, registry, capabilities.
+4. **`ocp-ci-docs`** (optional) — Doc alignment.
 
-2. **`openshift/sippy`** — Follow [Reporting Guide → Sippy](Reporting_Guide.md#sippy): `pkg/db/suites.go` (**`testSuitePatterns`** / **`testSuites`**), `pkg/variantregistry/ocp.go` (`setLayeredProduct`), `config/views.yaml`, optional `pkg/variantregistry/ocp_test.go`. Respect substring **ordering** and LP-Interop view blocks.
+PRs may open in parallel once identifiers are fixed; **release** should merge **first** when possible.
 
-3. **`openshift-eng/ci-test-mapping`** — Follow [Reporting Guide → CI Test Mapping](Reporting_Guide.md#ci-test-mapping): `includeSuitePatterns`, new component package, `pkg/registry/registry.go`, capabilities.
-
-4. **`ocp-ci-docs`** (optional) — Align internal docs if process or naming changed.
-
-Pull requests can open **in parallel** once identifiers are fixed, but **release** should merge **first** when possible so production job names and JUnit match what Sippy and ci-test-mapping encode.
+---
 
 ## Maintainer hand-offs (not automated)
 
-Record these explicitly in each PR so the **user/requester** can finish CI:
+Put in **each** PR for the **user/requester**:
 
-1. **`openshift/sippy`** — After Go changes to variant logic: run **`make update-variants`** (see Reporting Guide). Agents do **not** run this.
-2. **`openshift-eng/ci-test-mapping`** — After config/component edits: run **`make mapping`** and review generated `data/` (see Reporting Guide). Agents do **not** run this.
-3. **`openshift/release`** — Run **`make update`** / **`make jobs`** per project policy when changing configs or step-registry (outside this playbook’s automation rules).
+1. **sippy** — `make update-variants` after variant edits (agents do **not** run by default).
+2. **ci-test-mapping** — `make mapping` + review `data/` (agents do **not** run by default).
+3. **release** — `make update` / `make jobs` per policy when config or step-registry changes.
 
-## End-to-end checklist for the agent
+---
 
-- [ ] Phase 0: fresh clones, `main` checked out and pulled, feature branches created with the same slug.
-- [ ] **Commits:** Every commit message notes that the change followed **`LP_Interop_CR_Agent_Playbook`** or **`docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md`**.
-- [ ] **release**: CR-compliant periodic job; mapped suite prefix equals `DR__RP__CR_COMP_NAME`; grace period / ExitTrap if mapping JUnit (Scenario Development Guide).
-- [ ] **sippy**: **`testSuitePatterns`** covers your suite prefixes (add regex only for **new** prefixes); `setLayeredProduct` row ordered correctly; product added to relevant `*-LP-Interop` views in `config/views.yaml`.
-- [ ] **ci-test-mapping**: `includeSuitePatterns`; component + matchers; `DefaultJiraComponent` verified per repo README.
-- [ ] PR descriptions list **maintainer** commands (`make update-variants`, `make mapping`) and link related PRs across repos.
-- [ ] **PR descriptions:** Supply a **precise**, valid PR description for **every** modified repo (for example **openshift/release**, **openshift/sippy**, **openshift-eng/ci-test-mapping**, and **ocp-ci-docs** if changed). Each description should state what changed, why, identifiers used (`LayeredProduct`, mapped suite / `DR__RP__CR_COMP_NAME`, job fragments), links to related PRs, and maintainer-only `make` steps—ready to paste when opening the PR.
+## End-to-end checklist
+
+- [ ] **Phase 0** — `WORKDIR`; repos cloned or reused; **`main`** + feature branches; identifiers captured from **release** YAML.
+- [ ] **Commits** — Every message cites the playbook **as the source** (**`[ocp-ci-docs]  LP_Interop_CR_Agent_Playbook`**).
+- [ ] **release** — CR job; **`DR__RP__CR_COMP_NAME`**; ExitTrap / grace if mapping JUnit ([Scenario Development Guide](../Scenario_Development/Scenario_Development_Guide.md#make-a-job-cr-compliant)).
+- [ ] **sippy** — **`testSuitePatterns`** for prefixes; **`setLayeredProduct`** order; **`LayeredProduct`** in `*-LP-Interop` views.
+- [ ] **ci-test-mapping** — `includeSuitePatterns`; **`Matchers`**; **`DefaultJiraComponent`**; README / `jira-verify` as needed.
+- [ ] **PRs** — Maintainer **`make`** lines + cross-repo links + **paste-ready** per-repo descriptions (what / why / identifiers / related PRs).
+
+---
 
 ## Further reading
 
