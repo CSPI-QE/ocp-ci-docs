@@ -4,7 +4,7 @@ This playbook is for **coding agents and automation** that drive **layered-produ
 
 ## At a glance (agents)
 
-1. **Phase 0 first** — `WORKDIR`, clones (skip if dirs exist), `main`, feature branches, then **derive** identifiers from **`openshift/release`** YAML before editing other repos.
+1. **Phase 0 first** — `WORKDIR`, clones (skip if dirs exist), `main`, feature branches, **`git push --dry-run`** to **`origin`** on **every repo you will push**, then **derive** identifiers from **`openshift/release`** YAML before editing other repos. If the agent cannot run Git, **stop** until the requester confirms the same gate locally.
 2. **Implement in dependency order** — **release** → **sippy** → **ci-test-mapping**; prefer **release** merging first.
 3. **Do not run** `make` in **sippy** / **ci-test-mapping** unless `[MAKE_MAINTAINER]` is **agent** and policy allows; otherwise **record** maintainer commands in PR bodies.
 4. **Every commit message** must cite `**[ocp-ci-docs] LP_Interop_CR_Agent_Playbook**` **as the source** of the procedure used.
@@ -48,7 +48,7 @@ Inputs (from the user/requester — use exactly; do not invent):
 - Maintainer for make (who runs `make update`, `make update-variants`, `make mapping`): [MAKE_MAINTAINER]
 
 Instructions (execute in this order):
-1. Follow Phase 0 in docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md (WORKDIR, clone-if-missing, default **`upstream`** / **`origin`** remotes using **`[GH_USER]`** unless **`[REMOTE_POLICY]`** overrides, reset **`main`** from **`upstream`**, feature branches, identifier capture from **release** YAML, no forbidden `make`, commit-message rule). Run **Cleanup** only after branches are pushed and local clones are no longer needed.
+1. Follow Phase 0 in docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md (WORKDIR, clone-if-missing, default **`upstream`** / **`origin`** remotes using **`[GH_USER]`** unless **`[REMOTE_POLICY]`** overrides, reset **`main`** from **`upstream`**, feature branches, **`git push --dry-run origin main`** on **each** repo you will push; if you cannot run Git, **stop** until the requester confirms that gate locally—identifier capture from **release** YAML when applicable, no forbidden `make`, commit-message rule). Run **Cleanup** only after branches are pushed and local clones are no longer needed.
 2. With `[RELEASE_CONFIG_PATHS]` open: from **tests** (jobs, steps, workflow, commands, chain/ref, env), list **step-registry** paths to touch and confirm **`LayeredProduct`** implied for Sippy. Only ask the user/requester if YAML is incomplete.
 3. From **OCP release(s)** + `openshift/sippy/config/views.yaml`, derive **`view=`** (**`<minor>-LP-Interop`**). Do not invent a view outside that file.
 4. From **Product display name**, set **`DR__RP__CR_COMP_NAME`** / mapped suite to **`lp-ocp-compat--<lpProductName>`** (Scenario Development Guide for normalization). Same string in **release**, **sippy**, **ci-test-mapping**.
@@ -74,6 +74,17 @@ Deliverables: paste-ready PR description per modified repo; list of PR URLs; mai
 Supporting libraries (for example [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools) for `ExitTrap--PostProcessPrep`) are consumed from CI scripts; they are **not** typically forked as part of this onboarding unless the scenario requires upstream changes there.
 
 ## Phase 0 — Sanitized workspace (mandatory before edits)
+
+**`git push` check** — After **`release`** has **`origin`** and **`main`** is checked out (steps **2–3** below), confirm whether this environment may push to the fork (some agents or sandboxes block it). If the agent cannot use Git at all, see **Agents that cannot use Git** below — **do not** skip this gate.
+
+```bash
+cd "$WORKDIR/release"
+git push --dry-run origin main
+```
+
+Exit code **0** with “Everything up-to-date” or a summary of objects to send means push is **usable** here. If the check fails (non-zero exit, auth errors, “permission denied”, or any indication that **`git push`** is not allowed), **do not continue** with the rest of this playbook — first **tear down** the workspace using **[Cleanup](#cleanup)** (leave **`$WORKDIR`**, remove it with `rm -rf`, and do not keep partial clone state for a retry), **stop**, and ask the **user/requester** to configure remotes, credentials, or environment policy so that push works. After that is fixed, **start over** from the beginning of Phase 0 (new **`$WORKDIR`**, fresh setup through steps **1–3**), re-run the **`git push` check**, and only then proceed.
+
+**Agents that cannot use Git:** If the environment cannot run this phase (clone, remotes, sync, branches, or **`git push --dry-run`**), treat Phase 0 as **not satisfied** — same outcome as a failed dry-run: **do not continue** with implementation in **sippy** / **ci-test-mapping** / **release** until the **user/requester** confirms how to proceed. Until then, output only Phase 0 remediation (remotes, credentials, policy); do not substitute unverified work for a passed push gate.
 
 Use one **`$WORKDIR`** for all git work; destroy it in [Cleanup](#cleanup).
 
@@ -177,7 +188,7 @@ Put in **each** PR for the **user/requester**:
 
 ## End-to-end checklist
 
-- [ ] **Phase 0** — `WORKDIR`; repos cloned or reused; **`main`** + feature branches; identifiers captured from **release** YAML.
+- [ ] **Phase 0** — `WORKDIR`; repos cloned or reused; **`main`** + feature branches; **`git push --dry-run origin main`** passed on each repo that will be pushed; identifiers captured from **release** YAML (or from prerequisites when **release** is out of scope).
 - [ ] **Commits** — Every message cites the playbook **as the source** (**`[ocp-ci-docs]  LP_Interop_CR_Agent_Playbook`**).
 - [ ] **release** — CR job; **`DR__RP__CR_COMP_NAME`**; ExitTrap / grace if mapping JUnit ([Scenario Development Guide](../Scenario_Development/Scenario_Development_Guide.md#make-a-job-cr-compliant)).
 - [ ] **sippy** — **`testSuitePatterns`** for prefixes; **`setLayeredProduct`** order; **`LayeredProduct`** in `*-LP-Interop` views.
