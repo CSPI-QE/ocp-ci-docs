@@ -22,8 +22,9 @@ Provide **once**; paste into the [prompt template](#prompt-template-for-agent-ex
 4. **`openshift/release` config path(s)** — e.g. `ci-operator/config/Org/repo/Org-repo-branch__variant.yaml`.
 5. **Periodic job name fragment** — For **`setLayeredProduct`** (often **`-lp-interop-cr-…`**). Example: `-lp-interop-cr-myproduct`.
 6. **OCPBUGS / `DefaultJiraComponent`** — If known. Example: `MyProduct`.
-7. **Remote / fork policy** — e.g. `git@github.com:<user>/release.git`.
-8. **Maintainer for `make`** — **requester** or **agent**, per team policy.
+7. **Remote / fork policy** — **Default:** in **`release`**, **`sippy`**, and **`ci-test-mapping`**, use **`upstream`** for the official GitHub repo (**`openshift/release`**, **`openshift/sippy`**, **`openshift-eng/ci-test-mapping`**) and **`origin`** for the contributor fork (see [Phase 0 → Remotes](#phase-0--sanitized-workspace-mandatory-before-edits)). Example **`origin`**: `git@github.com:<GH_USER>/release.git`. Only override this layout if your team documents a different convention (single remote, other names, or HTTPS instead of SSH).
+8. **GitHub username (fork owner)** — The GitHub user or org that hosts forks of **`release`**, **`sippy`**, and **`ci-test-mapping`** (same `<GH_USER>` in all three **`origin`** URLs unless you say otherwise). Example: `janedoe`.
+9. **Maintainer for `make`** — **requester** or **agent**, per team policy.
 
 Optional: links to existing **PRs**, **Prow** jobs, or **GCS** artifacts.
 
@@ -43,11 +44,11 @@ Inputs (from the user/requester — use exactly; do not invent):
 - Periodic job name substring: [JOB_SUBSTRING]
 - openshift/release config file(s): [RELEASE_CONFIG_PATHS]
 - OCPBUGS / DefaultJiraComponent (if known): [JIRA_COMPONENT]
-- Git remote policy: [REMOTE_POLICY]
+- GitHub username (fork owner, for origin remotes): [GH_USER]
 - Maintainer for make (who runs `make update`, `make update-variants`, `make mapping`): [MAKE_MAINTAINER]
 
 Instructions (execute in this order):
-1. Follow Phase 0 in docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md (WORKDIR, clone-if-missing, reset `main`, feature branches, identifier capture from **release** YAML, no forbidden `make`, commit-message rule). Run **Cleanup** only after branches are pushed and local clones are no longer needed.
+1. Follow Phase 0 in docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md (WORKDIR, clone-if-missing, default **`upstream`** / **`origin`** remotes using **`[GH_USER]`** unless **`[REMOTE_POLICY]`** overrides, reset **`main`** from **`upstream`**, feature branches, identifier capture from **release** YAML, no forbidden `make`, commit-message rule). Run **Cleanup** only after branches are pushed and local clones are no longer needed.
 2. With `[RELEASE_CONFIG_PATHS]` open: from **tests** (jobs, steps, workflow, commands, chain/ref, env), list **step-registry** paths to touch and confirm **`LayeredProduct`** implied for Sippy. Only ask the user/requester if YAML is incomplete.
 3. From **OCP release(s)** + `openshift/sippy/config/views.yaml`, derive **`view=`** (**`<minor>-LP-Interop`**). Do not invent a view outside that file.
 4. From **Product display name**, set **`DR__RP__CR_COMP_NAME`** / mapped suite to **`lp-ocp-compat--<lpProductName>`** (Scenario Development Guide for normalization). Same string in **release**, **sippy**, **ci-test-mapping**.
@@ -82,7 +83,7 @@ Use one **`$WORKDIR`** for all git work; destroy it in [Cleanup](#cleanup).
    WORKDIR=$(mktemp -d -t cr-onboarding-XXXXXX)
    cd "$WORKDIR"
    ```
-
+   
 2. **Repos** — Clone only missing dirs under **`$WORKDIR`** (reuse if continuing):
 
    ```bash
@@ -93,12 +94,30 @@ Use one **`$WORKDIR`** for all git work; destroy it in [Cleanup](#cleanup).
 
    For a **full** re-clone, remove those dirs or pick a new **`$WORKDIR`**.
 
-3. **Sync `main`** (or default branch):
+   **Remotes (default)** — After each repo’s first clone under **`$WORKDIR`**, set **`upstream`** to the official remote and **`origin`** to the requester’s fork. Substitute **`<GH_USER>`** with prerequisite **GitHub username (fork owner)** (HTTPS examples; use `git@github.com:<GH_USER>/…` if that is your policy):
 
    ```bash
-   cd release && git fetch origin && git checkout main && git pull --ff-only
-   cd ../sippy && git fetch origin && git checkout main && git pull --ff-only
-   cd ../ci-test-mapping && git fetch origin && git checkout main && git pull --ff-only
+   cd release
+   git remote rename origin upstream
+   git remote add origin https://github.com/<GH_USER>/release.git
+
+   cd ../sippy
+   git remote rename origin upstream
+   git remote add origin https://github.com/<GH_USER>/sippy.git
+
+   cd ../ci-test-mapping
+   git remote rename origin upstream
+   git remote add origin https://github.com/<GH_USER>/ci-test-mapping.git
+   ```
+
+   If a repo was already configured in an existing **`$WORKDIR`**, skip duplicate **`git remote add`**. If **`[REMOTE_POLICY]`** overrides the default layout, follow that policy instead.
+
+3. **Sync `main`** (or default branch) from **`upstream`** when using the default remotes:
+
+   ```bash
+   cd release && git fetch upstream && git checkout main && git pull --ff-only upstream main
+   cd ../sippy && git fetch upstream && git checkout main && git pull --ff-only upstream main
+   cd ../ci-test-mapping && git fetch upstream && git checkout main && git pull --ff-only upstream main
    ```
 
 4. **Feature branches** — One slug across repos (examples **`onboarding-myproduct`** / **`myproduct`**):
