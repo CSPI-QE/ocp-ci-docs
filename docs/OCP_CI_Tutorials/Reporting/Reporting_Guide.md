@@ -181,7 +181,7 @@ Please see [this PR](https://github.com/openshift/release/pull/39700/files) as a
 
 This section explains how layered-product results appear in **[Component Readiness](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main)** — the Sippy UI where LP interop health is tracked by OpenShift release and product.
 
-For an **end-to-end, multi-repository workflow** (sanitized clones, branch discipline, maintainer hand-offs), see the [**LP Interop CR agent playbook**](LP_Interop_CR_Agent_Playbook.md).
+See the [**LP Interop CR agent playbook**](LP_Interop_CR_Agent_Playbook.md) for the full step-by-step of that onboarding workflow. The workflow is the **cross-repository procedure** to connect **openshift/release** job settings, **openshift/sippy**, and **openshift-eng/ci-test-mapping** so a **layered product**’s LP interop Prow results are ingested and shown correctly in **Component Readiness**. It is aimed at **coding agents and automation**.
 
 ### General information
 

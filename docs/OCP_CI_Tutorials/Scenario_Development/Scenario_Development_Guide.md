@@ -309,8 +309,6 @@ For more details, see [ExitTrap--PostProcessPrep.sh](https://github.com/RedHatQE
 
 For onboarding into CR tooling (Sippy and CI Test Mapping), follow the [Component Readiness section in the Reporting Guide](../Reporting/Reporting_Guide.md#component-readiness). 
 
-For a multi-repository agent workflow (workspace setup, repo order, maintainer steps), see the [LP Interop CR agent playbook](../Reporting/LP_Interop_CR_Agent_Playbook.md).
-
 #### TestGrid
 
 The majority (from what we can tell) of reporting in OpenShift CI is done through TestGrid. Luckily, the only thing we need to do to ensure this happens properly for our scenarios is include `-lp-interop` in the name of our configuration files (see step 3 of the [Getting Started](#getting-started) section above). This is covered for in depth in the [TestGrid section of the Reporting Guide](../Reporting/Reporting_Guide.md#testgrid)
