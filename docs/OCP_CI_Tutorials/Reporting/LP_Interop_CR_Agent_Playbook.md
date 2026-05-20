@@ -4,7 +4,7 @@ This playbook is for **coding agents and automation** that drive **layered-produ
 
 ## At a glance (agents)
 
-1. **Phase 0 first** — `WORKDIR`, clones (skip if dirs exist), **`upstream`** / **`origin`** remotes, sync **`main`**, feature branches, then **derive** identifiers from **`openshift/release`** YAML before editing other repos (or from prerequisites when **release** is out of scope). If Git operations in Phase 0 cannot run in this environment, **stop** until the requester confirms how to proceed (for example by preparing the workspace locally).
+1. **Phase 0 first** — `WORKDIR`, clones (skip if dirs exist), **`upstream`** / **`origin`** remotes, sync **`main`**, feature branches, then **derive** identifiers from **`openshift/release`** YAML before editing other repos. If Git operations in Phase 0 cannot run in this environment, **stop** until the requester confirms how to proceed (for example by preparing the workspace locally).
 2. **Implement in dependency order** — **release** → **sippy** → **ci-test-mapping**; prefer **release** merging first.
 3. **Do not run** `make` in **sippy** / **ci-test-mapping** unless `[MAKE_MAINTAINER]` is **agent** and policy allows; otherwise **record** maintainer commands in PR bodies.
 4. **Every commit message** must cite `**[ocp-ci-docs] LP_Interop_CR_Agent_Playbook**` **as the source** of the procedure used.
@@ -131,7 +131,7 @@ Use one **`$WORKDIR`** for all git work; destroy it in [Cleanup](#cleanup).
    cd ../ci-test-mapping && git checkout -b myproduct
    ```
 
-5. **Identifiers** — After reading **`openshift/release`** configs from prerequisites, fix once: **`lp-ocp-compat--<lpProductName>`** / **`DR__RP__CR_COMP_NAME`**, **`LayeredProduct`**, periodic substring (**`-lp-interop-cr-<slug>`**). **Case-consistent** everywhere.
+5. **Identifiers** — After reading **`openshift/release`** configs from prerequisites, fix once: **`lp-ocp-compat--<lpProductName>`** / **`DR__RP__CR_COMP_NAME`**, **`LayeredProduct`**, periodic substring (**`-lp-interop-cr-<slug>`**). **Case-consistent** everywhere. Go package directory: **`<slug>`** with hyphens removed, plus **`lpinterop`** (example slug **`mpexoperator`** → **`mpexoperatorlpinterop`**).
 
 6. **No forbidden `make`** in **sippy** / **ci-test-mapping** for agents unless policy overrides — document **`make update-variants`** / **`make mapping`** in PRs ([Reporting Guide](Reporting_Guide.md)).
 
@@ -227,7 +227,7 @@ Put in **each** PR for the **user/requester**:
 
 ## End-to-end checklist
 
-- [ ] **Phase 0** — `WORKDIR`; repos cloned or reused; **`upstream`** / **`origin`** configured; **`main`** synced from **`upstream`**; feature branches created; identifiers captured from **release** YAML (or from prerequisites when **release** is out of scope).
+- [ ] **Phase 0** — `WORKDIR`; repos cloned or reused; **`upstream`** / **`origin`** configured; **`main`** synced from **`upstream`**; feature branches created; identifiers captured from **release** YAML.
 - [ ] **Commits** — Every message cites the playbook **as the source** (**`[ocp-ci-docs]  LP_Interop_CR_Agent_Playbook`**).
 - [ ] **release** — CR job; **`DR__RP__CR_COMP_NAME`**; ExitTrap / grace if mapping JUnit ([Scenario Development Guide](../Scenario_Development/Scenario_Development_Guide.md#make-a-job-cr-compliant)).
 - [ ] **sippy** — **`testSuitePatterns`** for prefixes; **`setLayeredProduct`** order; **`LayeredProduct`** in `*-LP-Interop` views.
