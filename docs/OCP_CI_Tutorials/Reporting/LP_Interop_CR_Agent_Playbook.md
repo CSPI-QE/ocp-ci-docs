@@ -20,7 +20,7 @@ Provide **once**; paste into the [prompt template](#prompt-template-for-agent-ex
 2. **Product slug** — Lowercase, hyphenated; **`lp-interop-<slug>`** and branches. Example: `myproduct`.
 3. **Target OCP minor release(s)** — e.g. `4.22`. Agent derives Sippy **`view=`** from **`openshift/sippy`** `config/views.yaml` (**`<minor>-LP-Interop`**); no separate view string from the requester.
 4. **`openshift/release` config path(s)** — e.g. `ci-operator/config/Org/repo/Org-repo-branch__variant.yaml`.
-5. **Periodic job name fragment** — For **`setLayeredProduct`** (often **`-lp-interop-cr-…`**). Example: `-lp-interop-cr-myproduct`.
+5. **Periodic CI Operator Job name substring** — For **`setLayeredProduct`** (often **`-lp-interop-cr-…`**). Use the substring **exactly** as it appears in the real periodic name (example: `-lp-interop-cr-myproduct`). Do not add a trailing hyphen unless the periodic name includes it after the fragment.
 6. **OCPBUGS / `DefaultJiraComponent`** — If known. Example: `MyProduct`.
 7. **Remote / fork policy** — **Default:** in **`release`**, **`sippy`**, and **`ci-test-mapping`**, use **`upstream`** for the official GitHub repo (**`openshift/release`**, **`openshift/sippy`**, **`openshift-eng/ci-test-mapping`**) and **`origin`** for the contributor fork (see [Phase 0 → Remotes](#phase-0--sanitized-workspace-mandatory-before-edits)). Example **`origin`**: `git@github.com:<GH_USER>/release.git`. Only override this layout if your team documents a different convention (single remote, other names, or HTTPS instead of SSH).
 8. **GitHub username (fork owner)** — The GitHub user or org that hosts forks of **`release`**, **`sippy`**, and **`ci-test-mapping`** (same `<GH_USER>` in all three **`origin`** URLs unless you say otherwise). Example: `janedoe`.
@@ -131,7 +131,7 @@ Use one **`$WORKDIR`** for all git work; destroy it in [Cleanup](#cleanup).
    cd ../ci-test-mapping && git checkout -b myproduct
    ```
 
-5. **Identifiers** — After reading **`openshift/release`** configs from prerequisites, fix once: **`lp-ocp-compat--<lpProductName>`** / **`DR__RP__CR_COMP_NAME`**, **`LayeredProduct`**, periodic substring (**`-lp-interop-cr-<slug>`**). **Case-consistent** everywhere. Go package directory: **`<slug>`** with hyphens removed, plus **`lpinterop`** (example slug **`mpexoperator`** → **`mpexoperatorlpinterop`**).
+5. **Identifiers** — After reading **`openshift/release`** configs from prerequisites, fix once: mapped Test Suite **`lp-ocp-compat--<lpProductName>`** / **`DR__RP__CR_COMP_NAME`**; Sippy **`LayeredProduct`** **`lp-interop-<slug>`**; **`setLayeredProduct`** substring from prerequisite **Periodic CI Operator Job name substring** (exact spelling). **Case-consistent** everywhere. Go package directory: **`<slug>`** with hyphens removed, plus **`lpinterop`** (example slug **`mpexoperator`** → **`mpexoperatorlpinterop`**).
 
 6. **No forbidden `make`** in **sippy** / **ci-test-mapping** for agents unless policy overrides — document **`make update-variants`** / **`make mapping`** in PRs ([Reporting Guide](Reporting_Guide.md)).
 

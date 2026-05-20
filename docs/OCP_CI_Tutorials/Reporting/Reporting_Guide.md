@@ -214,7 +214,7 @@ This checklist covers the changes required in [Sippy](https://github.com/openshi
 
 **File:** [pkg/db/suites.go](https://github.com/openshift/sippy/blob/main/pkg/db/suites.go)
 
-**Slices:** **`testSuitePatterns`** (`[]*regexp.Regexp`) and **`testSuites`** (`[]string`)
+**Variable:** **`testSuitePatterns`** (`[]*regexp.Regexp`)
 
 For **standard LP interop onboarding**, **do not** add product-specific suite strings to **`testSuites`**. Instead, rely on **`testSuitePatterns`**: ensure every suite-name prefix CI produces is covered by a regex. Current upstream patterns already include LP-oriented patterns such as `^lp-chaos--`, `^lp-interop--`, and `^lp-ocp-compat--` (see `testSuitePatterns` in [suites.go](https://github.com/openshift/sippy/blob/main/pkg/db/suites.go#L80)). As long as your CI output follows the `^lp-ocp-compat--` pattern, no new entry is required in this file.
 
@@ -248,8 +248,6 @@ In the `setLayeredProduct` function, append a new row to the mapping table that 
 > Because the mapping table is evaluated in **slice order**, the first successful substring match stops further evaluation for that CI Operator Job (next rows are ignored).
 > Do not append a specific LP row below a broader row that could match the same name (e.g., placing `{"-lp-interop-cnv", "virt"}` below a generic `{"-virt", "virt"}`). Misordering results in CI Operator Jobs being "swallowed" by generic categories, causes them to be misclassified and correspond to the wrong component in the Component Readiness interop dashboard.
 
-**Optional (IBM / on-prem style CI Operator Job names):** When CI Operator Jobs include `-ibm` / `-ibmcloud` and those CI Operator Jobs should appear alongside bare metal in platform filtering, confirm `setPlatform` includes the `{"-ibm", "metal"}` mapping (or add it if the branch lacks it). That step is **independent** of lp-interop onboarding but determines whether the **Platform** filter lists those CI Operator Jobs.
-
 ---
 
 #### 3. Include the product in LP-Interop views: `config/views.yaml`
@@ -273,15 +271,11 @@ add:
 
 Use the **same string** as in `setLayeredProduct`'s `product` field. Keep the list **alphabetically sorted** unless the file already uses a different convention for that block.
 
-**Note:** Add the variant to **every** `*-LP-Interop` block in `config/views.yaml` that already enumerates peer `lp-interop-*` products (typically several minors such as `5.0`, `4.22`, and `4.21`), not only the OCP minor release(s) named in onboarding prerequisites. Some older views (for example certain `4.20-*` LP views) list only a subset of products: add the entry only where other `lp-interop-*` products already appear.
-
 ---
 
 #### 4. Update Variant Snapshot
 
 **Test:** `TestVariantsSnapshot` in `pkg/variantregistry/ocp_test.go` validates live variants for all CI Operator Jobs in `config/openshift.yaml` against a static baseline in **`pkg/variantregistry/snapshot.yaml`**.
-
-After **any** change to variant logic in `pkg/variantregistry/ocp.go` (including `setLayeredProduct` / `setPlatform`), that snapshot **must** be regenerated or the test will fail.
 
 Run the command below **after** all the above changes has been applied:
 
@@ -291,24 +285,11 @@ This process overwrites `pkg/variantregistry/snapshot.yaml` with the updated cla
 > [!NOTE]
 > It is expected that snapshot tests will fail in CI until the execution of the `make update-variants` sync command.
 
-#### Summary checklist
-
-1. **`pkg/db/suites.go`:** Confirm **`testSuitePatterns`** covers your JUnit suite prefixes (upstream LP defaults include `^lp-ocp-compat--`, `^lp-interop--`, `^lp-chaos--`); add **`regexp.MustCompile`** only if CI uses a **new** prefix. Do **not** add per-product suite literals to **`testSuites`** for standard mapped names.
-2. **`pkg/variantregistry/ocp.go`:** Add `setLayeredProduct` CI Operator Job-name substring to **`LayeredProduct`** (example **`lp-interop-my-comp`**). Place narrow patterns above broad ones.
-3. **`config/views.yaml`:** Add `lp-interop-my-comp` to `*-LP-Interop` views' `LayeredProduct`.
-4. Run **`make update-variants`** after variant changes.
-
 ### CI Test Mapping
 
 This checklist covers the changes required in the [openshift-eng/ci-test-mapping](https://github.com/openshift-eng/ci-test-mapping) repository to onboard a CI Operator Job into Component Readiness.
 
 The steps below add a new **layered product interop** component to that repository. Component Readiness maps each test to one **component** and optional **capabilities**. LP interop CI Operator Jobs publish JUnit with a dedicated mapped **test suite** name produced from `DR__RP__CR_COMP_NAME`: pattern **`lp-ocp-compat--<lpProductName>`**.
-
-Replace placeholders below:
-
-- **`lp-ocp-compat--MyProduct`:** exact mapped JUnit **suite** string from CI (must match `DR__RP__CR_COMP_NAME` / `includeSuitePatterns` / `Matchers`; see [Map the JUnit tests output](../Scenario_Development/Scenario_Development_Guide.md#map-the-junit-tests-output)).
-- **`myproductlpinterop`:** Go **package** / directory name: lowercase, no hyphens (typical pattern: product **slug** with hyphens removed, suffixed with **`lpinterop`**; example slug **`my-product`** → **`myproductlpinterop`**).
-- **`MyProductLpInteropComponent`:** exported Go **variable** for the component singleton (used with `r.Register`).
 
 ---
 
@@ -322,11 +303,11 @@ Replace placeholders below:
 
 ---
 
-#### 1. Include the suite in the OpenShift mapping config
+#### 1. Include the Test Suite in the OpenShift mapping config
 
-Edit [config/openshift-eng.yaml](https://github.com/openshift-eng/ci-test-mapping/blob/main/config/openshift-eng.yaml) only when the mapped suite uses a **new** prefix family not already listed under `includeSuitePatterns`.
+Edit [config/openshift-eng.yaml](https://github.com/openshift-eng/ci-test-mapping/blob/main/config/openshift-eng.yaml) only when the mapped Test Suite uses a **new** prefix family not already listed under `includeSuitePatterns`.
 
-Upstream already includes broad LP patterns such as `lp-ocp-compat--%`, `lp-interop--%`, and `lp-chaos--%`. When CI publishes suites under **`lp-ocp-compat--<lpProductName>`** (the standard mapped name), **no** per-product row is required in `openshift-eng.yaml`; skip this step and proceed to the component package.
+Upstream already includes broad LP patterns such as `lp-ocp-compat--%`, `lp-interop--%`, and `lp-chaos--%`.
 
 When a **new** prefix is required, add a pattern in alphabetical order with the other entries:
 
@@ -335,7 +316,7 @@ includeSuitePatterns:
   - `^my-prefix-pattern--`
 ```
 
-Without a matching pattern, tests from that suite family may not appear in the mapping inputs at all.
+Without a matching pattern, tests from that Test Suite family may not appear in the mapping inputs at all.
 
 ---
 
@@ -349,18 +330,17 @@ Create a new directory:
 
 Model it on an existing LP interop package such as [pkg/components/mtalpinterop/component.go](https://github.com/openshift-eng/ci-test-mapping/blob/main/pkg/components/mtalpinterop/component.go):
 
-- Set **`Name`** and the **`r.Register`** string to the legacy component form **`<ProductDisplayName>-lp-interop`** (e.g. **`MyProduct-lp-interop`**). Set **`DefaultJiraComponent`** to the **OCPBUGS** Jira component name from prerequisites (e.g. **`MyProduct`**). The mapped JUnit suite **`lp-ocp-compat--<lpProductName>`** is matched via **`SuiteRegEx`**, not via **`Name`**.
+- Set **`Name`** and the **`r.Register`** string to the component name. Set **`DefaultJiraComponent`** to the **OCPBUGS** Jira component name from prerequisites (e.g. **`MyProduct`**). The mapped Test Suite **`lp-ocp-compat--<lpProductName>`** is matched via **`SuiteRegEx`**, not via **`Name`**.
 - Use **`Matchers`** so this component owns the right tests:
   - **`Suite`**: Use for an **exact** JUnit suite string. Many components still carry a **legacy** row such as `{Suite: "MyProduct-lp-interop"}` (component-style name); keep it when tests still report that suite (**do not drop it** when adding **`SuiteRegEx`**).
   - **`SuiteRegEx`**: Use `regexp.MustCompile(...)` for **additional** suite prefixes or patterns (for example `^lp-ocp-compat--MyProduct--`, `^lp-interop--MyProduct--`, `^lp-chaos--MyProduct--`). Add `"regexp"` to the imports in `component.go`. Regex suite matching in **`ComponentMatcher`** is **newer** than plain **`Suite`**; it **extends** legacy **`Suite`** rows rather than replacing them.
 
   ```go
-  // Example only: replace MyProduct / myproductlpinterop with product identifiers.
+  // Example only: replace MyProduct / myproductlpinterop with your product identifiers.
 
   import (
       "regexp"
 
-      v1 "github.com/openshift-eng/ci-test-mapping/pkg/api/types/v1"
       "github.com/openshift-eng/ci-test-mapping/pkg/config"
   )
 
@@ -417,7 +397,7 @@ Edit [pkg/registry/registry.go](../../pkg/registry/registry.go):
    r.Register("MyProduct-lp-interop", &myproductlpinterop.MyProductLpInteropComponent)
    ```
 
-The string passed to **`Register`** must match **`Name`** in the **`config.Component`** block (the example uses **`MyProduct-lp-interop`**). Mapped suites under **`lp-ocp-compat--<lpProductName>`** are owned through **`SuiteRegEx`** matchers in **`component.go`**, not through **`Register`** alone.
+The string passed to **`Register`** must match **`Name`** in the **`config.Component`** block (the example uses **`MyProduct-lp-interop`**).
 
 ---
 
@@ -426,13 +406,3 @@ The string passed to **`Register`** must match **`Name`** in the **`config.Compo
 1. Regenerate committed mapping data: after changing config or components, run `make mapping`.
 2. Do not execute `make` as part of implementing these steps; flag that this step is mandatory before merge.
 
----
-
-#### Quick checklist
-
-1. **`config/openshift-eng.yaml`:** Confirm whether `includeSuitePatterns` already covers the mapped suite prefix (standard **`lp-ocp-compat--`** onboarding usually requires **no** edit). Add a pattern only for a **new** prefix family.
-2. **`pkg/components/myproductlpinterop/component.go`:** **`Matchers`**: keep any **legacy** **`Suite`** using pattern **`<ProductName>-lp-interop`**; add **`SuiteRegEx`** (+ `"regexp"`) for prefix **patterns** (`^lp-ocp-compat--<ProductName>--`, …); list **`Suite`** before **`SuiteRegEx`**.
-3. **`pkg/components/myproductlpinterop/capabilities.go`:** `identifyCapabilities` + `util.DefaultCapabilities` (see [myproductlpinterop/capabilities.go](../../pkg/components/myproductlpinterop/capabilities.go)).
-4. **`pkg/registry/registry.go`:** Import package + `r.Register(...)`.
-5. **Jira / verification:** `DefaultJiraComponent` exists; `./ci-test-mapping jira-verify` clean.
-6. Run **`make mapping`** (required before merge).
