@@ -13,6 +13,7 @@
     - [TestGrid](#testgrid)
     - [Slack](#slack)
     - [Failure Handling (Jira Reporting)](#failure-handling-jira-reporting)
+    - [Component Readiness](#component-readiness)
   - [Ephemeral Cluster Guide](#ephemeral-cluster-guide)
     - [How does this work?](#how-does-this-work)
     - [Important Workflows](#important-workflows)
@@ -118,7 +119,7 @@ tests:
   - `as` : The name of a test.
   - `cron` : The schedule this test should run on. For CSPI purposes, it should be set to `0 6 25 10 *`.
   - `steps` : A list of steps in this test object.
-    - `cluster_profile` : Used during test cluster provisioning. The CSPI cluster profile for an AWS cluster would be `aws-cspi-qe`. Please don't use the profile if you are not in the CSPI organization as it will charge our organization for your cluster provisioning. 
+    - `cluster_profile` : Used during test cluster provisioning. The CSPI cluster profile for an AWS cluster would be `aws-cspi-qe`. Please don't use the profile if you are not in the CSPI organization as it will charge our organization for your cluster provisioning.
       - **Note:** When onboarding a scenario, if your GitHub organization and repository are not yet registered for this cluster profile, open a pull request against [openshift/release](https://github.com/openshift/release) to add them in [cluster-profiles-config.yaml](https://github.com/openshift/release/blob/master/ci-operator/step-registry/cluster-profiles/cluster-profiles-config.yaml) before you use `cluster_profile` in your config. Example PR: [#72472](https://github.com/openshift/release/pull/72472).
     - `env` : A list of environment variables needed for your tests to run. For each variable, use the following format: `{ENV_VAR_NAME}: {ENV_VAR_VALUE}`.
     - `test` : The list of chains and refs to execute, in order, in the test (scenario).
@@ -139,9 +140,9 @@ When writing a scenario in the CSPI OpenShift CI pipeline, please use the follow
      - A step to execute the tests themselves
    - When writing the steps, please make sure to make use of OpenShift CI variables, even if you think a variable isn't going to change often, make use of the default values of OpenShift CI variables. This allows other teams to utilize our steps and brings our work closer to the OpenShift organization.
 2. **Do not** write monolithic steps in the step registry.
-   - As you are planning your scenario, try to break the requirements up into sensible steps. 
+   - As you are planning your scenario, try to break the requirements up into sensible steps.
    - Please try to keep in mind that we are trying to write re-usable steps, so writing one step to do _all_ of the setup necessary in one BASH script/ref would not be re-usable and would be difficult to maintain.
-   - Please try to write the setup and execution of your scenario as modular as is reasonable. 
+   - Please try to write the setup and execution of your scenario as modular as is reasonable.
      - This allows for us to easily add new versions of your product to be tested or to use your setup steps in another scenario that may need them.
 
 Please see the folder structure below as an example of the step registry folder for a layered product. In this example, we see the different steps that it takes to setup and execute the MTR scenario. For more information, see the [MTR scenario pull request](https://github.com/openshift/release/pull/36181/files):
@@ -321,6 +322,11 @@ The majority (from what we can tell) of reporting in OpenShift CI is done throug
 
 Scenario failures are to be reported as bugs in Jira. The automation used to create the tickets for failures is smart enough to fairly-accurately determine why the failure happened and where to report it. For information on how to add this functionality and how it works, please see the [Reporting Guide](../Reporting/Reporting_Guide.md#failure-handling-jira).
 
+#### Component Readiness
+
+For onboarding a CI Operator Job into Component Readiness (CR), follow the [Component Readiness](../Reporting/Reporting_Guide.md#component-readiness) section
+in the Reporting Guide.
+
 ### Ephemeral Cluster Guide
 
 Here we will discuss perhaps the biggest value of OpenShift CI which is the amount of supported flavors of OpenShift Installations.
@@ -355,7 +361,7 @@ We have the option to set an env variable in the config to use AWS spot instance
 ```
 
 > **IMPORTANT:**
-> 
+>
 > Spot instances are not to be used in production.
 
 We add AWS user tags to name aws resources by scenario, set the USER_TAGS env var with <scenario_short_name>.
@@ -372,7 +378,7 @@ step-registry doc (ROSA Classic): [firewatch-rosa-aws-sts](https://steps.ci.open
 
 step-registry doc (ROSA Hypershift): [firewatch-rosa-aws-sts-hypershift](https://steps.ci.openshift.org/workflow/firewatch-rosa-aws-sts-hypershift)
 
-These workflows are going to serve as the base installation mechanism for our ROSA Classic/Hypershift OpenShift installation, 
+These workflows are going to serve as the base installation mechanism for our ROSA Classic/Hypershift OpenShift installation,
 and can be used in a very similar way to how we use ipi-aws.
 
 These workflows equipped with steps for deprovisioning including `must-gather`. It also includes the [firewatch-report-issues ref](https://steps.ci.openshift.org/reference/firewatch-report-issues) which can be used to create Jira issues based on failures.
@@ -461,7 +467,7 @@ expose: true
 
 3. We [specify the Dockerfile](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333R7) from that repo which is used to build an image
 4. Then we [promote the image](https://github.com/openshift/release/pull/36522/files#diff-0bc957cbdffcb18de5385fa02b826cbdee5486f53f3cc9d06f371a658279c333R9) to registry.ci.openshift.org.
-5. The image is available at registry.ci.openshift.org/. This allows us to use this image as a base_image in our scenario's config file (same as how any other base_image is being used). 
+5. The image is available at registry.ci.openshift.org/. This allows us to use this image as a base_image in our scenario's config file (same as how any other base_image is being used).
 
 One major benefit that we get from doing this is that we know the building of this image will be tested on any PR submitted by the PQE team. Setting up this promotion process automatically sets up a CI system for the image build in the test repo. If the image is failing to build, they will not be able to merge their code without explicitly skipping the automated check. Here's an [example PR](https://github.com/stolostron/clc-ui-e2e/pull/461) that triggered a [pre-submit job](https://prow.ci.openshift.org/view/gs/origin-ci-test/pr-logs/pull/stolostron_clc-ui-e2e/461/pull-ci-stolostron-clc-ui-e2e-release-2.7-images/1631327055738048512) to ensure that the image was built successfully. Once merged the post-submit job will run and promote the tested image to the registry where we can then make use of it.
 
@@ -561,7 +567,7 @@ These are just some of the ways that have been identified to test and develop ef
 
 #### OpenShift Local (CRC)
 
-When possible please execute your code on a local cluster using OpenShift local ([Getting Started Guide](https://access.redhat.com/documentation/en-us/red_hat_openshift_local/2.12/html/getting_started_guide/index)). 
+When possible please execute your code on a local cluster using OpenShift local ([Getting Started Guide](https://access.redhat.com/documentation/en-us/red_hat_openshift_local/2.12/html/getting_started_guide/index)).
 
 This will save:
 
@@ -643,10 +649,10 @@ If your scenario provisions a test cluster using a ROSA workflow, follow these s
 5. From here you can use the $SHARED_DIR [see here](#files-created-in-the-shared_dir) to find the kubeconfig file to access the cluster from the cli
 
 #### Access the ROSA cluster from the console
- 
- - We are using the staging to deploy these ROSA clusters this means that you can access [https://qaprodauth.console.redhat.com/](https://qaprodauth.console.redhat.com/) to view the cluster that you are creating. 
+
+ - We are using the staging to deploy these ROSA clusters this means that you can access [https://qaprodauth.console.redhat.com/](https://qaprodauth.console.redhat.com/) to view the cluster that you are creating.
 
 1. Login to [https://qaprodauth.console.redhat.com/](https://qaprodauth.console.redhat.com/) using an incognito window. If you are a member of CSPI reach out to someone on the team to get the login credentials for the automation account.
-2. From here navigate to OpenShift -> Clusters and if your job has already deployed the ROSA classic/hypershift cluster you will find a cluster there. 
+2. From here navigate to OpenShift -> Clusters and if your job has already deployed the ROSA classic/hypershift cluster you will find a cluster there.
 3. From there you can track the completion of deployment and once done click a button to access the web console.
 4. The login information to access the cluster can be found in the api.login file that is placed in the $SHARED_DIR of a pod on the build cluster (See details in step 5 above).
