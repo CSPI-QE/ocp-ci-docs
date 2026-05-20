@@ -6,9 +6,10 @@ This playbook is for **coding agents and automation** that drive **layered-produ
 
 1. **Phase 0 first** — `WORKDIR`, clones (skip if dirs exist), **`upstream`** / **`origin`** remotes, sync **`main`**, feature branches, then **derive** identifiers from **`openshift/release`** YAML before editing other repos. If Git operations in Phase 0 cannot run in this environment, **stop** until the requester confirms how to proceed (for example by preparing the workspace locally).
 2. **Implement in dependency order** — **release** → **sippy** → **ci-test-mapping**; prefer **release** merging first.
-3. **Do not run** `make` in **sippy** / **ci-test-mapping** unless `[MAKE_MAINTAINER]` is **agent** and policy allows; otherwise **record** maintainer commands in PR bodies.
+3. **`make`** — Run when `[MAKE_MAINTAINER]` is **agent** and the toolchain is available; otherwise **record** maintainer commands in upstream PR bodies ([Maintainer hand-offs](#maintainer-hand-offs-make)).
 4. **Every commit message** must cite `**[ocp-ci-docs] LP_Interop_CR_Agent_Playbook**` **as the source** of the procedure used.
-5. **Deliverables** — Paste-ready PR descriptions per touched repo, PR URL list, remaining `make` steps, blockers; **[per-run log file and shell trace](#run-logging-agents)** (start/end times, correlated names; **never `git push` those artifacts to `origin`** unless the requester explicitly overrides); then **Cleanup** `WORKDIR`.
+5. **Push, then open PRs against upstream** — `git push origin <branch>` on each fork, then create pull requests on the **official** repos (`openshift/release`, `openshift/sippy`, `openshift-eng/ci-test-mapping`) with **`--head <GH_USER>:<branch>`**.
+6. **Deliverables** — **Upstream** PR URLs (required), paste-ready PR bodies, any remaining `make` steps, blockers; **[per-run log file and shell trace](#run-logging-agents)** (start/end times, correlated names; **never `git push` those artifacts to `origin`** unless the requester explicitly overrides); then **Cleanup** `WORKDIR`.
 
 ---
 
@@ -24,7 +25,7 @@ Provide **once**; paste into the [prompt template](#prompt-template-for-agent-ex
 6. **OCPBUGS / `DefaultJiraComponent`** — If known. Example: `MyProduct`.
 7. **Remote / fork policy** — **Default:** in **`release`**, **`sippy`**, and **`ci-test-mapping`**, use **`upstream`** for the official GitHub repo (**`openshift/release`**, **`openshift/sippy`**, **`openshift-eng/ci-test-mapping`**) and **`origin`** for the contributor fork (see [Phase 0 → Remotes](#phase-0--sanitized-workspace-mandatory-before-edits)). Example **`origin`**: `git@github.com:<GH_USER>/release.git`. Only override this layout if your team documents a different convention (single remote, other names, or HTTPS instead of SSH).
 8. **GitHub username (fork owner)** — The GitHub user or org that hosts forks of **`release`**, **`sippy`**, and **`ci-test-mapping`** (same `<GH_USER>` in all three **`origin`** URLs unless you say otherwise). Example: `janedoe`.
-9. **Maintainer for `make`** — **requester** or **agent**, per team policy.
+9. **Maintainer for `make`** — **requester** or **agent**, per team policy. When **agent**, run `make update-variants` / `make mapping` / `make update` in the matching repo **after** code edits and **before** opening upstream PRs, unless the environment cannot run `make` (record the command in the PR body and run log).
 
 Optional: links to existing **PRs**, **Prow** jobs, or **GCS** artifacts.
 
@@ -48,18 +49,18 @@ Inputs (from the user/requester — use exactly; do not invent):
 - Maintainer for make (who runs `make update`, `make update-variants`, `make mapping`): [MAKE_MAINTAINER]
 
 Instructions (execute in this order):
-1. Follow Phase 0 in docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md (WORKDIR, clone-if-missing, default **`upstream`** / **`origin`** remotes using **`[GH_USER]`** unless **`[REMOTE_POLICY]`** overrides, reset **`main`** from **`upstream`**, feature branches; identifier capture from **release** YAML when applicable, no forbidden `make`, commit-message rule). If Phase 0 Git steps cannot run here, **stop** until the requester confirms how to proceed. Run **Cleanup** only after branches are pushed and local clones are no longer needed.
+1. Follow Phase 0 in docs/OCP_CI_Tutorials/Reporting/LP_Interop_CR_Agent_Playbook.md (WORKDIR, clone-if-missing, default **`upstream`** / **`origin`** remotes using **`[GH_USER]`** unless **`[REMOTE_POLICY]`** overrides, reset **`main`** from **`upstream`**, feature branches; identifier capture from **release** YAML when applicable; honor **`[MAKE_MAINTAINER]`** for `make`; commit-message rule). If Phase 0 Git steps cannot run here, **stop** until the requester confirms how to proceed. Run **Cleanup** only after branches are pushed, **upstream** PRs are opened, and local clones are no longer needed.
 2. With `[RELEASE_CONFIG_PATHS]` open: from **tests** (jobs, steps, workflow, commands, chain/ref, env), list **step-registry** paths to touch and confirm **`LayeredProduct`** implied for Sippy. Only ask the user/requester if YAML is incomplete.
 3. From **OCP release(s)** + `openshift/sippy/config/views.yaml`, derive **`view=`** (**`<minor>-LP-Interop`**). Do not invent a view outside that file.
 4. From **Product display name**, set **`DR__RP__CR_COMP_NAME`** / mapped suite to **`lp-ocp-compat--<lpProductName>`** (Scenario Development Guide for normalization). Same string in **release**, **sippy**, **ci-test-mapping**.
-5. Honor `[MAKE_MAINTAINER]` for `make update`, `make update-variants`, `make mapping`: **requester** → document in PRs, do not run yourself unless policy says **agent** may. Default: no `make` in **sippy** / **ci-test-mapping** for agents (Reporting Guide).
-6. Implement: **openshift/release** → **openshift/sippy** → **openshift-eng/ci-test-mapping**; Cross-link PRs. Prefer **release** merging first.
-7. Every commit message: cite **[ocp-ci-docs] LP_Interop_CR_Agent_Playbook** as the **source** (short trailer or footer line is 
-enough).
-8. End state: branches pushed, checklist satisfied, **Cleanup** removes `$WORKDIR`.
-9. Run logging: write the per-run Markdown log and correlated executable shell trace under `docs/OCP_CI_Tutorials/Reporting/` (see **Run logging** in the playbook): same `<slug>_<RUN_ID>` basename, log includes **start** and **end** times; **do not** commit or **`git push … origin`** those artifacts unless the requester explicitly says otherwise; if you cannot write to that repo, paste both artifacts in full for the requester.
+5. Honor `[MAKE_MAINTAINER]`: **agent** → run the relevant `make` targets in each touched repo when the toolchain is available; **requester** → document commands in PR bodies only. If `make` cannot run, list exact commands in the run log and PRs.
+6. Implement edits, commit (playbook source line in every message), `git push origin <branch>` per repo.
+7. Open pull requests on **upstream** (not fork-default): use `gh pr create --repo openshift/sippy --head <GH_USER>:<branch> --base main` (and the matching `--repo` for **release** / **ci-test-mapping**). Cross-link all upstream PR URLs in every PR body. Fork-only PRs are not acceptable deliverables unless the requester asks for them.
+8. Every commit message: cite **[ocp-ci-docs] LP_Interop_CR_Agent_Playbook** as the **source** (one line in the body is enough).
+9. End state: branches pushed to `origin`, **upstream** PRs opened, checklist satisfied, **Cleanup** removes `$WORKDIR`.
+10. Run logging: write the per-run Markdown log and correlated shell trace under `docs/OCP_CI_Tutorials/Reporting/` (see **Run logging**): same `<slug>_<RUN_ID>` basename, **start** and **end** times; **do not** commit or **`git push … origin`** those artifacts unless the requester explicitly says otherwise.
 
-Deliverables: paste-ready PR description per modified repo; list of PR URLs; maintainer-only commands left; blockers; per-run log file and correlated shell trace (see Run logging; **do not `git push` those artifacts to `origin`** unless the requester explicitly overrides).
+Deliverables: **upstream** PR URL per modified repo; paste-ready PR bodies; maintainer `make` commands still required (if any); blockers; per-run log and shell trace (not pushed to `origin` unless overridden).
 ```
 
 ---
@@ -133,7 +134,7 @@ Use one **`$WORKDIR`** for all git work; destroy it in [Cleanup](#cleanup).
 
 5. **Identifiers** — After reading **`openshift/release`** configs from prerequisites, fix once: mapped Test Suite **`lp-ocp-compat--<lpProductName>`** / **`DR__RP__CR_COMP_NAME`**; Sippy **`LayeredProduct`** **`lp-interop-<slug>`**; **`setLayeredProduct`** substring from prerequisite **Periodic CI Operator Job name substring** (exact spelling). **Case-consistent** everywhere. Go package directory: **`<slug>`** with hyphens removed, plus **`lpinterop`** (example slug **`mpexoperator`** → **`mpexoperatorlpinterop`**).
 
-6. **No forbidden `make`** in **sippy** / **ci-test-mapping** for agents unless policy overrides — document **`make update-variants`** / **`make mapping`** in PRs ([Reporting Guide](Reporting_Guide.md)).
+6. **`make`** — When prerequisite **Maintainer for `make`** is **agent**, run **`make update-variants`** / **`make mapping`** / **`make update`** in the repos that were edited, before opening upstream PRs. When **requester**, do not run `make`; document commands in PRs ([Reporting Guide](Reporting_Guide.md), [Maintainer hand-offs](#maintainer-hand-offs-make)).
 
 7. **Commit messages:** Every commit message must note that the work was generated using this playbook — reference **`[ocp-ci-docs] LP_Interop_CR_Agent_Playbook`** so reviewers can trace the workflow (one line in the body or as a trailer is sufficient).
 
@@ -168,6 +169,30 @@ PRs may open in parallel once identifiers are fixed; **release** should merge **
 
 ---
 
+## Open pull requests (upstream)
+
+After **`git push origin <branch>`** on the fork, open PRs on the **official** repository. The fork remote is **`origin`**; the official repo is **`upstream`** (see [Phase 0 → Remotes](#phase-0--sanitized-workspace-mandatory-before-edits)).
+
+**Example (sippy):**
+
+```bash
+gh pr create \
+  --repo openshift/sippy \
+  --head oharan2:mycomp \
+  --base main \
+  --title "Onboard MyProduct for LP Interop Component Readiness (Sippy)" \
+  --body-file /tmp/sippy-pr-body.md
+```
+
+**PR bodies must include:**
+
+- Summary of file changes and **identifiers** table (LayeredProduct, periodic substring, mapped suite, Jira component, CR view).
+- **Related PRs** — full upstream URLs for the other repos (fill in after each PR is created; edit PR descriptions if needed).
+- **Maintainer `make`** lines still owed (if any).
+- Source line: `[ocp-ci-docs] LP_Interop_CR_Agent_Playbook`
+
+---
+
 ## Run logging (agents)
 
 Each playbook execution must leave **two correlated artifacts** in **`ocp-ci-docs`** (default directory: this folder, `docs/OCP_CI_Tutorials/Reporting/`), unless the **user/requester** names a different path in the prompt. Use the **same basename** for both files.
@@ -182,7 +207,7 @@ Create **one log file per run** that records everything the agent produced for t
 - **Prerequisites** as received (product name, slug, OCP minors, job substring, Jira component, fork owner, `make` policy, release paths if any).
 - **Phase 0** outcome (clones, remotes, **`main`** sync, feature branches) and any deviation from the default remote layout.
 - **What changed** repo by repo (files, identifiers, tests run).
-- **Deliverables** — PR blurbs, PR URLs when known, maintainer **`make`** lines, **blockers** (auth, missing forks, policy).
+- **Deliverables** — **upstream** PR URLs (required), PR blurbs, maintainer **`make`** lines, **blockers** (auth, missing forks, wrong PR target, policy).
 - A **Related** line linking to the correlated shell trace file (see below).
 
 **Suggested filename** (replace `<slug>` with the product slug; `<RUN_ID>` with a UTC timestamp taken at **start** so both artifacts share it):
@@ -215,13 +240,15 @@ Treat the log and shell trace as part of **deliverables** alongside PR text. If 
 
 ---
 
-## Maintainer hand-offs (not automated)
+## Maintainer hand-offs (`make`)
 
-Put in **each** PR for the **user/requester**:
+| Repo | Command | Who runs (default) |
+|------|---------|-------------------|
+| **sippy** | `make update-variants` | **requester**; **agent** when `[MAKE_MAINTAINER]` is **agent** and `make` is available |
+| **ci-test-mapping** | `make mapping` (review `data/`) | same |
+| **release** | `make update` / `make jobs` | same, when release is in scope |
 
-1. **sippy** — `make update-variants` after variant edits (agents do **not** run by default).
-2. **ci-test-mapping** — `make mapping` + review `data/` (agents do **not** run by default).
-3. **release** — `make update` / `make jobs` per policy when config or step-registry changes.
+Put remaining commands in **each upstream PR** when they were not run. Snapshot tests in **sippy** may fail in CI until `make update-variants` runs (expected per [Reporting Guide](Reporting_Guide.md#4-update-variant-snapshot)).
 
 ---
 
@@ -232,7 +259,9 @@ Put in **each** PR for the **user/requester**:
 - [ ] **release** — CR job; **`DR__RP__CR_COMP_NAME`**; ExitTrap / grace if mapping JUnit ([Scenario Development Guide](../Scenario_Development/Scenario_Development_Guide.md#make-a-job-cr-compliant)).
 - [ ] **sippy** — **`testSuitePatterns`** for prefixes; **`setLayeredProduct`** order; **`LayeredProduct`** in `*-LP-Interop` views.
 - [ ] **ci-test-mapping** — `includeSuitePatterns`; **`Matchers`**; **`DefaultJiraComponent`**; README / `jira-verify` as needed.
-- [ ] **PRs** — Maintainer **`make`** lines + cross-repo links + **paste-ready** per-repo descriptions (what / why / identifiers / related PRs).
+- [ ] **Push** — Feature branch on **`origin`** (fork) for each touched repo.
+- [ ] **PRs (upstream)** — Opened on **`openshift/*`** / **`openshift-eng/*`** with `--head <GH_USER>:<branch>`; URLs recorded in run log.
+- [ ] **PR bodies** — Maintainer **`make`** lines (if any) + cross-links to other **upstream** PRs + identifiers + paste-ready summary.
 - [ ] **Run log** — Markdown file with **start** and **end** times, prerequisites, Phase 0 outcome, changes, deliverables, blockers; **Related** link to the shell trace; **not pushed to `origin`** unless the requester explicitly says otherwise.
 - [ ] **Shell trace** — Executable **`_commands.sh`** with the same **`<slug>_<RUN_ID>`** basename as the log; terminal commands in order; comments for non-shell steps; **not pushed to `origin`** unless the requester explicitly says otherwise.
 
