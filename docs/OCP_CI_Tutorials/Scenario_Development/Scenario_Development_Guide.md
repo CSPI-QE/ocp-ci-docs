@@ -255,6 +255,22 @@ We add AWS user tags to name aws resources by scenario, set the USER_TAGS env va
         scenario mtr
 ```
 
+### `firewatch-ipi-aws-cr`<!-- omit from toc -->
+
+Official documentation: [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr)
+
+This workflow extends [`firewatch-ipi-aws`](#firewatch-ipi-aws) for Layered Product OCP Compatibility (LP OCP Compat) scenarios that onboard to
+[Component Readiness](../Reporting/Reporting_Guide.md#component-readiness). It provides the same AWS IPI cluster provisioning, deprovisioning, and Jira failure
+reporting as `firewatch-ipi-aws`, and adds a post step that uploads JUnit XML result files from the CI Operator Job run to
+[Report Portal](https://redhat.atlassian.net/wiki/display/CentralCI/D%26O+Data+Router) via the
+[`mpiit-data-router-reporter`](https://steps.ci.openshift.org/reference/mpiit-data-router-reporter) ref, with Test Failure Analysis (TFA) applied by default.
+
+Use `firewatch-ipi-aws` for standard LP interop scenarios; use `firewatch-ipi-aws-cr`
+when onboarding to Component Readiness on AWS IPI.
+
+Set `DR__RP__CR_COMP_NAME` in the job environment. See
+[Report Portal Upload (Data Router)](../Reporting/Reporting_Guide.md#report-portal-upload-data-router) in the Reporting Guide.
+
 ### `firewatch-rosa-aws-sts` & `firewatch-rosa-aws-sts-hypershift` <!-- omit from toc -->
 
 step-registry doc (ROSA Classic): [firewatch-rosa-aws-sts](https://steps.ci.openshift.org/workflow/firewatch-rosa-aws-sts)

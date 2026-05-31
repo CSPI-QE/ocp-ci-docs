@@ -9,6 +9,7 @@
   - [Workflows](#workflows)
 - [The interop Folder](#the-interop-folder)
   - [Tooling](#tooling)
+  - [CSPI-Maintained Steps Outside `interop/tooling`](#cspi-maintained-steps-outside-interoptooling)
   - [Scenarios](#scenarios)
 
 ## Introduction
@@ -53,6 +54,20 @@ The `ci-operator/step-registry/interop` folder is meant to house all of our scen
 ### Tooling
 
 The `ci-operator/step-registry/interop/tooling` folder is meant to hold any re-usable tooling the CSPI team created in the OpenShift CI step registry. These tools are encouraged to be used both in CSPI interop testing and in tests that other teams may be working on. We will own and maintain these tools.
+
+### CSPI-Maintained Steps Outside `interop/tooling`
+
+The CSPI-QE team also maintains re-usable steps elsewhere in the step registry. These are owned by `cspi-qe-ocp-lp` and documented on
+[steps.ci.openshift.org](https://steps.ci.openshift.org/):
+
+| Step | Type | Purpose | Official documentation |
+|------|------|---------|------------------------|
+| `firewatch-ipi-aws-cr` | Workflow | AWS IPI provisioning with Report Portal upload and Jira failure reporting for LP OCP Compat / CR jobs | [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr) |
+| `mpiit-data-router-reporter` | Ref | Uploads JUnit XML result files from a CI Operator Job run to Report Portal via Data Router, with TFA applied by default | [`mpiit-data-router-reporter`](https://steps.ci.openshift.org/reference/mpiit-data-router-reporter) |
+| `firewatch-report-issues` | Ref | Reports CI Operator Job failures to Jira using Firewatch rules | [`firewatch-report-issues`](https://steps.ci.openshift.org/reference/firewatch-report-issues) |
+
+For usage guidance, see the [`firewatch-ipi-aws-cr` workflow section](../Scenario_Development/Scenario_Development_Guide.md#firewatch-ipi-aws-cr) in the Scenario
+Development Guide and [Report Portal Upload (Data Router)](../Reporting/Reporting_Guide.md#report-portal-upload-data-router) in the Reporting Guide.
 
 ### Scenarios
 
