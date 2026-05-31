@@ -21,6 +21,7 @@
   - [Sippy](#sippy)
   - [CI Test Mapping](#ci-test-mapping)
   - [Verification](#verification)
+- [Report Portal Upload (Data Router)](#report-portal-upload-data-router)
 
 ## TestGrid
 
@@ -165,6 +166,14 @@ flowchart TD
    - `FIREWATCH_JIRA_SERVER`: `https://issues.redhat.com`
      - This value always defaults to the stage server to avoid unwanted bugs.
    - `FIREWATCH_DEFAULT_JIRA_ADDITIONAL_LABELS` : Adding the following 3 labels to every firewatch config step: `["<ocp-version>-lp","self-managed-lp","<scenario-short-name-lp>"]`
+
+**If you are onboarding to Component Readiness on AWS IPI:**
+
+1. Use the [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr) workflow instead of `firewatch-ipi-aws` or `ipi-aws`. Official
+   documentation: [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr).
+2. Add the Firewatch environment variables listed above for `firewatch-ipi-aws`.
+3. Set `DR__RP__CR_COMP_NAME` and `MAP_TESTS` as described in [Report Portal Upload (Data Router)](#report-portal-upload-data-router) and
+   [Ensuring JUnit XML TS Names Have Correct Prefix](#ensuring-junit-xml-ts-names-have-correct-prefix).
 
 **If you currently use a custom workflow:**
 
@@ -372,10 +381,10 @@ The following changes are required:
       [`testSuitePatterns`](https://github.com/openshift/sippy/blob/main/pkg/db/suites.go) RegEx pattern and the
       [`includeSuitePatterns`](https://github.com/openshift-eng/ci-test-mapping/blob/main/config/openshift-eng.yaml) SQL `LIKE` pattern.
     - `DR__RP__CR_COMP_NAME` must be set in this file whenever the Job executes the
-      [`mpiit-data-router-reporter`](https://github.com/openshift/release/blob/main/ci-operator/step-registry/mpiit/data-router-reporter/mpiit-data-router-reporter-commands.sh)
-      CI Operator Step (directly, or indirectly via a CI Operator Chain or CI Operator Workflow, such as
-      [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr)), or the Job incorporates a Single-Stage Test (via
-      [`literal_step`](https://steps.ci.openshift.org/ci-operator-reference) stanza) performing an equivalent action.
+      [`mpiit-data-router-reporter`](https://steps.ci.openshift.org/reference/mpiit-data-router-reporter) CI Operator Step (directly, or indirectly via a CI
+      Operator Chain or CI Operator Workflow, such as [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr)), or the Job
+      incorporates a Single-Stage Test (via [`literal_step`](https://steps.ci.openshift.org/ci-operator-reference) stanza) performing an equivalent action.
+      See [Report Portal Upload (Data Router)](#report-portal-upload-data-router) for details.
  2. In the CI Operator Step Script that performs the test and produces the JUnit XML result files (the post-processing helper is provided by
     [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools)):
 
@@ -828,4 +837,31 @@ Commit all changes in a single PR against the `main` branch of [openshift-eng/ci
 After all three PRs are merged, navigate to the CR LP OCP Compat View for the target OCP release (for example,
 [4.22-LP-OCP-Compat--lpGA](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.22-LP-OCP-Compat--lpGA)) and confirm the product label
 appears in the results. If the product does not appear, contact TRT at `#forum-ocp-release-oversight` on Slack.
+
+## Report Portal Upload (Data Router)
+
+Official documentation:
+
+- [Report Portal](https://reportportal.io/docs/)
+- [Data Router](https://datarouter.dno.corp.redhat.com/docs) (VPN required)
+- [`mpiit-data-router-reporter`](https://steps.ci.openshift.org/reference/mpiit-data-router-reporter) — CI Operator Step maintained by CSPI-QE
+- [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr) — CI Operator Workflow that includes the step above
+
+For LP OCP Compat jobs onboarded to Component Readiness, JUnit XML result files produced during the test must be published to Report Portal so that CR can
+consume them. The CSPI-QE team maintains the [`mpiit-data-router-reporter`](https://steps.ci.openshift.org/reference/mpiit-data-router-reporter) CI Operator
+Step for this purpose.
+
+Key behavior:
+
+- **`REPORTPORTAL_APPLY_TFA`** (default: `true`) — instructs Report Portal to perform Test Failure Analysis (TFA) on uploaded results.
+- **`DR__RP__CR_COMP_NAME`** — sets the Report Portal launch name and the `ComponentReadiness_ComponentName` launch attribute. Must match the JUnit
+  `<testsuite name="...">` prefix (see [Ensuring JUnit XML TS Names Have Correct Prefix](#ensuring-junit-xml-ts-names-have-correct-prefix)).
+- **`OCP_VERSION`**, **`FIPS_ENABLED`**, **`JOB_NAME`**, and **`BUILD_ID`** — included as launch metadata attributes automatically.
+
+The easiest way to include this step in an AWS IPI job is to use the [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr)
+workflow, which runs `mpiit-data-router-reporter` after cluster deprovisioning and before
+[`firewatch-report-issues`](https://steps.ci.openshift.org/reference/firewatch-report-issues).
+
+For custom workflows, add the [`mpiit-data-router-reporter`](https://steps.ci.openshift.org/reference/mpiit-data-router-reporter) ref to the post steps
+directly.
 
