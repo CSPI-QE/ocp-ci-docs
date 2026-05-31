@@ -393,7 +393,7 @@ We should always create a personal fork of the repo that we are submitting a PR 
 2. Clone the forked repo using SSH (Do not use HTTP)
 3. Create a new branch
 4. Make your changes
-5. Run [make update](#make-update) from the root of release repo. You may need to use `sudo` is some situations.
+5. Run [`make update`](#make-update) from the root of release repo. You may need to use `sudo` is some situations.
 6. `git add` changed files
 7. `git commit -m 'commit message'`
 8. `git push origin {branch name}`
