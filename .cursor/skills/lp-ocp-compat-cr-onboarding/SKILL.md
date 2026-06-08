@@ -8,7 +8,7 @@ description: >-
 disable-model-invocation: true
 argument-hint: >-
   lp-name=My-product lp-slug=my-product lp-repo=myorg/myrepo lp-branch=main
-  lp-ver=lpGA ocp-release=4.22 release-config=ci-operator/config/... test-variant=aws
+  lp-ver=lpGA ocp-release=4.22 ci-config=ci-operator/config/... test-variant=aws
   gh-user=USER make-maintainer=requester|agent|user [jira-component=LP--My-product]
 paths:
   - docs/OCP_CI_Tutorials/Reporting/**
@@ -17,7 +17,7 @@ paths:
 
 # LP OCP Compat Component Readiness onboarding
 
-Onboard a Layered Product (LP) into Component Readiness (CR) via three PRs in **openshift/release**, **openshift/sippy**, and **openshift-eng/ci-test-mapping**.
+Onboard a Layered Product (LP) into Component Readiness (CR) via three PRs in **openshift/release**, **openshift/sippy**, and **openshift-eng/ci-test-mapping**. This skill replaces a manual multi-repo workflow that is error-prone (case sensitivity, identifier derivation, cross-repo coordination).
 
 Authoritative file-edit rules: [Reporting Guide, Component Readiness](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#component-readiness).
 
@@ -25,18 +25,18 @@ Full mock PR content for the MPEXOperator proof of concept: [references/worked-e
 
 ## Before starting
 
-When `$ARGUMENTS` is present, parse each `key=value` token from the invocation (see `argument-hint` above). Required keys: `lp-name`, `lp-slug`, `lp-repo`, `lp-branch`, `lp-ver`, `ocp-release`, `release-config`, `test-variant`, `gh-user`, `make-maintainer`. Optional: `jira-component` (defaults to `LP--<lp-name>`). Treat `make-maintainer=user` as `requester`.
+When `$ARGUMENTS` is present, parse each `key=value` token from the invocation (see `argument-hint` in the YAML frontmatter). Required keys: `lp-name`, `lp-slug`, `lp-repo`, `lp-branch`, `lp-ver`, `ocp-release`, `release-config`, `test-variant`, `gh-user`, `make-maintainer`. Optional: `jira-component` (defaults to `LP--<lp-name>`). Treat `make-maintainer=user` as `requester`.
 
 If any required input is missing, stop and list what is needed.
 
-Derive the **Derived identifiers** table from the [Reporting Guide, Onboarding Inputs](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#onboarding-inputs) patterns and the validated inputs; do not invent values.
+Derive the **identifier table** from the [Reporting Guide, Onboarding Inputs](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#onboarding-inputs) patterns and the validated inputs; do not invent values.
 
 For the MPEXOperator proof of concept, when only product name, OCP release, fork owner, and `make-maintainer` are known, use the remaining parameter values from [Worked Example: MPEXOperator](references/worked-example-mpexoperator.md#invocation).
 
 ## At a glance
 
-- **Phase 0:** temp `$WORKDIR`; clone `release`, `sippy`, `ci-test-mapping`; remotes `upstream` (official) and `origin` (fork); sync `main`; feature branch per repo.
-- **release first:** CR-compliant CI Operator Job Conf.; verify JUnit Test Suite (TS) prefix in Prow Job artifacts before other PRs.
+- **Phase 0:** temp. dir. `${WORKDIR}`; clone `release`, `sippy`, `ci-test-mapping`; remotes `upstream` (official) and `origin` (fork); sync `main`; feature branch per repo.
+- **`openshift/release` PR:** CR-compliant CI Operator Job Conf.; verify JUnit Test Suite (TS) prefix in Prow Job artifacts (via Job Rehearsal) before creating `openshift-eng/sippy` and `openshift-eng/ci-test-mapping` PRs.
 - **sippy:** `setLayeredProduct`, `config/views.yaml`, variant snapshot (Steps 1, 2, 6 usually skipped for standard LP OCP Compat).
 - **ci-test-mapping:** component package and registry (Step 1 usually skipped).
 - **Deliverables:** upstream PR URLs, local run log and shell trace (default `.cursor/skills/lp-ocp-compat-cr-onboarding/runs/`), cleanup `$WORKDIR`.
@@ -48,7 +48,7 @@ Every commit message must cite **`[ocp-ci-docs] lp-ocp-compat-cr-onboarding`**.
 ```bash
 WORKDIR=$(mktemp -d -t cr-onboarding-XXXXXX)
 cd "$WORKDIR"
-[ ! -d release ] && git clone https://github.com/openshift/release.git
+[ ! -d release ] && git clone --depth=1 --single-branch --no-tags https://github.com/openshift/release.git
 [ ! -d sippy ] && git clone https://github.com/openshift/sippy.git
 [ ! -d ci-test-mapping ] && git clone https://github.com/openshift-eng/ci-test-mapping.git
 ```
@@ -59,11 +59,13 @@ If Git cannot run, stop and report what is needed; do not apply unverified edits
 
 ## Implementation order
 
+Before generating edits, verify that expected anchor patterns exist in the cloned repos (e.g., `setLayeredProduct` in sippy, `pkg/components/` in ci-test-mapping, CI Operator config directory layout in release). Halt with a clear message if the structure does not match expectations.
+
 ```mermaid
 flowchart LR
   release[openshift/release]
   sippy[openshift/sippy]
-  ctm[ci-test-mapping]
+  ctm[openshift-eng/ci-test-mapping]
   release --> sippy
   release --> ctm
 ```
@@ -73,7 +75,7 @@ flowchart LR
 See [CI Operator Job Configuration](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#ci-operator-job-configuration).
 
 - CI Operator Job full name must contain `-<lpVer>-lp-ocp-compat-cr--<lpName>-`.
-- `.tests[].steps.env`: `MAP_TESTS: "true"`, `DR__RP__CR_COMP_NAME: lp-ocp-compat--<LP-name>`.
+- `.tests[].steps.env`: `MAP_TESTS: "true"`, `DR__RP__CR_COMP_NAME: lp-ocp-compat--<lp-name>`.
 - `.tests[].cron` at least twice daily.
 - ExitTrap / JUnit post-processing when the Test Step uses `mpiit-data-router-reporter` or `firewatch-ipi-aws-cr`.
 
@@ -89,7 +91,7 @@ See [CI Test Mapping](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.m
 
 - Push feature branch to fork `origin`.
 - Open PR on upstream with `--head <gh-user>:<branch>`.
-- Cross-link all three upstream PR URLs in every PR body; include identifier table and maintainer `make` lines not yet run.
+- Cross-link all three upstream PR URLs in every PR body; include identifier table and maintainer `make` lines not yet run. After all PRs are open, back-update each body with the full set of cross-links via `gh pr edit`.
 
 Example:
 
