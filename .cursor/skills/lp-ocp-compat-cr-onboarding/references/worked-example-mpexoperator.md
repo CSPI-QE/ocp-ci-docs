@@ -5,7 +5,7 @@ Documentation-only proof of concept. The MPEXOperator CI Operator Job Conf. in `
 ## Invocation
 
 ```text
-/lp-ocp-compat-cr-onboarding lp-name=MPEXOperator lp-slug=mpexoperator lp-repo=redhatqe/mpexoperator lp-branch=main lp-ver=lpGA ocp-release=4.22 release-config=ci-operator/config/redhatqe/mpexoperator/redhatqe-mpexoperator-main__ocp-4.22-lpGA-lp-ocp-compat.yaml test-variant=aws cron="0 6,18 * * *" gh-user=oharan2 make-maintainer=requester
+/lp-ocp-compat-cr-onboarding lp-name=MPEXOperator lp-slug=mpexoperator lp-repo=redhatqe/mpexoperator lp-branch=main lp-ver=lpGA ocp-release=4.22 release-config=ci-operator/config/redhatqe/mpexoperator/redhatqe-mpexoperator-main__ocp-4.22-lpGA-lp-ocp-compat.yaml test-variant=aws cron="0 6,18 * * *" gh-user=GH_USERNAME make-maintainer=requester
 ```
 
 ## Identifier table
