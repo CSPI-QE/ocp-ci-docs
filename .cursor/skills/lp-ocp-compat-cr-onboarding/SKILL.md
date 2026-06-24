@@ -102,11 +102,11 @@ gh pr create --repo openshift/sippy --head <gh-user>:<branch> --base main \
 
 ## Maintainer `make`
 
-| Repo            | Command                                                              | When `make-maintainer` is `requester` or `user` |
-|-----------------|----------------------------------------------------------------------|-------------------------------------------------|
-| sippy           | `make update-variants`; `./sippy variants snapshot --config ./config/openshift.yaml` | Document in PR body only                        |
-| ci-test-mapping | `make mapping`                                                       | Document in PR body only                        |
-| release         | `make update` / `make jobs`                                          | Document in PR body only                        |
+| Repo             | Command                                                                              | When `make-maintainer` is `requester` or `user`  |
+|------------------|--------------------------------------------------------------------------------------|--------------------------------------------------|
+| sippy            | `make update-variants`; `./sippy variants snapshot --config ./config/openshift.yaml` | Document in PR body only                         |
+| ci-test-mapping  | `make mapping`                                                                       | Document in PR body only                         |
+| release          | `make update` / `make jobs`                                                          | Document in PR body only                         |
 
 ## Run logging
 

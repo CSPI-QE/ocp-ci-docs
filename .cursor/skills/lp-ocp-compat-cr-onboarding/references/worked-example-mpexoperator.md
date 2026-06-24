@@ -10,18 +10,18 @@ Documentation-only proof of concept. The MPEXOperator CI Operator Job Conf. in `
 
 ## Identifier table
 
-| Identifier | Value |
-|------------|-------|
-| `DR__RP__CR_COMP_NAME` / TS prefix | `lp-ocp-compat--MPEXOperator` |
-| `.tests[].as` | `cr--mpexoperator--aws` |
-| Periodic CI Operator Job name | `periodic-ci-redhatqe-mpexoperator-main-ocp-4.22-lpGA-lp-ocp-compat-cr--mpexoperator--aws` |
-| Sippy `layeredProductPatterns` sub-string | `-lpga-lp-ocp-compat-cr--mpexoperator--` |
-| Sippy CR Variant `LayeredProduct` | `lp-ocp-compat--mpexoperator--lpGA` |
-| CR View (`view=`) | `4.22-LP-OCP-Compat--lpGA` |
-| ci-test-mapping Go package | `lpmpexoperator` |
-| Jira / CR Component | `LP--MPEXOperator` |
-| `SuiteRegEx` | ``^lp-ocp-compat--MPEXOperator--`` |
-| Registry symbol | `LPmpexoperatorComponent` |
+| Identifier                                   | Value                                                                                        |
+|----------------------------------------------|----------------------------------------------------------------------------------------------|
+| `DR__RP__CR_COMP_NAME` / TS prefix           | `lp-ocp-compat--MPEXOperator`                                                                |
+| `.tests[].as`                                | `cr--mpexoperator--aws`                                                                      |
+| Periodic CI Operator Job name                | `periodic-ci-redhatqe-mpexoperator-main-ocp-4.22-lpGA-lp-ocp-compat-cr--mpexoperator--aws`   |
+| Sippy `layeredProductPatterns` sub-string    | `-lpga-lp-ocp-compat-cr--mpexoperator--`                                                     |
+| Sippy CR Variant `LayeredProduct`            | `lp-ocp-compat--mpexoperator--lpGA`                                                          |
+| CR View (`view=`)                            | `4.22-LP-OCP-Compat--lpGA`                                                                   |
+| ci-test-mapping Go package                   | `lpmpexoperator`                                                                             |
+| Jira / CR Component                          | `LP--MPEXOperator`                                                                           |
+| `SuiteRegEx`                                 | ``^lp-ocp-compat--MPEXOperator--``                                                           |
+| Registry symbol                              | `LPmpexoperatorComponent`                                                                    |
 
 ## PR 1: openshift/release (mock)
 
