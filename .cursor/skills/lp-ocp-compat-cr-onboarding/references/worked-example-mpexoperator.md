@@ -20,7 +20,7 @@ Documentation-only proof of concept. The MPEXOperator CI Operator Job Conf. in `
 | CR View (`view=`)                            | `4.22-LP-OCP-Compat--lpGA`                                                                   |
 | ci-test-mapping Go package                   | `lpmpexoperator`                                                                             |
 | Jira / CR Component                          | `LP--MPEXOperator`                                                                           |
-| `SuiteRegEx`                                 | ``^lp-ocp-compat--MPEXOperator--``                                                           |
+| `SuiteRegEx`                                 | `` `^lp-ocp-compat--MPEXOperator--` ``                                                       |
 | Registry symbol                              | `LPmpexoperatorComponent`                                                                    |
 
 ## PR 1: openshift/release (mock)
