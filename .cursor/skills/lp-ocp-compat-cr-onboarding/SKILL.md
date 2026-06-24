@@ -9,7 +9,7 @@ disable-model-invocation: true
 argument-hint: >-
   lp-name=My-product lp-slug=my-product lp-repo=myorg/myrepo lp-branch=main
   lp-ver=lpGA ocp-release=4.22 ci-config=ci-operator/config/... test-variant=aws
-  gh-user=USER make-maintainer=requester|agent|user [jira-component=LP--My-product]
+  cron="0 6,18 * * *" gh-user=USER make-maintainer=requester|agent|user [jira-component=LP--My-product]
 paths:
   - docs/OCP_CI_Tutorials/Reporting/**
   - .cursor/skills/lp-ocp-compat-cr-onboarding/**
@@ -25,7 +25,7 @@ Full mock PR content for the MPEXOperator proof of concept: [references/worked-e
 
 ## Before starting
 
-When `$ARGUMENTS` is present, parse each `key=value` token from the invocation (see `argument-hint` in the YAML frontmatter). Required keys: `lp-name`, `lp-slug`, `lp-repo`, `lp-branch`, `lp-ver`, `ocp-release`, `release-config`, `test-variant`, `gh-user`, `make-maintainer`. Optional: `jira-component` (defaults to `LP--<lp-name>`). Treat `make-maintainer=user` as `requester`. 
+When `$ARGUMENTS` is present, parse each `key=value` token from the invocation (see `argument-hint` in the YAML frontmatter). Required keys: `lp-name`, `lp-slug`, `lp-repo`, `lp-branch`, `lp-ver`, `ocp-release`, `release-config`, `test-variant`, `cron`, `gh-user`, `make-maintainer`. Optional: `jira-component` (defaults to `LP--<lp-name>`). Treat `make-maintainer=user` as `requester`. 
 
 > Typical defaults when not supplied: `lp-slug` is the lowercased form of `lp-name`; `lp-branch` defaults to `main`; `lp-ver` defaults to `lpGA`.
 
@@ -78,7 +78,7 @@ See [CI Operator Job Configuration](../../../docs/OCP_CI_Tutorials/Reporting/Rep
 
 - CI Operator Job full name must contain `-<lpVer>-lp-ocp-compat-cr--<lpname>-`.
 - `.tests[].steps.env`: `MAP_TESTS: "true"`, `DR__RP__CR_COMP_NAME: lp-ocp-compat--<lp-name>`.
-- `.tests[].cron` at least twice daily.
+- `.tests[].cron` set to the value supplied via the `cron` argument.
 - ExitTrap / JUnit post-processing when the Test Step uses `mpiit-data-router-reporter` or `firewatch-ipi-aws-cr`.
 
 ### openshift/sippy
