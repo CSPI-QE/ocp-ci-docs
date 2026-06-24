@@ -74,7 +74,7 @@ flowchart LR
 
 See [CI Operator Job Configuration](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#ci-operator-job-configuration).
 
-- CI Operator Job full name must contain `-<lpVer>-lp-ocp-compat-cr--<lpName>-`.
+- CI Operator Job full name must contain `-<lpVer>-lp-ocp-compat-cr--<lpname>-`.
 - `.tests[].steps.env`: `MAP_TESTS: "true"`, `DR__RP__CR_COMP_NAME: lp-ocp-compat--<lp-name>`.
 - `.tests[].cron` at least twice daily.
 - ExitTrap / JUnit post-processing when the Test Step uses `mpiit-data-router-reporter` or `firewatch-ipi-aws-cr`.
@@ -112,8 +112,8 @@ gh pr create --repo openshift/sippy --head <gh-user>:<branch> --base main \
 
 Write under `.cursor/skills/lp-ocp-compat-cr-onboarding/runs/` (do not commit unless explicitly requested):
 
-- `LP_OCP_Compat_CR_Run_<lpName>_<RUN_ID>_log.md`
-- `LP_OCP_Compat_CR_Run_<lpName>_<RUN_ID>_commands.sh`
+- `LP_OCP_Compat_CR_Run_<lpname>_<RUN_ID>_log.md`
+- `LP_OCP_Compat_CR_Run_<lpname>_<RUN_ID>_commands.sh`
 
 ## References
 
