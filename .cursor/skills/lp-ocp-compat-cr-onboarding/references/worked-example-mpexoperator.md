@@ -156,6 +156,3 @@ func identifyCapabilities(test *v1.TestInfo) []string {
 
 Each upstream PR body must include the identifier table above, cross-links to the other two PRs, maintainer `make` lines, and `[ocp-ci-docs] lp-ocp-compat-cr-onboarding`.
 
-## Post-merge verification
-
-Open [4.22-LP-OCP-Compat--lpGA](https://sippy.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.22-LP-OCP-Compat--lpGA) and confirm `LP--MPEXOperator` appears after data ingestion.
