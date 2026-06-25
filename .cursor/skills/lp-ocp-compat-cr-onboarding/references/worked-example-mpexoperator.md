@@ -1,6 +1,6 @@
 # Worked Example: MPEXOperator (POC)
 
-Documentation-only proof of concept. The MPEXOperator CI Operator Job Conf. in `openshift/release` may be fictional; Sippy and `ci-test-mapping` PR content below is still structurally valid for onboarding.
+Documentation-only proof of concept. The MPEXOperator CI Operator Job Conf. in `openshift/release` may be fictional; `openshift/sippy` and `openshift-eng/ci-test-mapping` PR content below is still structurally valid for onboarding.
 
 ## Invocation
 

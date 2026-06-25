@@ -37,10 +37,10 @@ For the MPEXOperator proof of concept, when only product name, OCP release, fork
 
 ## At a glance
 
-- **Phase 0:** temp. dir. `${WORKDIR}`; clone `release`, `sippy`, `ci-test-mapping`; remotes `upstream` (official) and `origin` (fork); sync `main`; feature branch per repo.
-- **`openshift/release` PR:** CR-compliant CI Operator Job Conf.; verify JUnit Test Suite (TS) prefix in Prow Job artifacts (via Job Rehearsal) before creating `openshift-eng/sippy` and `openshift-eng/ci-test-mapping` PRs.
-- **sippy:** `setLayeredProduct`, `config/views.yaml`, variant snapshot ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----confirm-bigquery-job-pattern-match), [Step 2](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-2----map-ci-operator-job-name-to-a-cr-variant-owner), [Step 6](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-6----confirm-ts-import-pattern-coverage) usually skipped for standard LP OCP Compat).
-- **ci-test-mapping:** component package and registry ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----register-ts-name-pattern) usually skipped).
+- **Phase 0:** temp. dir. `${WORKDIR}`; clone `openshift/release`, `openshift/sippy`, `openshift-eng/ci-test-mapping`; remotes `upstream` (official) and `origin` (fork); sync `main`; feature branch per repo.
+- **`openshift/release` PR:** CR-compliant CI Operator Job Conf.; verify JUnit Test Suite (TS) prefix in Prow Job artifacts (via Job Rehearsal) before creating `openshift/sippy` and `openshift-eng/ci-test-mapping` PRs.
+- **`openshift/sippy`:** `setLayeredProduct`, `config/views.yaml`, variant snapshot ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----confirm-bigquery-job-pattern-match), [Step 2](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-2----map-ci-operator-job-name-to-a-cr-variant-owner), [Step 6](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-6----confirm-ts-import-pattern-coverage) usually skipped for standard LP OCP Compat).
+- **`openshift-eng/ci-test-mapping`:** component package and registry ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----register-ts-name-pattern) usually skipped).
 - **Deliverables:** upstream PR URLs, local run log and shell trace (default `.cursor/skills/lp-ocp-compat-cr-onboarding/runs/`), cleanup `$WORKDIR`.
 
 Every commit message must cite **`[ocp-ci-docs] lp-ocp-compat-cr-onboarding`**.
@@ -73,7 +73,7 @@ If Git cannot run, stop and report what is needed; do not apply unverified edits
 
 ## Implementation order
 
-Before generating edits, verify that expected anchor patterns exist in the cloned repos (e.g., `setLayeredProduct` in sippy, `pkg/components/` in ci-test-mapping, CI Operator config directory layout in release). Halt with a clear message if the structure does not match expectations.
+Before generating edits, verify that expected anchor patterns exist in the cloned repos (e.g., `setLayeredProduct` in `openshift/sippy`, `pkg/components/` in `openshift-eng/ci-test-mapping`, CI Operator config directory layout in `openshift/release`). Halt with a clear message if the structure does not match expectations.
 
 ```mermaid
 flowchart LR
@@ -116,11 +116,11 @@ gh pr create --repo openshift/sippy --head <gh-user>:<branch> --base main \
 
 ## Maintainer `make`
 
-| Repo             | Command                                                                              | When `make-maintainer` is `requester` or `user`  |
-|------------------|--------------------------------------------------------------------------------------|--------------------------------------------------|
-| sippy            | `make update-variants`; `./sippy variants snapshot --config ./config/openshift.yaml` | Document in PR body only                         |
-| ci-test-mapping  | `make mapping`                                                                       | Document in PR body only                         |
-| release          | `make update` / `make jobs`                                                          | Document in PR body only                         |
+| Repo                           | Command                                                                              | When `make-maintainer` is `requester` or `user`  |
+|--------------------------------|--------------------------------------------------------------------------------------|--------------------------------------------------|
+| `openshift/sippy`              | `make update-variants`; `./sippy variants snapshot --config ./config/openshift.yaml` | Document in PR body only                         |
+| `openshift-eng/ci-test-mapping`| `make mapping`                                                                       | Document in PR body only                         |
+| `openshift/release`            | `make update` / `make jobs`                                                          | Document in PR body only                         |
 
 ## Run logging
 
