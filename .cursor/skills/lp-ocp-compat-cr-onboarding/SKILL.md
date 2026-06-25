@@ -48,11 +48,23 @@ Every commit message must cite **`[ocp-ci-docs] lp-ocp-compat-cr-onboarding`**.
 ## Phase 0 workspace
 
 ```bash
+#!/bin/bash
+
+set -o nounset
+set -o errexit
+set -o pipefail
+
 WORKDIR=$(mktemp -d -t cr-onboarding-XXXXXX)
 cd "$WORKDIR"
-[ ! -d release ] && git clone --depth=1 --single-branch --no-tags https://github.com/openshift/release.git
-[ ! -d sippy ] && git clone https://github.com/openshift/sippy.git
-[ ! -d ci-test-mapping ] && git clone https://github.com/openshift-eng/ci-test-mapping.git
+if [ ! -d release ]; then
+  git clone --depth=1 --single-branch --no-tags https://github.com/openshift/release.git
+fi
+if [ ! -d sippy ]; then
+  git clone https://github.com/openshift/sippy.git
+fi
+if [ ! -d ci-test-mapping ]; then
+  git clone https://github.com/openshift-eng/ci-test-mapping.git
+fi
 ```
 
 After first clone in each repo: rename `origin` to `upstream`; add fork as `origin` (`https://github.com/<gh-user>/<repo>.git`). Sync `main` from `upstream`; create feature branch (example `mpexoperator`).

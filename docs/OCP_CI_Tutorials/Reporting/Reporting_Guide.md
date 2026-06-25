@@ -380,6 +380,12 @@ The following changes are required:
     [RedHatQE/OpenShift-LP-QE--Tools](https://github.com/RedHatQE/OpenShift-LP-QE--Tools)):
 
     ```bash
+    #!/bin/bash
+
+    set -o nounset
+    set -o errexit
+    set -o pipefail
+
     if [ "${MAP_TESTS}" = "true" ]; then
         eval "$(
             typeset -a _fURL=()
