@@ -25,7 +25,7 @@ Full mock PR content for the MPEXOperator proof of concept: [references/worked-e
 
 ## Before starting
 
-When `$ARGUMENTS` is present, parse each `key=value` token from the invocation (see `argument-hint` in the YAML frontmatter). Required keys: `lp-name`, `lp-slug`, `lp-repo`, `lp-branch`, `lp-ver`, `ocp-release`, `release-config`, `test-variant`, `cron`, `gh-user`, `make-maintainer`. Optional: `jira-component` (defaults to `LP--<lp-name>`). Treat `make-maintainer=user` as `requester`. 
+When `$ARGUMENTS` is present, parse each `key=value` token from the invocation (see `argument-hint` in the YAML frontmatter). Required keys: `lp-name`, `lp-slug`, `lp-repo`, `lp-branch`, `lp-ver`, `ocp-release`, `release-config`, `test-variant`, `cron`, `gh-user`, `make-maintainer`. Optional: `jira-component` (defaults to `LP--<lp-name>`). Treat `make-maintainer=user` as `requester`.
 
 > Typical defaults when not supplied: `lp-slug` is the lowercased form of `lp-name`; `lp-branch` defaults to `main`; `lp-ver` defaults to `lpGA`.
 
@@ -37,7 +37,7 @@ For the MPEXOperator proof of concept, when only product name, OCP release, fork
 
 ## At a glance
 
-- **Phase 0:** create a temporary working directory (`$WORKDIR`); clone `openshift/release`, `openshift/sippy`, `openshift-eng/ci-test-mapping`; remotes `upstream` (official) and `origin` (fork); sync `main`; feature branch per repo.
+- **Phase 0:** create a temporary working directory (`$WORKDIR`); clone each fork (URLs derived from `gh-user`, see [Phase 0 workspace](#phase-0-workspace) example); configure `upstream` (official, push-blocked) and `origin` (fork) remotes; sync from `upstream`; create feature branch per repo.
 - **`openshift/release` PR:** CR-compliant CI Operator Job Conf.; verify JUnit Test Suite (TS) prefix in Prow Job artifacts (via Job Rehearsal) before creating `openshift/sippy` and `openshift-eng/ci-test-mapping` PRs.
 - **`openshift/sippy`:** `setLayeredProduct`, `config/views.yaml`, variant snapshot ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----confirm-bigquery-job-pattern-match), [Step 2](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-2----map-ci-operator-job-name-to-a-cr-variant-owner), [Step 6](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-6----confirm-ts-import-pattern-coverage) usually skipped for standard LP OCP Compat).
 - **`openshift-eng/ci-test-mapping`:** component package and registry ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----register-ts-name-pattern) usually skipped).
@@ -54,20 +54,29 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-WORKDIR=$(mktemp -d -t cr-onboarding-XXXXXX)
-cd "${WORKDIR}"
-if [ ! -d release ]; then
-  git clone --depth=1 --single-branch --no-tags https://github.com/openshift/release.git
-fi
-if [ ! -d sippy ]; then
-  git clone https://github.com/openshift/sippy.git
-fi
-if [ ! -d ci-test-mapping ]; then
-  git clone https://github.com/openshift-eng/ci-test-mapping.git
-fi
-```
+typeset workDir="$(mktemp -d -t cr-onboarding-XXXXXX)"
+typeset -A rmtURLs=(
+    openshift/release="https://github.com/<gh-user>/release.git"
+    openshift/sippy="https://github.com/<gh-user>/sippy.git"
+    openshift-eng/ci-test-mapping="https://github.com/<gh-user>/ci-test-mapping.git"
+)
 
-After first clone in each repo: rename `origin` to `upstream`; add fork as `origin` (`https://github.com/<gh-user>/<repo>.git`). Sync `main` from `upstream`; create feature branch (example `mpexoperator`).
+pushd "${workDir}"
+for upRmt in "${!rmtURLs[@]}"; do
+    [ -d "${upRmt#*/}" ] || git clone --depth=1 --single-branch --no-tags "${rmtURLs[${upRmt}]}"
+    pushd "${upRmt#*/}"
+    git remote get-url upstream &>/dev/null || git remote add upstream "https://github.com/${upRmt}.git"
+    git remote set-url --push upstream noPush
+    git switch "$(git rev-parse --abbrev-ref upstream/HEAD | sed 's|^upstream/||')"
+    git fetch --depth=1 --no-tags -pP origin HEAD
+    git fetch --shallow-exclude=HEAD --update-shallow --no-tags -pP upstream HEAD
+    git reset --hard upstream/HEAD
+    git push --force-with-lease origin HEAD
+    git switch -C cr-onboarding--<lp-slug>
+    popd
+done
+popd
+```
 
 If Git cannot run, stop and report what is needed; do not apply unverified edits.
 
