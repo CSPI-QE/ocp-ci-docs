@@ -56,7 +56,7 @@ tests:
       - lp-ocp-compat--mpexoperator--lpGA
 ```
 
-**Files skipped (standard LP OCP Compat):** Step 1 BigQuery pattern, Step 2 `setOwner`, Step 6 `testSuitePatterns`.
+**Files skipped (standard LP OCP Compat):** [Step 1 (`BigQuery pattern`)](../../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----confirm-bigquery-job-pattern-match), [Step 2 (`setOwner`)](../../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-2----map-ci-operator-job-name-to-a-cr-variant-owner), [Step 6 (`testSuitePatterns`)](../../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-6----confirm-ts-import-pattern-coverage).
 
 **Maintainer hand-off:** `make update-variants` then `./sippy variants snapshot --config ./config/openshift.yaml`; commit `pkg/variantregistry/snapshot.yaml`.
 

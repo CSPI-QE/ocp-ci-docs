@@ -39,8 +39,8 @@ For the MPEXOperator proof of concept, when only product name, OCP release, fork
 
 - **Phase 0:** temp. dir. `${WORKDIR}`; clone `release`, `sippy`, `ci-test-mapping`; remotes `upstream` (official) and `origin` (fork); sync `main`; feature branch per repo.
 - **`openshift/release` PR:** CR-compliant CI Operator Job Conf.; verify JUnit Test Suite (TS) prefix in Prow Job artifacts (via Job Rehearsal) before creating `openshift-eng/sippy` and `openshift-eng/ci-test-mapping` PRs.
-- **sippy:** `setLayeredProduct`, `config/views.yaml`, variant snapshot (Steps 1, 2, 6 usually skipped for standard LP OCP Compat).
-- **ci-test-mapping:** component package and registry (Step 1 usually skipped).
+- **sippy:** `setLayeredProduct`, `config/views.yaml`, variant snapshot ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----confirm-bigquery-job-pattern-match), [Step 2](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-2----map-ci-operator-job-name-to-a-cr-variant-owner), [Step 6](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-6----confirm-ts-import-pattern-coverage) usually skipped for standard LP OCP Compat).
+- **ci-test-mapping:** component package and registry ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----register-ts-name-pattern) usually skipped).
 - **Deliverables:** upstream PR URLs, local run log and shell trace (default `.cursor/skills/lp-ocp-compat-cr-onboarding/runs/`), cleanup `$WORKDIR`.
 
 Every commit message must cite **`[ocp-ci-docs] lp-ocp-compat-cr-onboarding`**.
@@ -83,7 +83,7 @@ See [CI Operator Job Configuration](../../../docs/OCP_CI_Tutorials/Reporting/Rep
 
 ### openshift/sippy
 
-See [Sippy](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#sippy). Standard LP OCP Compat: add Step 3 `setLayeredProduct`, Step 4 `config/views.yaml`, Step 5 snapshot; skip Steps 1, 2, 6.
+See [Sippy](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#sippy). Standard LP OCP Compat: add [Step 3](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-3----map-ci-operator-job-name-to-a-cr-variant-layeredproduct) `setLayeredProduct`, [Step 4](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-4----include-product-in-lp-ocp-compat-views) `config/views.yaml`, [Step 5](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-5----update-variant-snapshot) snapshot; skip [Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----confirm-bigquery-job-pattern-match), [Step 2](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-2----map-ci-operator-job-name-to-a-cr-variant-owner), [Step 6](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-6----confirm-ts-import-pattern-coverage).
 
 ### openshift-eng/ci-test-mapping
 
