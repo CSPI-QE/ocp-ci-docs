@@ -116,11 +116,13 @@ gh pr create --repo openshift/sippy --head <gh-user>:<branch> --base main \
 
 ## Maintainer `make`
 
-| Repo                           | Command                                                                              | When `make-maintainer` is `requester` or `user`  |
-|--------------------------------|--------------------------------------------------------------------------------------|--------------------------------------------------|
-| `openshift/sippy`              | `make update-variants`; `./sippy variants snapshot --config ./config/openshift.yaml` | Document in PR body only                         |
-| `openshift-eng/ci-test-mapping`| `make mapping`                                                                       | Document in PR body only                         |
-| `openshift/release`            | `make update` / `make jobs`                                                          | Document in PR body only                         |
+**Prerequisites for `make-maintainer=agent`:** Go toolchain, `make`, and all repo-specific dependencies must be available in the agent environment (`openshift/sippy` requires Go; `openshift-eng/ci-test-mapping` requires Go; `openshift/release` requires Python and `make`).
+
+| Repo                             | Command                                                                              | When `make-maintainer` is `requester` or `user`  | When `make-maintainer` is `agent`    |
+|----------------------------------|--------------------------------------------------------------------------------------|--------------------------------------------------|--------------------------------------|
+| `openshift/sippy`                | `make update-variants`; `./sippy variants snapshot --config ./config/openshift.yaml` | Document in PR body only                         | Run, commit regenerated artifacts    |
+| `openshift-eng/ci-test-mapping`  | `make mapping`                                                                       | Document in PR body only                         | Run, commit regenerated artifacts    |
+| `openshift/release`              | `make update`                                                                        | Document in PR body only                         | Run, commit regenerated artifacts    |
 
 ## Run logging
 

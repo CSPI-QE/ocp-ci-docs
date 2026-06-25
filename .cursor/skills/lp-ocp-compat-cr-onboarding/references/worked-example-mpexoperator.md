@@ -37,7 +37,7 @@ tests:
         DR__RP__CR_COMP_NAME: lp-ocp-compat--MPEXOperator
 ```
 
-**Maintainer hand-off:** `make jobs` (not run in this POC; `make-maintainer=requester`).
+**Maintainer hand-off:** `make update` (not run in this POC; `make-maintainer=requester`).
 
 **Verification:** After a CI Operator Job Run, JUnit XML under the Test Step artifacts must show `<testsuite name="lp-ocp-compat--MPEXOperator--...">`.
 
