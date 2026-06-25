@@ -1,6 +1,6 @@
 # Worked Example: MPEXOperator (POC)
 
-Documentation-only proof of concept. The MPEXOperator CI Operator Job Conf. in `openshift/release` may be fictional; `openshift/sippy` and `openshift-eng/ci-test-mapping` PR content below is still structurally valid for onboarding.
+Documentation-only proof of concept. The MPEXOperator CI Operator Job Conf. in [`openshift/release`](https://github.com/openshift/release) may be fictional; [`openshift/sippy`](https://github.com/openshift/sippy) and [`openshift-eng/ci-test-mapping`](https://github.com/openshift-eng/ci-test-mapping) PR content below is still structurally valid for onboarding.
 
 ## Invocation
 
@@ -39,7 +39,7 @@ tests:
 
 **Maintainer hand-off:** `make update` (not run in this POC; `make-maintainer=requester`).
 
-**Verification:** After a CI Operator Job Run, JUnit XML under the Test Step artifacts must show `<testsuite name="lp-ocp-compat--MPEXOperator--...">`.
+**Verification:** After a CI Operator Job Run, JUnit XML under the CI Operator Test Step artifacts must show `<testsuite name="lp-ocp-compat--MPEXOperator--...">`.
 
 ## PR 2: openshift/sippy (mock)
 

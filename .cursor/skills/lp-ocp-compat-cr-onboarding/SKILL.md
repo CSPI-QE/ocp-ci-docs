@@ -17,7 +17,7 @@ paths:
 
 # LP OCP Compat Component Readiness onboarding
 
-Onboard a Layered Product (LP) into Component Readiness (CR) via three PRs in **openshift/release**, **openshift/sippy**, and **openshift-eng/ci-test-mapping**. This skill replaces a manual multi-repo workflow that is error-prone (case sensitivity, identifier derivation, cross-repo coordination).
+Onboard a Layered Product (LP) into Component Readiness (CR) via three PRs in **[openshift/release](https://github.com/openshift/release)**, **[openshift/sippy](https://github.com/openshift/sippy)**, and **[openshift-eng/ci-test-mapping](https://github.com/openshift-eng/ci-test-mapping)**. This skill replaces a manual multi-repo workflow that is error-prone (case sensitivity, identifier derivation, cross-repo coordination).
 
 Authoritative file-edit rules: [Reporting Guide, Component Readiness](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#component-readiness).
 
@@ -38,7 +38,7 @@ For the MPEXOperator proof of concept, when only product name, OCP release, fork
 ## At a glance
 
 - **Phase 0:** create a temporary working directory (`$WORKDIR`); clone each fork (URLs derived from `gh-user`, see [Phase 0 workspace](#phase-0-workspace) example); configure `upstream` (official, push-blocked) and `origin` (fork) remotes; sync from `upstream`; create feature branch per repo.
-- **`openshift/release` PR:** CR-compliant CI Operator Job Conf.; verify JUnit Test Suite (TS) prefix in Prow Job artifacts (via Job Rehearsal) before creating `openshift/sippy` and `openshift-eng/ci-test-mapping` PRs.
+- **`openshift/release` PR:** CR-compliant CI Operator Job Conf.; verify JUnit Test Suite (TS) prefix in [Prow](https://prow.ci.openshift.org) Job artifacts (via Prow Job Rehearsal) before creating `openshift/sippy` and `openshift-eng/ci-test-mapping` PRs.
 - **`openshift/sippy`:** `setLayeredProduct`, `config/views.yaml`, variant snapshot ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----confirm-bigquery-job-pattern-match), [Step 2](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-2----map-ci-operator-job-name-to-a-cr-variant-owner), [Step 6](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-6----confirm-ts-import-pattern-coverage) usually skipped for standard LP OCP Compat).
 - **`openshift-eng/ci-test-mapping`:** component package and registry ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----register-ts-name-pattern) usually skipped).
 - **Deliverables:** upstream PR URLs, local run log and shell trace (default `.cursor/skills/lp-ocp-compat-cr-onboarding/runs/`), cleanup `$WORKDIR`.
@@ -49,25 +49,25 @@ Every commit message must cite **`[ocp-ci-docs] lp-ocp-compat-cr-onboarding`**.
 
 ```bash
 #!/bin/bash
+set -euxo pipefail; shopt -s inherit_errexit
 
-set -o nounset
-set -o errexit
-set -o pipefail
-
-typeset workDir="$(mktemp -d -t cr-onboarding-XXXXXX)"
+typeset workDir
+workDir="$(mktemp -d -t cr-onboarding-XXXXXX)"
 typeset -A rmtURLs=(
-    openshift/release="https://github.com/<gh-user>/release.git"
-    openshift/sippy="https://github.com/<gh-user>/sippy.git"
-    openshift-eng/ci-test-mapping="https://github.com/<gh-user>/ci-test-mapping.git"
+    ["openshift/release"]="https://github.com/<gh-user>/release.git"
+    ["openshift/sippy"]="https://github.com/<gh-user>/sippy.git"
+    ["openshift-eng/ci-test-mapping"]="https://github.com/<gh-user>/ci-test-mapping.git"
 )
 
 pushd "${workDir}"
+typeset upRmt mainBranch
 for upRmt in "${!rmtURLs[@]}"; do
     [ -d "${upRmt#*/}" ] || git clone --depth=1 --single-branch --no-tags "${rmtURLs[${upRmt}]}"
     pushd "${upRmt#*/}"
     git remote get-url upstream &>/dev/null || git remote add upstream "https://github.com/${upRmt}.git"
     git remote set-url --push upstream noPush
-    git switch "$(git rev-parse --abbrev-ref upstream/HEAD | sed 's|^upstream/||')"
+    mainBranch="$(git rev-parse --abbrev-ref upstream/HEAD | sed 's|^upstream/||')"
+    git switch "${mainBranch}"
     git fetch --depth=1 --no-tags -pP origin HEAD
     git fetch --shallow-exclude=HEAD --update-shallow --no-tags -pP upstream HEAD
     git reset --hard upstream/HEAD
@@ -76,6 +76,7 @@ for upRmt in "${!rmtURLs[@]}"; do
     popd
 done
 popd
+true
 ```
 
 If Git cannot run, stop and report what is needed; do not apply unverified edits.
@@ -93,20 +94,20 @@ flowchart LR
   release --> ctm
 ```
 
-### openshift/release
+### [openshift/release](https://github.com/openshift/release)
 
 See [CI Operator Job Configuration](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#ci-operator-job-configuration).
 
 - CI Operator Job full name must contain `-<lpVer>-lp-ocp-compat-cr--<lpname>-`.
 - `.tests[].steps.env`: `MAP_TESTS: "true"`, `DR__RP__CR_COMP_NAME: lp-ocp-compat--<lp-name>`.
 - `.tests[].cron` set to the value supplied via the `cron` argument.
-- ExitTrap / JUnit post-processing when the Test Step uses `mpiit-data-router-reporter` or `firewatch-ipi-aws-cr`.
+- ExitTrap / JUnit post-processing when the CI Operator Step uses `mpiit-data-router-reporter` or `firewatch-ipi-aws-cr`.
 
-### openshift/sippy
+### [openshift/sippy](https://github.com/openshift/sippy)
 
 See [Sippy](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#sippy). Standard LP OCP Compat: add [Step 3](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-3----map-ci-operator-job-name-to-a-cr-variant-layeredproduct) `setLayeredProduct`, [Step 4](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-4----include-product-in-lp-ocp-compat-views) `config/views.yaml`, [Step 5](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-5----update-variant-snapshot) snapshot; skip [Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----confirm-bigquery-job-pattern-match), [Step 2](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-2----map-ci-operator-job-name-to-a-cr-variant-owner), [Step 6](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-6----confirm-ts-import-pattern-coverage).
 
-### openshift-eng/ci-test-mapping
+### [openshift-eng/ci-test-mapping](https://github.com/openshift-eng/ci-test-mapping)
 
 See [CI Test Mapping](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#ci-test-mapping). Standard LP OCP Compat: add `pkg/components/<lpComp>/` and registry entry; skip `includeSuitePatterns` when `lp-ocp-compat--%` already applies.
 
