@@ -37,7 +37,7 @@ For the MPEXOperator proof of concept, when only product name, OCP release, fork
 
 ## At a glance
 
-- **Phase 0:** temp. dir. `${WORKDIR}`; clone `openshift/release`, `openshift/sippy`, `openshift-eng/ci-test-mapping`; remotes `upstream` (official) and `origin` (fork); sync `main`; feature branch per repo.
+- **Phase 0:** create a temporary working directory (`$WORKDIR`); clone `openshift/release`, `openshift/sippy`, `openshift-eng/ci-test-mapping`; remotes `upstream` (official) and `origin` (fork); sync `main`; feature branch per repo.
 - **`openshift/release` PR:** CR-compliant CI Operator Job Conf.; verify JUnit Test Suite (TS) prefix in Prow Job artifacts (via Job Rehearsal) before creating `openshift/sippy` and `openshift-eng/ci-test-mapping` PRs.
 - **`openshift/sippy`:** `setLayeredProduct`, `config/views.yaml`, variant snapshot ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----confirm-bigquery-job-pattern-match), [Step 2](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-2----map-ci-operator-job-name-to-a-cr-variant-owner), [Step 6](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-6----confirm-ts-import-pattern-coverage) usually skipped for standard LP OCP Compat).
 - **`openshift-eng/ci-test-mapping`:** component package and registry ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----register-ts-name-pattern) usually skipped).
@@ -55,7 +55,7 @@ set -o errexit
 set -o pipefail
 
 WORKDIR=$(mktemp -d -t cr-onboarding-XXXXXX)
-cd "$WORKDIR"
+cd "${WORKDIR}"
 if [ ! -d release ]; then
   git clone --depth=1 --single-branch --no-tags https://github.com/openshift/release.git
 fi
