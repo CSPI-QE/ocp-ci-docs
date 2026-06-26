@@ -8,7 +8,7 @@ description: >-
 disable-model-invocation: true
 argument-hint: >-
   lp-name=My-product lp-slug=my-product lp-repo=myorg/myrepo lp-branch=main
-  lp-ver=lpGA ocp-release=4.22 ci-config=ci-operator/config/... test-variant=aws
+  lp-ver=lpGA ocp-release=4.22 release-config=ci-operator/config/... test-variant=aws
   cron="0 6,18 * * *" gh-user=USER make-maintainer=requester|agent|user [jira-component=LP--My-product]
 paths:
   - docs/OCP_CI_Tutorials/Reporting/**
@@ -69,7 +69,7 @@ for upRmt in "${!rmtURLs[@]}"; do
     mainBranch="$(git rev-parse --abbrev-ref upstream/HEAD | sed 's|^upstream/||')"
     git switch "${mainBranch}"
     git fetch --depth=1 --no-tags -pP origin HEAD
-    git fetch --shallow-exclude=HEAD --update-shallow --no-tags -pP upstream HEAD
+    git fetch --depth=1 --no-tags -pP upstream HEAD
     git reset --hard upstream/HEAD
     git push --force-with-lease origin HEAD
     git switch -C cr-onboarding--<lp-slug>
