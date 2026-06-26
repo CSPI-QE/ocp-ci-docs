@@ -10,9 +10,6 @@ argument-hint: >-
   lp-name=My-product lp-slug=my-product lp-repo=myorg/myrepo lp-branch=main
   lp-ver=lpGA ocp-release=4.22 release-config=ci-operator/config/... test-variant=aws
   cron="0 6,18 * * *" gh-user=USER make-maintainer=requester|agent|user [jira-component=LP--My-product]
-paths:
-  - docs/OCP_CI_Tutorials/Reporting/**
-  - .cursor/skills/lp-ocp-compat-cr-onboarding/**
 ---
 
 # LP OCP Compat Component Readiness onboarding
@@ -38,7 +35,7 @@ For the MPEXOperator proof of concept, when only product name, OCP release, fork
 ## At a glance
 
 - **Phase 0:** create a temporary working directory (`$WORKDIR`); clone each fork (URLs derived from `gh-user`, see [Phase 0 workspace](#phase-0-workspace) example); configure `upstream` (official, push-blocked) and `origin` (fork) remotes; sync from `upstream`; create feature branch per repo.
-- **`openshift/release` PR:** CR-compliant CI Operator Job Conf.; verify JUnit Test Suite (TS) prefix in [Prow](https://prow.ci.openshift.org) Job artifacts (via Prow Job Rehearsal) before creating `openshift/sippy` and `openshift-eng/ci-test-mapping` PRs.
+- **`openshift/release` PR:** CR-compliant CI Operator Job Config; verify JUnit Test Suite (TS) prefix in Prow Job artifacts (via Job Rehearsal) before creating `openshift/sippy` and `openshift-eng/ci-test-mapping` PRs.
 - **`openshift/sippy`:** `setLayeredProduct`, `config/views.yaml`, variant snapshot ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----confirm-bigquery-job-pattern-match), [Step 2](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-2----map-ci-operator-job-name-to-a-cr-variant-owner), [Step 6](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-6----confirm-ts-import-pattern-coverage) usually skipped for standard LP OCP Compat).
 - **`openshift-eng/ci-test-mapping`:** component package and registry ([Step 1](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#step-1----register-ts-name-pattern) usually skipped).
 - **Deliverables:** upstream PR URLs, local run log and shell trace (default `.cursor/skills/lp-ocp-compat-cr-onboarding/runs/`), cleanup `$WORKDIR`.
