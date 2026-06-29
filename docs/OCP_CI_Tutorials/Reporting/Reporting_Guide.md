@@ -382,9 +382,7 @@ The following changes are required:
     ```bash
     #!/bin/bash
 
-    set -o nounset
-    set -o errexit
-    set -o pipefail
+    set -euxo pipefail; shopt -s inherit_errexit
 
     if [ "${MAP_TESTS}" = "true" ]; then
         eval "$(
