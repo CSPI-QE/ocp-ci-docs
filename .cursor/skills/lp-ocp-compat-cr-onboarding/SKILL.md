@@ -57,17 +57,16 @@ typeset -A rmtURLs=(
 )
 
 pushd "${workDir}"
-typeset upRmt mainBranch
+typeset upRmt
 for upRmt in "${!rmtURLs[@]}"; do
     [ -d "${upRmt#*/}" ] || git clone --depth=1 --single-branch --no-tags "${rmtURLs[${upRmt}]}"
     pushd "${upRmt#*/}"
     git remote get-url upstream &>/dev/null || git remote add upstream "https://github.com/${upRmt}.git"
     git remote set-url --push upstream noPush
-    mainBranch="$(git rev-parse --abbrev-ref upstream/HEAD | sed 's|^upstream/||')"
-    git switch "${mainBranch}"
-    git fetch --depth=1 --no-tags -pP origin HEAD
-    git fetch --depth=1 --no-tags -pP upstream HEAD
-    git reset --hard upstream/HEAD
+    git fetch --depth=1 --no-tags -pP origin main
+    git fetch --depth=1 --no-tags -pP upstream main
+    git switch main
+    git reset --hard "upstream/main"
     git push --force-with-lease origin HEAD
     git switch -C cr-onboarding--<lp-slug>
     popd
