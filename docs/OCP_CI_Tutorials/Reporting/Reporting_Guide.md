@@ -862,10 +862,8 @@ Key behavior:
   `<testsuite name="...">` prefix (see [Ensuring JUnit XML TS Names Have Correct Prefix](#ensuring-junit-xml-ts-names-have-correct-prefix)).
 - **`OCP_VERSION`**, **`FIPS_ENABLED`**, **`JOB_NAME`**, and **`BUILD_ID`** — included as launch metadata attributes automatically.
 
-The easiest way to include this step in an AWS IPI job is to use the [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr)
-workflow, which runs `mpiit-data-router-reporter` after cluster deprovisioning and before
-[`firewatch-report-issues`](https://steps.ci.openshift.org/reference/firewatch-report-issues).
-
-For custom workflows, add the [`mpiit-data-router-reporter`](https://steps.ci.openshift.org/reference/mpiit-data-router-reporter) ref to the post steps
-directly.
+This CI Operator Step is defined as a `post` step. AWS IPI CI Operator Jobs include it by using the
+[`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr) CI Operator Workflow.
+For custom workflows, add the [`mpiit-data-router-reporter`](https://steps.ci.openshift.org/reference/mpiit-data-router-reporter) CI Operator Step to the
+`post` steps directly.
 
