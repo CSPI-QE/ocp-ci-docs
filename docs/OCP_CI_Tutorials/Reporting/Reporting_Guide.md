@@ -156,18 +156,18 @@ flowchart TD
 
 ### How To Add Jira Reporting to a Scenario
 
-**If you currently use the ipi-aws workflow:**
+**For scenarios using the `ipi-aws` workflow:**
 
-1. Ask your PQE contact which Jira project they would like test failures to be reported to
+1. Confirm with the PQE contact which Jira project test failures should be reported to
 2. Modify the scenario to use the `firewatch-ipi-aws` workflow instead of the `ipi-aws` workflow
 3. Add the required environment variables:
-   - `FIREWATCH_DEFAULT_JIRA_PROJECT`: This is the Jira project you'd like tickets to be filed to if the failure found does not match any rules. For Interop QE, this will probably be set to `LPINTEROP`
-   - `FIREWATCH_CONFIG`: Where we define the rules for which tickets get filed where. Please see the [How to define the configuration](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration) section of the Firewatch documentation for help defining this variable.
+   - `FIREWATCH_DEFAULT_JIRA_PROJECT`: The Jira project tickets are filed to when a failure does not match any rules. For Interop QE, this is typically set to `LPINTEROP`
+   - `FIREWATCH_CONFIG`: Defines the rules for which tickets get filed where. See the [How to define the configuration](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration) section of the Firewatch documentation.
    - `FIREWATCH_JIRA_SERVER`: `https://issues.redhat.com`
      - This value always defaults to the stage server to avoid unwanted bugs.
    - `FIREWATCH_DEFAULT_JIRA_ADDITIONAL_LABELS` : Adding the following 3 labels to every firewatch config step: `["<ocp-version>-lp","self-managed-lp","<scenario-short-name-lp>"]`
 
-**If you are onboarding to Component Readiness on AWS IPI:**
+**For Component Readiness onboarding on AWS IPI:**
 
 1. Use the [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr) workflow instead of `firewatch-ipi-aws` or `ipi-aws`. Official
    documentation: [`firewatch-ipi-aws-cr`](https://steps.ci.openshift.org/workflow/firewatch-ipi-aws-cr).
@@ -175,22 +175,22 @@ flowchart TD
 3. Set `DR__RP__CR_COMP_NAME` and `MAP_TESTS` as described in [Report Portal Upload (Data Router)](#report-portal-upload-data-router) and
    [Ensuring JUnit XML TS Names Have Correct Prefix](#ensuring-junit-xml-ts-names-have-correct-prefix).
 
-**If you currently use a custom workflow:**
+**For scenarios using a custom workflow:**
 
-1. Add the `firewatch-report-issues` ref to the end of the post steps in your workflow
-2. Ask your PQE contact which Jira project they would like test failures to be reported to
+1. Add the `firewatch-report-issues` ref to the end of the post steps in the workflow
+2. Confirm with the PQE contact which Jira project test failures should be reported to
 3. Add the required environment variables:
-   - `FIREWATCH_DEFAULT_JIRA_PROJECT`: This is the Jira project you'd like tickets to be filed to if the failure found does not match any rules. For Interop QE, this will probably be set to `LPINTEROP`
-   - `FIREWATCH_CONFIG`: Where we define the rules for which tickets get filed where. Please see the [How to define the configuration](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration) section of the Firewatch documentation for help defining this variable.
+   - `FIREWATCH_DEFAULT_JIRA_PROJECT`: The Jira project tickets are filed to when a failure does not match any rules. For Interop QE, this is typically set to `LPINTEROP`
+   - `FIREWATCH_CONFIG`: Defines the rules for which tickets get filed where. See the [How to define the configuration](https://github.com/CSPI-QE/firewatch/blob/main/docs/cli_usage_guide.md#defining-the-configuration) section of the Firewatch documentation.
    - `FIREWATCH_JIRA_SERVER`: `https://issues.redhat.com`
      - This value always defaults to the stage server to avoid unwanted bugs.
    - `FIREWATCH_DEFAULT_JIRA_ADDITIONAL_LABELS` : Adding the following 3 labels to every firewatch config step: `["<ocp-version>-lp","<platform-name>-lp","<scenario-short-name-lp>"]`
 
-Please see [this PR](https://github.com/openshift/release/pull/39700/files) as an example of how to add these values to your CI Operator Job configuration.
+See [this PR](https://github.com/openshift/release/pull/39700/files) as an example of adding these values to a CI Operator Job configuration.
 
 > **IMPORTANT**
 >
-> When defining the `FIREWATCH_CONFIG` variable, please try to cover every step that is executed during your CI Operator Job, you can view the steps that are run by going to a recent run of your CI Operator Job and viewing the artifacts. Each step should have a folder for it's artifacts and logs that you can use to build your config. If you happen to miss one of the steps and a failure occurs in that step, it will cause the failure to not match any of the rules in the config. In that case, a generic bug for the failure will be filed in the `FIREWATCH_DEFAULT_JIRA_PROJECT` project.
+> When defining the `FIREWATCH_CONFIG` variable, cover every step that is executed during the CI Operator Job. The steps that ran can be viewed in a recent CI Operator Job run's artifacts. Each step has a folder for its artifacts and logs that can be used to build the config. If a step is omitted and a failure occurs in that step, the failure will not match any of the rules in the config. In that case, a generic bug for the failure will be filed in the `FIREWATCH_DEFAULT_JIRA_PROJECT` project.
 
 ## Component Readiness
 
