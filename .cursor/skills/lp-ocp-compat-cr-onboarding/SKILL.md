@@ -98,6 +98,7 @@ See [CI Operator Job Configuration](../../../docs/OCP_CI_Tutorials/Reporting/Rep
 - `.tests[].steps.env`: `MAP_TESTS: "true"`, `LP_QE__CR__TS_NAME__PFX: lp-ocp-compat--<lp-name>`.
 - `.tests[].cron` set to the value supplied via the `cron` argument.
 - Test scripts must source the [ExitTrap library](https://github.com/RedHatQE/OpenShift-LP-QE--Tools/blob/main/libs/bash/ci-operator/interop/common/ExitTrap--PostProcessPrep.sh) and call `ExitTrap--PostProcessPrep` to remap JUnit XML test suite names for Component Readiness routing. The script constructs a new test suite name template by setting `LP_IO__ET_PPP__NEW_TS_NAME="${LP_QE__CR__TS_NAME__PFX}--%s"` before calling ExitTrap, where `%s` is replaced with the original suite name. Example:
+
   ```bash
   LP_IO__ET_PPP__NEW_TS_NAME="${LP_QE__CR__TS_NAME__PFX}--%s" \
       ExitTrap--PostProcessPrep
