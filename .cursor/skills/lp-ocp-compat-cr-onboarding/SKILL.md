@@ -95,9 +95,14 @@ flowchart LR
 See [CI Operator Job Configuration](../../../docs/OCP_CI_Tutorials/Reporting/Reporting_Guide.md#ci-operator-job-configuration).
 
 - CI Operator Job full name must contain `-<lpVer>-lp-ocp-compat-cr--<lpname>-`.
-- `.tests[].steps.env`: `MAP_TESTS: "true"`, `DR__RP__CR_COMP_NAME: lp-ocp-compat--<lp-name>`.
+- `.tests[].steps.env`: `MAP_TESTS: "true"`, `LP_QE__CR__TS_NAME__PFX__<COMPONENT>: lp-ocp-compat--<lp-name>` where `<COMPONENT>` is the ALL-CAPS Layered Product name (e.g., `LP_QE__CR__TS_NAME__PFX__SERVERLESS: lp-ocp-compat--Serverless`). The Component in CR is always one LP — each test step must identify its main LP. Multi-product jobs (e.g., OPP, ACM+Virt) set one variable per LP under test.
 - `.tests[].cron` set to the value supplied via the `cron` argument.
-- ExitTrap / JUnit post-processing when the CI Operator Step uses `mpiit-data-router-reporter` or `firewatch-ipi-aws-cr`.
+- Test scripts must source the [ExitTrap library](https://github.com/RedHatQE/OpenShift-LP-QE--Tools/blob/main/libs/bash/ci-operator/interop/common/ExitTrap--PostProcessPrep.sh) and call `ExitTrap--PostProcessPrep` to remap JUnit XML test suite names for Component Readiness routing. The script constructs a new test suite name template by setting `LP_IO__ET_PPP__NEW_TS_NAME="${LP_QE__CR__TS_NAME__PFX__<COMPONENT>:+${LP_QE__CR__TS_NAME__PFX__<COMPONENT>}--}%s"` before calling ExitTrap, where `%s` is replaced with the original suite name. The `${VAR:+${VAR}--}` pattern ensures backward compatibility when the variable is not set. Example:
+
+  ```bash
+  LP_IO__ET_PPP__NEW_TS_NAME="${LP_QE__CR__TS_NAME__PFX__SERVERLESS:+${LP_QE__CR__TS_NAME__PFX__SERVERLESS}--}%s" \
+      ExitTrap--PostProcessPrep
+  ```
 
 ### [openshift/sippy](https://github.com/openshift/sippy)
 
